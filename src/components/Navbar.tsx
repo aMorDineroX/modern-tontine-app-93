@@ -1,15 +1,22 @@
 
-import { Menu, X, Settings } from "lucide-react";
+import { Menu, X, Settings, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import SettingsModal from "./SettingsModal";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useApp();
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <nav className="relative z-20 bg-white dark:bg-gray-900 shadow-sm">
@@ -38,8 +45,18 @@ export default function Navbar() {
               <Settings size={20} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
             </button>
             <ThemeToggle />
-            <button className="tontine-button tontine-button-primary">
+            <button 
+              className="tontine-button tontine-button-primary"
+              onClick={() => setIsModalOpen(true)}
+            >
               {t('createNewGroup')}
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-gray-700 dark:text-gray-300"
+              title="Sign out"
+            >
+              <LogOut size={20} />
             </button>
           </div>
           
@@ -87,10 +104,25 @@ export default function Navbar() {
               {t('profile')}
             </Link>
             <div className="px-3 py-2">
-              <button className="w-full tontine-button tontine-button-primary">
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsModalOpen(true);
+                }} 
+                className="w-full tontine-button tontine-button-primary"
+              >
                 {t('createNewGroup')}
               </button>
             </div>
+            <button
+              onClick={() => {
+                handleSignOut();
+                setIsOpen(false);
+              }}
+              className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       )}

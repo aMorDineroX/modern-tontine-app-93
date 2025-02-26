@@ -97,7 +97,7 @@
 
 @layer components {
   .tontine-card {
-    @apply rounded-xl bg-white shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md;
+    @apply rounded-xl bg-white shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-lg dark:hover:shadow-black/20;
   }
   
   .tontine-button {
@@ -105,15 +105,15 @@
   }
   
   .tontine-button-primary {
-    @apply bg-tontine-purple text-white hover:bg-tontine-dark-purple;
+    @apply bg-tontine-purple text-white hover:bg-tontine-dark-purple dark:hover:bg-opacity-80;
   }
   
   .tontine-button-secondary {
-    @apply bg-white border border-tontine-purple text-tontine-purple hover:bg-tontine-light-purple/20;
+    @apply bg-white dark:bg-gray-800 border border-tontine-purple dark:border-tontine-light-purple text-tontine-purple dark:text-tontine-light-purple hover:bg-tontine-light-purple/20 dark:hover:bg-tontine-purple/20;
   }
 
   .tontine-text-gradient {
-    @apply bg-gradient-to-r from-tontine-purple to-tontine-dark-purple bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-tontine-purple to-tontine-dark-purple dark:from-tontine-light-purple dark:to-tontine-purple bg-clip-text text-transparent;
   }
   
   .tontine-input {

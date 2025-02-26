@@ -1,7 +1,7 @@
 
 export type Language = 'fr' | 'en' | 'es' | 'ar' | 'sw';
 
-type TranslationKeys = {
+export type TranslationKeys = {
   welcome: string;
   trackContributions: string;
   createNewGroup: string;

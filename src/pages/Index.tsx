@@ -189,7 +189,7 @@ const Index = () => {
                     <Coins size={18} className="text-tontine-dark-purple mr-1" />
                     <span className="text-sm font-medium dark:text-white">{t('active')}</span>
                   </div>
-                  <p className="font-semibold dark:text-white">3 {t('groups')}</p>
+                  <p className="font-semibold dark:text-white">3 {t('members')}</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex items-center justify-center mb-2">

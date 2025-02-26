@@ -1,5 +1,6 @@
 
 import { CalendarIcon, Coins, Users } from "lucide-react";
+import { useApp } from "@/contexts/AppContext";
 
 type TontineGroupProps = {
   name: string;
@@ -10,6 +11,8 @@ type TontineGroupProps = {
 };
 
 export default function TontineGroup({ name, members, contribution, nextDue, onClick }: TontineGroupProps) {
+  const { t } = useApp();
+  
   return (
     <div 
       className="tontine-card dark:bg-gray-800 dark:border-gray-700 cursor-pointer animate-fade-in"
@@ -29,7 +32,7 @@ export default function TontineGroup({ name, members, contribution, nextDue, onC
             <Coins size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Contribution</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('contribution')}</p>
             <p className="font-medium dark:text-white">{contribution}</p>
           </div>
         </div>
@@ -39,7 +42,7 @@ export default function TontineGroup({ name, members, contribution, nextDue, onC
             <CalendarIcon size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Next Due</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('nextDue')}</p>
             <p className="font-medium dark:text-white">{nextDue}</p>
           </div>
         </div>

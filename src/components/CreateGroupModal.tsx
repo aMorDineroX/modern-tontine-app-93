@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { useApp } from "@/contexts/AppContext";
 
 type CreateGroupModalProps = {
   isOpen: boolean;
@@ -9,6 +10,7 @@ type CreateGroupModalProps = {
 };
 
 export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGroupModalProps) {
+  const { t, currency } = useApp();
   const [name, setName] = useState("");
   const [contribution, setContribution] = useState("");
   const [frequency, setFrequency] = useState("monthly");
@@ -48,7 +50,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md pointer-events-auto animate-fade-in">
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold dark:text-white">Create New Tontine Group</h2>
+              <h2 className="text-xl font-semibold dark:text-white">{t('createGroup')}</h2>
               <button 
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -60,7 +62,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Group Name
+                  {t('groupName')}
                 </label>
                 <input
                   type="text"
@@ -75,7 +77,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
 
               <div>
                 <label htmlFor="contribution" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Contribution Amount
+                  {t('contributionAmount')} ({currency.symbol})
                 </label>
                 <input
                   type="text"
@@ -83,14 +85,14 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
                   value={contribution}
                   onChange={(e) => setContribution(e.target.value)}
                   className="tontine-input w-full mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  placeholder="$50"
+                  placeholder="50"
                   required
                 />
               </div>
 
               <div>
                 <label htmlFor="frequency" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Contribution Frequency
+                  {t('contributionFrequency')}
                 </label>
                 <select
                   id="frequency"
@@ -99,15 +101,15 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
                   className="tontine-input w-full mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   required
                 >
-                  <option value="weekly">Weekly</option>
-                  <option value="biweekly">Bi-weekly</option>
-                  <option value="monthly">Monthly</option>
+                  <option value="weekly">{t('weekly')}</option>
+                  <option value="biweekly">{t('biweekly')}</option>
+                  <option value="monthly">{t('monthly')}</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Start Date
+                  {t('startDate')}
                 </label>
                 <input
                   type="date"
@@ -120,7 +122,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
 
               <div>
                 <label htmlFor="payoutMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Payout Method
+                  {t('payoutMethod')}
                 </label>
                 <select
                   id="payoutMethod"
@@ -128,15 +130,15 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
                   onChange={(e) => setPayoutMethod(e.target.value)}
                   className="tontine-input w-full mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 >
-                  <option value="rotation">Rotation</option>
-                  <option value="random">Random Selection</option>
-                  <option value="bidding">Bidding System</option>
+                  <option value="rotation">{t('rotation')}</option>
+                  <option value="random">{t('randomSelection')}</option>
+                  <option value="bidding">{t('biddingSystem')}</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="members" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Invite Members (email addresses, comma separated)
+                  {t('inviteMembers')}
                 </label>
                 <textarea
                   id="members"
@@ -150,7 +152,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
 
               <div className="pt-4">
                 <button type="submit" className="tontine-button tontine-button-primary w-full">
-                  Create Tontine Group
+                  {t('createGroup')}
                 </button>
               </div>
             </form>

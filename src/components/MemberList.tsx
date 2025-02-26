@@ -1,5 +1,6 @@
 
 import { User } from "lucide-react";
+import { useApp } from "@/contexts/AppContext";
 
 type Member = {
   id: number;
@@ -14,12 +15,23 @@ type MemberListProps = {
 };
 
 export default function MemberList({ members, title }: MemberListProps) {
+  const { t } = useApp();
+
+  const getStatusText = (status: "active" | "pending" | "paid") => {
+    switch(status) {
+      case "active": return t('active');
+      case "pending": return t('pending');
+      case "paid": return t('paid');
+      default: return '';
+    }
+  };
+
   return (
     <div className="tontine-card dark:bg-gray-800 dark:border-gray-700 h-full animate-slide-up">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold dark:text-white">{title}</h3>
         <span className="text-xs px-2 py-1 bg-tontine-soft-blue dark:bg-blue-900/50 rounded-full text-tontine-dark-purple dark:text-tontine-light-purple">
-          {members.length} members
+          {members.length} {t('members')}
         </span>
       </div>
       
@@ -45,7 +57,7 @@ export default function MemberList({ members, title }: MemberListProps) {
                   ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400"
                   : "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400"
               }`}>
-                {member.status === "active" ? "Active" : member.status === "pending" ? "Pending" : "Paid"}
+                {getStatusText(member.status)}
               </span>
             </div>
           </div>

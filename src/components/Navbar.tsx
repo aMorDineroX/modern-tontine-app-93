@@ -1,11 +1,15 @@
 
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import { useApp } from "@/contexts/AppContext";
+import SettingsModal from "./SettingsModal";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { t } = useApp();
 
   return (
     <nav className="relative z-20 bg-white dark:bg-gray-900 shadow-sm">
@@ -19,21 +23,33 @@ export default function Navbar() {
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
             <Link to="/" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
-              Dashboard
+              {t('dashboard')}
             </Link>
             <Link to="/groups" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
-              My Groups
+              {t('myGroups')}
             </Link>
             <Link to="/profile" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
-              Profile
+              {t('profile')}
             </Link>
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              <Settings size={20} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+            </button>
             <ThemeToggle />
             <button className="tontine-button tontine-button-primary">
-              Create Group
+              {t('createNewGroup')}
             </button>
           </div>
           
           <div className="flex items-center sm:hidden">
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors mr-2"
+            >
+              <Settings size={20} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+            </button>
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -54,30 +70,32 @@ export default function Navbar() {
               className="block px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple"
               onClick={() => setIsOpen(false)}
             >
-              Dashboard
+              {t('dashboard')}
             </Link>
             <Link
               to="/groups"
               className="block px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple"
               onClick={() => setIsOpen(false)}
             >
-              My Groups
+              {t('myGroups')}
             </Link>
             <Link
               to="/profile"
               className="block px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple"
               onClick={() => setIsOpen(false)}
             >
-              Profile
+              {t('profile')}
             </Link>
             <div className="px-3 py-2">
               <button className="w-full tontine-button tontine-button-primary">
-                Create Group
+                {t('createNewGroup')}
               </button>
             </div>
           </div>
         </div>
       )}
+      
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </nav>
   );
 }

@@ -19,7 +19,7 @@ export default function SignIn() {
     try {
       setIsSubmitting(true);
       await signIn(email, password);
-      navigate("/");
+      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {
@@ -30,7 +30,7 @@ export default function SignIn() {
   const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'twitter' | 'github') => {
     try {
       await signInWithProvider(provider);
-      navigate("/");
+      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
     } catch (error) {
       console.error(`Sign in with ${provider} error:`, error);
     }
@@ -59,7 +59,7 @@ export default function SignIn() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="tontine-input pl-10 w-full"
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="vous@exemple.com"
                   required
                 />
@@ -79,7 +79,7 @@ export default function SignIn() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="tontine-input pl-10 w-full"
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="••••••••"
                   required
                 />

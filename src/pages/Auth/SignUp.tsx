@@ -20,7 +20,7 @@ export default function SignUp() {
     try {
       setIsSubmitting(true);
       await signUp(email, password, fullName);
-      navigate("/");
+      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
     } catch (error) {
       console.error("Sign up error:", error);
     } finally {
@@ -31,7 +31,7 @@ export default function SignUp() {
   const handleSocialSignUp = async (provider: 'google' | 'facebook' | 'twitter' | 'github') => {
     try {
       await signInWithProvider(provider);
-      navigate("/");
+      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
     } catch (error) {
       console.error(`Sign up with ${provider} error:`, error);
     }
@@ -60,7 +60,7 @@ export default function SignUp() {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="tontine-input pl-10 w-full"
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="Jean Dupont"
                   required
                 />
@@ -80,7 +80,7 @@ export default function SignUp() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="tontine-input pl-10 w-full"
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="vous@exemple.com"
                   required
                 />
@@ -100,7 +100,7 @@ export default function SignUp() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="tontine-input pl-10 w-full"
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="••••••••"
                   required
                   minLength={6}

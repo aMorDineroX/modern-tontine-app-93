@@ -30,14 +30,14 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold tontine-text-gradient mb-4">Tontine</h1>
-          <p className="text-gray-600 dark:text-gray-400">Reset your password</p>
+          <p className="text-gray-600 dark:text-gray-400">Réinitialiser votre mot de passe</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8">
           {!submitted ? (
             <>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Enter your email address and we'll send you a link to reset your password.
+                Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
               </p>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -53,8 +53,8 @@ export default function ForgotPassword() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="tontine-input pl-10 w-full"
-                      placeholder="you@example.com"
+                      className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
+                      placeholder="vous@exemple.com"
                       required
                     />
                   </div>
@@ -65,7 +65,7 @@ export default function ForgotPassword() {
                   className="tontine-button tontine-button-primary w-full"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Sending..." : "Send Reset Link"}
+                  {isSubmitting ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}
                 </button>
               </form>
             </>
@@ -74,17 +74,17 @@ export default function ForgotPassword() {
               <div className="bg-tontine-light-purple/20 text-tontine-dark-purple dark:bg-tontine-purple/20 dark:text-tontine-light-purple p-3 rounded-full inline-flex items-center justify-center mb-4">
                 <Mail size={24} />
               </div>
-              <h3 className="text-xl font-semibold mb-2 dark:text-white">Check your email</h3>
+              <h3 className="text-xl font-semibold mb-2 dark:text-white">Vérifiez votre email</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                We've sent a password reset link to {email}
+                Nous avons envoyé un lien de réinitialisation à {email}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Didn't receive the email? Check your spam folder or{" "}
+                Vous n'avez pas reçu l'email? Vérifiez votre dossier spam ou{" "}
                 <button 
                   onClick={() => setSubmitted(false)}
                   className="text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple"
                 >
-                  try again
+                  essayez à nouveau
                 </button>
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function ForgotPassword() {
 
           <div className="mt-6 text-center">
             <Link to="/signin" className="text-sm text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple">
-              Back to sign in
+              Retour à la connexion
             </Link>
           </div>
         </div>

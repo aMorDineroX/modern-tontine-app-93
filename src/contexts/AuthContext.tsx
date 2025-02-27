@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,6 +12,7 @@ type AuthContextType = {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  signInWithProvider: (provider: Provider) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,7 +48,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (error) {
         toast({
-          title: "Error signing in",
+          title: "Erreur de connexion",
           description: error.message,
           variant: "destructive",
         });
@@ -55,8 +56,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "Bienvenue !",
+        description: "Vous êtes maintenant connecté.",
       });
     } catch (error) {
       console.error('Error signing in:', error);
@@ -81,7 +82,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (error) {
         toast({
-          title: "Error signing up",
+          title: "Erreur d'inscription",
           description: error.message,
           variant: "destructive",
         });
@@ -89,11 +90,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       
       toast({
-        title: "Welcome!",
-        description: "Please check your email to confirm your account.",
+        title: "Bienvenue !",
+        description: "Veuillez vérifier votre email pour confirmer votre compte.",
       });
     } catch (error) {
       console.error('Error signing up:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithProvider = async (provider: Provider) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      
+      if (error) {
+        toast({
+          title: `Erreur de connexion avec ${provider}`,
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+    } catch (error) {
+      console.error(`Error signing in with ${provider}:`, error);
       throw error;
     } finally {
       setLoading(false);
@@ -105,14 +132,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       await supabase.auth.signOut();
       toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
+        title: "Déconnexion réussie",
+        description: "Vous avez été déconnecté avec succès.",
       });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
-        title: "Error signing out",
-        description: "There was a problem signing you out.",
+        title: "Erreur de déconnexion",
+        description: "Un problème est survenu lors de la déconnexion.",
         variant: "destructive",
       });
     } finally {
@@ -129,7 +156,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (error) {
         toast({
-          title: "Error resetting password",
+          title: "Erreur de réinitialisation du mot de passe",
           description: error.message,
           variant: "destructive",
         });
@@ -137,8 +164,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       
       toast({
-        title: "Password reset email sent",
-        description: "Please check your email for the password reset link.",
+        title: "Email de réinitialisation envoyé",
+        description: "Veuillez vérifier votre email pour réinitialiser votre mot de passe.",
       });
     } catch (error) {
       console.error('Error resetting password:', error);
@@ -156,6 +183,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     signUp,
     signOut,
     resetPassword,
+    signInWithProvider,
   };
 
   return (

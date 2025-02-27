@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
+import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -24,6 +25,9 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
+              {/* Landing page */}
+              <Route path="/" element={<LandingPage />} />
+              
               {/* Auth routes */}
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
@@ -31,7 +35,7 @@ const App = () => (
               
               {/* Protected routes */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Index />} />
                 {/* Add more protected routes here */}
               </Route>
               

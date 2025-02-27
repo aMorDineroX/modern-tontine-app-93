@@ -107,14 +107,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       console.log(`Signing in with ${provider}...`);
       
-      // Obtenir l'URL actuelle de l'application
-      const currentUrl = window.location.origin;
-      console.log("Current URL:", currentUrl);
+      // URL de l'application deployée 
+      const siteUrl = "https://preview--modern-tontine-app-31.lovable.app";
+      console.log("Site URL:", siteUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${currentUrl}/auth/callback`,
+          redirectTo: `${siteUrl}/auth/callback`,
           scopes: 'email profile',
         }
       });

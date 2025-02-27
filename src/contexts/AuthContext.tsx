@@ -106,10 +106,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setLoading(true);
       console.log(`Signing in with ${provider}...`);
+      
+      // Obtenir l'URL actuelle de l'application
+      const currentUrl = window.location.origin;
+      console.log("Current URL:", currentUrl);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${currentUrl}/auth/callback`,
+          scopes: 'email profile',
         }
       });
       

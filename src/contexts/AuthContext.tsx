@@ -111,14 +111,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       console.log(`Signing in with ${provider}...`);
       
-      // URL de l'application deployée 
-      const siteUrl = "https://preview--modern-tontine-app-31.lovable.app";
-      console.log("Site URL:", siteUrl);
+      // Utiliser window.location.origin comme URL de base pour la redirection
+      // puis ajouter spécifiquement le chemin /auth/callback
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+      console.log("Redirect URL:", redirectUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${siteUrl}/auth/callback`,
+          redirectTo: redirectUrl,
           scopes: 'email profile',
         }
       });

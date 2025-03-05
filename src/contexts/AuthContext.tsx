@@ -47,6 +47,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => subscription.unsubscribe();
   }, []);
 
+  // Check for access token in URL hash (for OAuth redirects)
+  useEffect(() => {
+    const handleHashParams = async () => {
+      // Check if we have an access token in the URL
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get("access_token");
+      
+      if (accessToken) {
+        console.log("Found access token in URL, processing...");
+        try {
+          // Force Supabase to refresh the session with the token from the URL
+          const { data, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            console.error("Error getting session from hash params:", error);
+          } else {
+            console.log("Successfully processed session from hash:", data.session);
+            // Clear the hash to avoid exposing the token
+            if (window.history.replaceState) {
+              window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            }
+          }
+        } catch (error) {
+          console.error("Error processing hash params:", error);
+        }
+      }
+    };
+    
+    handleHashParams();
+  }, []);
+
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
@@ -110,19 +141,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signInWithProvider = async (provider: Provider) => {
     try {
       setLoading(true);
-      console.log(`Signing in with ${provider}...`);
+      console.log(`Attempting to sign in with ${provider}...`);
       
       // Déterminer la bonne URL de redirection en fonction de l'environnement
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const isPreview = window.location.hostname.includes('lovable');
       const baseUrl = window.location.origin;
       
-      // Pour localhost, nous utilisons un hash fragment (#) au lieu d'une URL de callback
-      // car Supabase ne peut pas être configuré pour rediriger vers localhost
-      const redirectUrl = isLocalhost 
-        ? window.location.origin 
-        : `${baseUrl}/auth/callback`;
+      // Nous utilisons différentes stratégies pour les différents environnements
+      let redirectUrl;
       
-      console.log("Environment:", isLocalhost ? "localhost" : "production");
+      if (isLocalhost) {
+        // Pour localhost, nous utilisons l'URL de base car les fragments d'URL (#) fonctionnent bien
+        redirectUrl = baseUrl;
+        console.log("Using localhost strategy with hash fragment");
+      } else if (isPreview) {
+        // Pour l'environnement de prévisualisation Lovable
+        redirectUrl = `${baseUrl}/auth/callback`;
+        console.log("Using preview environment strategy with callback URL");
+      } else {
+        // Pour la production
+        redirectUrl = `${baseUrl}/auth/callback`;
+        console.log("Using production strategy with callback URL");
+      }
+      
+      console.log("Environment:", 
+        isLocalhost ? "localhost" : 
+        isPreview ? "preview" : 
+        "production");
       console.log("Base URL:", baseUrl);
       console.log("Redirect URL:", redirectUrl);
       console.log("Provider:", provider);

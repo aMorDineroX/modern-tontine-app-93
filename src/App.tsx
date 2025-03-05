@@ -21,16 +21,23 @@ const queryClient = new QueryClient();
 // Composant de redirection pour gestion OAuth
 const AuthCallback = () => {
   useEffect(() => {
-    // Permet à Supabase de finaliser la session après redirection OAuth
+    // Gérer à la fois les hash URLs (#access_token=...) et les search params (?code=...)
     const { hash, search } = window.location;
+    
     if (hash || search) {
       console.log("Processing OAuth callback...");
       console.log("Hash:", hash);
       console.log("Search:", search);
       
-      // Explicitement traiter le hash et search pour s'assurer que Supabase les traite
+      // Si nous sommes sur localhost ou un autre domaine que celui configuré dans Supabase
+      // nous devons explicitement appeler setSession
       if (hash && hash.includes("access_token")) {
         console.log("Access token found in hash, processing...");
+        
+        // Laisser Supabase traiter automatiquement le hash fragment
+        supabase.auth.getSession().then(({ data }) => {
+          console.log("Session after hash processing:", data.session);
+        });
       }
       
       if (search && search.includes("code=")) {

@@ -30,6 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -111,15 +112,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       console.log(`Signing in with ${provider}...`);
       
-      // Get the correct redirect URL - make sure it ends with /auth/callback
+      // Déterminer la bonne URL de redirection en fonction de l'environnement
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       const baseUrl = window.location.origin;
-      const redirectUrl = `${baseUrl}/auth/callback`;
+      
+      // Pour localhost, nous utilisons un hash fragment (#) au lieu d'une URL de callback
+      // car Supabase ne peut pas être configuré pour rediriger vers localhost
+      const redirectUrl = isLocalhost 
+        ? window.location.origin 
+        : `${baseUrl}/auth/callback`;
+      
+      console.log("Environment:", isLocalhost ? "localhost" : "production");
       console.log("Base URL:", baseUrl);
       console.log("Redirect URL:", redirectUrl);
-      
-      // Log debug information
       console.log("Provider:", provider);
-      console.log("Supabase project URL:", import.meta.env.VITE_SUPABASE_URL || "Not set");
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,

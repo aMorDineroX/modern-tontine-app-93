@@ -4,6 +4,9 @@ import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
 import { useToast } from '@/hooks/use-toast';
 
+// Add Google Maps API key
+const GOOGLE_MAPS_API_KEY = "AIzaSyBkVNRDYcQLBkA2c5nTKrDHvUGqraW9cX8";
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
@@ -13,6 +16,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   signInWithProvider: (provider: Provider) => Promise<void>;
+  googleMapsApiKey: string; // Add Google Maps API key to the context
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -195,6 +199,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     signOut,
     resetPassword,
     signInWithProvider,
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY, // Provide the Google Maps API key
   };
 
   return (

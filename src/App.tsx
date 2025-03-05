@@ -25,6 +25,17 @@ const AuthCallback = () => {
     const { hash, search } = window.location;
     if (hash || search) {
       console.log("Processing OAuth callback...");
+      console.log("Hash:", hash);
+      console.log("Search:", search);
+      
+      // Explicitement traiter le hash et search pour s'assurer que Supabase les traite
+      if (hash && hash.includes("access_token")) {
+        console.log("Access token found in hash, processing...");
+      }
+      
+      if (search && search.includes("code=")) {
+        console.log("Authorization code found in search params, processing...");
+      }
     }
   }, []);
   

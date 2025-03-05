@@ -111,16 +111,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       console.log(`Signing in with ${provider}...`);
       
-      // Utiliser window.location.origin comme URL de base pour la redirection
-      // puis ajouter spécifiquement le chemin /auth/callback
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      // Get the correct redirect URL - make sure it ends with /auth/callback
+      const baseUrl = window.location.origin;
+      const redirectUrl = `${baseUrl}/auth/callback`;
+      console.log("Base URL:", baseUrl);
       console.log("Redirect URL:", redirectUrl);
+      
+      // Log debug information
+      console.log("Provider:", provider);
+      console.log("Supabase project URL:", import.meta.env.VITE_SUPABASE_URL || "Not set");
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: redirectUrl,
           scopes: 'email profile',
+          queryParams: {
+            prompt: 'select_account', // Force Google to show account selection
+            access_type: 'offline' // Request a refresh token
+          }
         }
       });
       

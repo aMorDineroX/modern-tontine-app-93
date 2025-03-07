@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
@@ -27,55 +26,63 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", session);
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+  // Fonction utilitaire pour détecter l'environnement d'exécution
+  const getEnvironmentInfo = () => {
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const isPreview = hostname.includes('lovable.app') || hostname.includes('preview');
+    const isProduction = !isLocalhost && !isPreview;
+    
+    return {
+      isLocalhost,
+      isPreview,
+      isProduction,
+      hostname,
+      fullOrigin: window.location.origin
+    };
+  };
 
-    // Listen for auth changes
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Vérifier d'abord le hash fragment dans l'URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get("access_token");
+        
+        if (accessToken) {
+          console.log("Found access token in URL hash on initial load, processing...");
+          // Le token sera traité automatiquement par Supabase lors de getSession()
+        }
+        
+        // Obtenir la session initiale
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error getting initial session:", error);
+        } else {
+          console.log("Initial session check:", data.session);
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+        }
+      } catch (err) {
+        console.error("Error during auth initialization:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    // Initialiser l'authentification
+    initializeAuth();
+    
+    // Écouter les changements d'état d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", _event, session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Check for access token in URL hash (for OAuth redirects)
-  useEffect(() => {
-    const handleHashParams = async () => {
-      // Check if we have an access token in the URL
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get("access_token");
-      
-      if (accessToken) {
-        console.log("Found access token in URL, processing...");
-        try {
-          // Force Supabase to refresh the session with the token from the URL
-          const { data, error } = await supabase.auth.getSession();
-          
-          if (error) {
-            console.error("Error getting session from hash params:", error);
-          } else {
-            console.log("Successfully processed session from hash:", data.session);
-            // Clear the hash to avoid exposing the token
-            if (window.history.replaceState) {
-              window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-            }
-          }
-        } catch (error) {
-          console.error("Error processing hash params:", error);
-        }
-      }
-    };
     
-    handleHashParams();
+    return () => subscription.unsubscribe();
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -143,35 +150,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       console.log(`Attempting to sign in with ${provider}...`);
       
-      // Déterminer la bonne URL de redirection en fonction de l'environnement
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const isPreview = window.location.hostname.includes('lovable');
-      const baseUrl = window.location.origin;
+      // Déterminer les informations sur l'environnement
+      const env = getEnvironmentInfo();
+      console.log("Environment info:", env);
       
-      // Nous utilisons différentes stratégies pour les différents environnements
       let redirectUrl;
       
-      if (isLocalhost) {
-        // Pour localhost, nous utilisons l'URL de base car les fragments d'URL (#) fonctionnent bien
-        redirectUrl = baseUrl;
-        console.log("Using localhost strategy with hash fragment");
-      } else if (isPreview) {
-        // Pour l'environnement de prévisualisation Lovable
-        redirectUrl = `${baseUrl}/auth/callback`;
+      if (env.isLocalhost) {
+        // Pour localhost, on redirige vers la racine car les fragments d'URL fonctionnent mieux
+        redirectUrl = env.fullOrigin;
+        console.log("Using localhost strategy with base URL for redirection");
+      } else if (env.isPreview) {
+        // Pour les environnements de prévisualisation
+        redirectUrl = `${env.fullOrigin}/auth/callback`;
         console.log("Using preview environment strategy with callback URL");
       } else {
         // Pour la production
-        redirectUrl = `${baseUrl}/auth/callback`;
+        redirectUrl = `${env.fullOrigin}/auth/callback`;
         console.log("Using production strategy with callback URL");
       }
       
-      console.log("Environment:", 
-        isLocalhost ? "localhost" : 
-        isPreview ? "preview" : 
-        "production");
-      console.log("Base URL:", baseUrl);
-      console.log("Redirect URL:", redirectUrl);
-      console.log("Provider:", provider);
+      console.log("Final redirect URL:", redirectUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -179,8 +178,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           redirectTo: redirectUrl,
           scopes: 'email profile',
           queryParams: {
-            prompt: 'select_account', // Force Google to show account selection
-            access_type: 'offline' // Request a refresh token
+            prompt: 'select_account', // Force l'affichage de la sélection de compte Google
+            access_type: 'offline' // Demande un refresh token
           }
         }
       });

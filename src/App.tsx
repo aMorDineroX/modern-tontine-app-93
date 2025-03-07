@@ -18,6 +18,16 @@ import { supabase } from "./utils/supabase";
 
 const queryClient = new QueryClient();
 
+// Composant pour l'écran de chargement
+const LoadingScreen = ({ message = "Chargement..." }) => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+      <p className="text-gray-600 dark:text-gray-400">{message}</p>
+    </div>
+  </div>
+);
+
 // Composant amélioré pour gérer les callbacks d'authentification OAuth
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -84,14 +94,7 @@ const AuthCallback = () => {
   
   // Afficher un indicateur de chargement pendant le traitement
   if (isProcessing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Authentification en cours...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Authentification en cours..." />;
   }
   
   // Si le traitement est terminé mais que nous sommes toujours sur le composant AuthCallback
@@ -108,13 +111,18 @@ const RootComponent = () => {
   useEffect(() => {
     // Vérifier s'il y a un hash fragment d'authentification dans l'URL
     const { hash } = location;
-    if (hash && hash.includes('access_token') && location.pathname === '/') {
-      console.log('Detected access_token in URL hash at root path, processing...');
+    if (hash && hash.includes('access_token')) {
+      console.log('Detected access_token in URL hash, processing...');
       setIsProcessingAuth(true);
       
       // Traiter le token directement ici pour éviter des redirections inutiles
       (async () => {
         try {
+          // Extraire le token du hash pour le débogage
+          const hashParams = new URLSearchParams(hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          console.log("Extracted access token from hash:", accessToken ? "Present (first chars: " + accessToken.substring(0, 10) + "...)" : "Not found");
+          
           // Forcer Supabase à utiliser le token dans l'URL
           const { data, error } = await supabase.auth.getSession();
           
@@ -136,19 +144,15 @@ const RootComponent = () => {
           setIsProcessingAuth(false);
         }
       })();
+      
+      // Retourner early pour éviter que le reste du composant ne s'exécute
+      return;
     }
   }, [location, navigate]);
   
   // Afficher un indicateur de chargement pendant le traitement de l'authentification à la racine
   if (isProcessingAuth) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Traitement de l'authentification...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Traitement de l'authentification..." />;
   }
   
   return (

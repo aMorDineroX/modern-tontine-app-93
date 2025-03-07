@@ -20,27 +20,27 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Fonction utilitaire pour détecter l'environnement d'exécution
+const getEnvironmentInfo = () => {
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isPreview = hostname.includes('lovable.app') || hostname.includes('preview');
+  const isProduction = !isLocalhost && !isPreview;
+  
+  return {
+    isLocalhost,
+    isPreview,
+    isProduction,
+    hostname,
+    fullOrigin: window.location.origin
+  };
+};
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] useState(true);
   const { toast } = useToast();
-
-  // Fonction utilitaire pour détecter l'environnement d'exécution
-  const getEnvironmentInfo = () => {
-    const hostname = window.location.hostname;
-    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-    const isPreview = hostname.includes('lovable.app') || hostname.includes('preview');
-    const isProduction = !isLocalhost && !isPreview;
-    
-    return {
-      isLocalhost,
-      isPreview,
-      isProduction,
-      hostname,
-      fullOrigin: window.location.origin
-    };
-  };
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -157,9 +157,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let redirectUrl;
       
       if (env.isLocalhost) {
-        // Pour localhost, on redirige vers la racine car les fragments d'URL fonctionnent mieux
+        // Pour localhost, on utilise la racine et on traite le hash fragment
         redirectUrl = env.fullOrigin;
-        console.log("Using localhost strategy with base URL for redirection");
+        console.log("Using localhost strategy with root URL for redirection");
       } else if (env.isPreview) {
         // Pour les environnements de prévisualisation
         redirectUrl = `${env.fullOrigin}/auth/callback`;

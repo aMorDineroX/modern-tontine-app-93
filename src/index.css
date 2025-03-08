@@ -120,13 +120,13 @@
     @apply rounded-md border border-gray-200 p-2 focus:border-tontine-purple focus:ring-1 focus:ring-tontine-purple focus:outline-none dark:border-gray-700 dark:bg-gray-800;
   }
   
-  /* Fix pour le texte des champs de mot de passe */
-  input[type="password"] {
+  /* We can remove this fix as we're now using consistent text colors */
+  /* input[type="password"] {
     color: #333333;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
   
   .dark input[type="password"] {
     color: #ffffff;
-  }
+  } */
 }

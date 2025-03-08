@@ -96,8 +96,7 @@ export default function SignIn() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="tontine-input pl-10 w-full"
-                  style={{ color: '#333333' }}
+                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="••••••••"
                   required
                 />

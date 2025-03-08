@@ -1,4 +1,3 @@
-
 export type Language = 'fr' | 'en' | 'es' | 'ar' | 'sw';
 
 export type TranslationKeys = {
@@ -26,6 +25,8 @@ export type TranslationKeys = {
   active: string;
   pending: string;
   paid: string;
+  completed: string; // Added missing key
+  complete: string;  // Added missing key
   groupName: string;
   contributionAmount: string;
   contributionFrequency: string;
@@ -82,6 +83,8 @@ export const translations: TranslationsType = {
     active: 'Active',
     pending: 'Pending',
     paid: 'Paid',
+    completed: 'Completed', // Added missing translation
+    complete: 'Complete',   // Added missing translation
     groupName: 'Group Name',
     contributionAmount: 'Contribution Amount',
     contributionFrequency: 'Contribution Frequency',
@@ -132,6 +135,8 @@ export const translations: TranslationsType = {
     active: 'Actif',
     pending: 'En attente',
     paid: 'Payé',
+    completed: 'Terminé', // Added missing translation
+    complete: 'Terminé',  // Added missing translation
     groupName: 'Nom du Groupe',
     contributionAmount: 'Montant de la Contribution',
     contributionFrequency: 'Fréquence de Contribution',
@@ -182,6 +187,8 @@ export const translations: TranslationsType = {
     active: 'Activo',
     pending: 'Pendiente',
     paid: 'Pagado',
+    completed: 'Completado', // Added missing translation
+    complete: 'Completo',    // Added missing translation
     groupName: 'Nombre del Grupo',
     contributionAmount: 'Monto de Contribución',
     contributionFrequency: 'Frecuencia de Contribución',
@@ -232,6 +239,8 @@ export const translations: TranslationsType = {
     active: 'نشط',
     pending: 'قيد الانتظار',
     paid: 'مدفوع',
+    completed: 'مكتمل', // Added missing translation
+    complete: 'كامل',   // Added missing translation
     groupName: 'اسم المجموعة',
     contributionAmount: 'مبلغ المساهمة',
     contributionFrequency: 'تكرار المساهمة',
@@ -282,6 +291,8 @@ export const translations: TranslationsType = {
     active: 'Inayofanya Kazi',
     pending: 'Inasubiri',
     paid: 'Imelipwa',
+    completed: 'Imekamilika', // Added missing translation
+    complete: 'Kamili',       // Added missing translation
     groupName: 'Jina la Kikundi',
     contributionAmount: 'Kiasi cha Mchango',
     contributionFrequency: 'Mara ya Mchango',

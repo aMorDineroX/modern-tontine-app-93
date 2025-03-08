@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, UserRound, KeyRound, Mail, Facebook, Twitter, Github } from "lucide-react";
@@ -100,8 +99,8 @@ export default function SignUp() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
-                  style={{ color: 'inherit' }}
+                  className="tontine-input pl-10 w-full"
+                  style={{ color: '#333333' }}
                   placeholder="••••••••"
                   required
                   minLength={6}

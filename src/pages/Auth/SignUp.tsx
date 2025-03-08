@@ -101,6 +101,7 @@ export default function SignUp() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
+                  style={{ color: 'inherit' }}
                   placeholder="••••••••"
                   required
                   minLength={6}

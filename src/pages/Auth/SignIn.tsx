@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, UserRound, KeyRound, Facebook, Twitter, Github } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApp } from "@/contexts/AppContext";
@@ -11,16 +10,29 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const { signIn, signInWithProvider } = useAuth();
+  const { signIn, signInWithProvider, user } = useAuth();
   const { t } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      console.log("User already authenticated, redirecting to dashboard");
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setIsSubmitting(true);
       await signIn(email, password);
-      navigate("/dashboard"); 
+      
+      // Get the intended destination or default to dashboard
+      const from = location.state?.from || "/dashboard";
+      console.log("Sign in successful, redirecting to:", from);
+      navigate(from);
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {

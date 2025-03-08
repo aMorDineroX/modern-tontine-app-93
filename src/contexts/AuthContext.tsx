@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
@@ -45,6 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log("Initializing auth...");
         // Vérifier d'abord le hash fragment dans l'URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get("access_token");
@@ -61,8 +63,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.error("Error getting initial session:", error);
         } else {
           console.log("Initial session check:", data.session);
-          setSession(data.session);
-          setUser(data.session?.user ?? null);
+          if (data.session) {
+            setSession(data.session);
+            setUser(data.session.user);
+          }
         }
       } catch (err) {
         console.error("Error during auth initialization:", err);
@@ -75,10 +79,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     initializeAuth();
     
     // Écouter les changements d'état d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", _event, session);
-      setSession(session);
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      console.log("Auth state changed:", _event, newSession);
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
       setLoading(false);
     });
     

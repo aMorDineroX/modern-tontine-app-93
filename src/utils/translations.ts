@@ -25,8 +25,8 @@ export type TranslationKeys = {
   active: string;
   pending: string;
   paid: string;
-  completed: string; // Added missing key
-  complete: string;  // Added missing key
+  completed: string;
+  complete: string;
   groupName: string;
   contributionAmount: string;
   contributionFrequency: string;
@@ -51,6 +51,19 @@ export type TranslationKeys = {
   lightMode: string;
   pageNotFound: string;
   returnToDashboard: string;
+  
+  // Adding missing keys for the Groups page
+  manageGroups: string;
+  searchGroups: string;
+  filterByStatus: string;
+  all: string; 
+  noGroupsFound: string;
+  noMatchingGroups: string;
+  createFirstGroup: string;
+  groupSummary: string;
+  totalGroups: string;
+  totalMembers: string;
+  avgContribution: string;
 };
 
 type TranslationsType = {
@@ -83,8 +96,8 @@ export const translations: TranslationsType = {
     active: 'Active',
     pending: 'Pending',
     paid: 'Paid',
-    completed: 'Completed', // Added missing translation
-    complete: 'Complete',   // Added missing translation
+    completed: 'Completed',
+    complete: 'Complete',
     groupName: 'Group Name',
     contributionAmount: 'Contribution Amount',
     contributionFrequency: 'Contribution Frequency',
@@ -108,7 +121,20 @@ export const translations: TranslationsType = {
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode',
     pageNotFound: 'Oops! Page not found',
-    returnToDashboard: 'Return to Dashboard'
+    returnToDashboard: 'Return to Dashboard',
+    
+    // New keys for Groups page
+    manageGroups: 'Manage and track your tontine groups',
+    searchGroups: 'Search groups...',
+    filterByStatus: 'Filter by status',
+    all: 'All',
+    noGroupsFound: 'No groups found',
+    noMatchingGroups: 'No groups match your search criteria',
+    createFirstGroup: 'Create your first group to get started',
+    groupSummary: 'Group Summary',
+    totalGroups: 'Total Groups',
+    totalMembers: 'Total Members',
+    avgContribution: 'Avg. Contribution'
   },
   fr: {
     welcome: 'Bienvenue !',
@@ -135,8 +161,8 @@ export const translations: TranslationsType = {
     active: 'Actif',
     pending: 'En attente',
     paid: 'Payé',
-    completed: 'Terminé', // Added missing translation
-    complete: 'Terminé',  // Added missing translation
+    completed: 'Terminé',
+    complete: 'Terminé',
     groupName: 'Nom du Groupe',
     contributionAmount: 'Montant de la Contribution',
     contributionFrequency: 'Fréquence de Contribution',
@@ -160,7 +186,20 @@ export const translations: TranslationsType = {
     darkMode: 'Mode Sombre',
     lightMode: 'Mode Clair',
     pageNotFound: 'Oups ! Page non trouvée',
-    returnToDashboard: 'Retourner au Tableau de Bord'
+    returnToDashboard: 'Retourner au Tableau de Bord',
+    
+    // New keys for Groups page
+    manageGroups: 'Gérez et suivez vos groupes de tontine',
+    searchGroups: 'Rechercher des groupes...',
+    filterByStatus: 'Filtrer par statut',
+    all: 'Tous',
+    noGroupsFound: 'Aucun groupe trouvé',
+    noMatchingGroups: 'Aucun groupe ne correspond à vos critères de recherche',
+    createFirstGroup: 'Créez votre premier groupe pour commencer',
+    groupSummary: 'Résumé des Groupes',
+    totalGroups: 'Nombre Total de Groupes',
+    totalMembers: 'Nombre Total de Membres',
+    avgContribution: 'Contribution Moyenne'
   },
   es: {
     welcome: '¡Bienvenido de Nuevo!',
@@ -187,8 +226,8 @@ export const translations: TranslationsType = {
     active: 'Activo',
     pending: 'Pendiente',
     paid: 'Pagado',
-    completed: 'Completado', // Added missing translation
-    complete: 'Completo',    // Added missing translation
+    completed: 'Completado',
+    complete: 'Completo',
     groupName: 'Nombre del Grupo',
     contributionAmount: 'Monto de Contribución',
     contributionFrequency: 'Frecuencia de Contribución',
@@ -212,7 +251,20 @@ export const translations: TranslationsType = {
     darkMode: 'Modo Oscuro',
     lightMode: 'Modo Claro',
     pageNotFound: '¡Ups! Página no encontrada',
-    returnToDashboard: 'Volver al Panel'
+    returnToDashboard: 'Volver al Panel',
+    
+    // New keys for Groups page
+    manageGroups: 'Administra y sigue tus grupos de tontina',
+    searchGroups: 'Buscar grupos...',
+    filterByStatus: 'Filtrar por estado',
+    all: 'Todos',
+    noGroupsFound: 'No se encontraron grupos',
+    noMatchingGroups: 'Ningún grupo coincide con tus criterios de búsqueda',
+    createFirstGroup: 'Crea tu primer grupo para comenzar',
+    groupSummary: 'Resumen de Grupos',
+    totalGroups: 'Total de Grupos',
+    totalMembers: 'Total de Miembros',
+    avgContribution: 'Contribución Media'
   },
   ar: {
     welcome: 'مرحبًا بعودتك!',
@@ -239,8 +291,8 @@ export const translations: TranslationsType = {
     active: 'نشط',
     pending: 'قيد الانتظار',
     paid: 'مدفوع',
-    completed: 'مكتمل', // Added missing translation
-    complete: 'كامل',   // Added missing translation
+    completed: 'مكتمل',
+    complete: 'كامل',
     groupName: 'اسم المجموعة',
     contributionAmount: 'مبلغ المساهمة',
     contributionFrequency: 'تكرار المساهمة',
@@ -264,7 +316,20 @@ export const translations: TranslationsType = {
     darkMode: 'الوضع الداكن',
     lightMode: 'الوضع الفاتح',
     pageNotFound: 'عذراً! الصفحة غير موجودة',
-    returnToDashboard: 'العودة إلى لوحة التحكم'
+    returnToDashboard: 'العودة إلى لوحة التحكم',
+    
+    // New keys for Groups page
+    manageGroups: 'إدارة ومتابعة مجموعات التونتين الخاصة بك',
+    searchGroups: 'البحث عن المجموعات...',
+    filterByStatus: 'تصفية حسب الحالة',
+    all: 'الكل',
+    noGroupsFound: 'لم يتم العثور على مجموعات',
+    noMatchingGroups: 'لا توجد مجموعات تطابق معايير البحث الخاصة بك',
+    createFirstGroup: 'أنشئ مجموعتك الأولى للبدء',
+    groupSummary: 'ملخص المجموعة',
+    totalGroups: 'إجمالي المجموعات',
+    totalMembers: 'إجمالي الأعضاء',
+    avgContribution: 'متوسط المساهمة'
   },
   sw: {
     welcome: 'Karibu Tena!',
@@ -291,8 +356,8 @@ export const translations: TranslationsType = {
     active: 'Inayofanya Kazi',
     pending: 'Inasubiri',
     paid: 'Imelipwa',
-    completed: 'Imekamilika', // Added missing translation
-    complete: 'Kamili',       // Added missing translation
+    completed: 'Imekamilika',
+    complete: 'Kamili',
     groupName: 'Jina la Kikundi',
     contributionAmount: 'Kiasi cha Mchango',
     contributionFrequency: 'Mara ya Mchango',
@@ -316,7 +381,20 @@ export const translations: TranslationsType = {
     darkMode: 'Hali ya Giza',
     lightMode: 'Hali ya Mwanga',
     pageNotFound: 'Samahani! Ukurasa haukupatikana',
-    returnToDashboard: 'Rudi kwenye Dashibodi'
+    returnToDashboard: 'Rudi kwenye Dashibodi',
+    
+    // New keys for Groups page
+    manageGroups: 'Simamia na fuatilia vikundi vyako vya tontine',
+    searchGroups: 'Tafuta vikundi...',
+    filterByStatus: 'Chuja kwa hali',
+    all: 'Vyote',
+    noGroupsFound: 'Hakuna vikundi vilivyopatikana',
+    noMatchingGroups: 'Hakuna vikundi vinavyolingana na vigezo vyako vya utafutaji',
+    createFirstGroup: 'Unda kikundi chako cha kwanza kuanza',
+    groupSummary: 'Muhtasari wa Kikundi',
+    totalGroups: 'Jumla ya Vikundi',
+    totalMembers: 'Jumla ya Wanachama',
+    avgContribution: 'Wastani wa Mchango'
   }
 };
 

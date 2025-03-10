@@ -1,5 +1,5 @@
 
-import { CalendarIcon, Coins, Users, ChevronRight } from "lucide-react";
+import { CalendarIcon, Coins, Users, ChevronRight, TrendingUp } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
 
@@ -35,7 +35,7 @@ export default function TontineGroup({
   
   return (
     <motion.div 
-      className="tontine-card hover:shadow-md transition-all dark:bg-gray-800 dark:border-gray-700 cursor-pointer"
+      className="tontine-card hover:shadow-md transition-all dark:bg-gray-800 dark:border-gray-700 cursor-pointer overflow-hidden"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
@@ -43,59 +43,85 @@ export default function TontineGroup({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-lg font-semibold dark:text-white">{name}</h3>
-          <div className="flex items-center mt-1">
-            <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor()}`}>
-              {t(status)}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Users size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
-          <span className="text-sm text-gray-600 dark:text-gray-400">{members}</span>
-        </div>
-      </div>
+      {/* Status Bar (colored based on status) */}
+      <div className={`h-1 w-full ${
+        status === "active" ? "bg-green-500 dark:bg-green-600" : 
+        status === "pending" ? "bg-yellow-500 dark:bg-yellow-600" : 
+        "bg-blue-500 dark:bg-blue-600"
+      }`} />
       
-      {progress > 0 && (
-        <div className="mb-4">
-          <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-tontine-purple dark:bg-tontine-light-purple rounded-full" 
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">
-            {progress}% {t('complete')}
-          </p>
-        </div>
-      )}
-      
-      <div className="flex flex-col space-y-3">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-tontine-soft-blue dark:bg-blue-900/50 flex items-center justify-center mr-3">
-            <Coins size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
-          </div>
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-4">
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{t('contribution')}</p>
-            <p className="font-medium dark:text-white">{contribution}</p>
+            <h3 className="text-lg font-semibold dark:text-white">{name}</h3>
+            <div className="flex items-center mt-1">
+              <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor()}`}>
+                {t(status)}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Users size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">{members}</span>
           </div>
         </div>
         
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-tontine-soft-green dark:bg-green-900/50 flex items-center justify-center mr-3">
-            <CalendarIcon size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+        {progress > 0 && (
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-xs text-gray-500 dark:text-gray-400">{t('progress')}</span>
+              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{progress}%</span>
+            </div>
+            <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full ${
+                  progress < 30 ? "bg-yellow-500 dark:bg-yellow-600" :
+                  progress < 70 ? "bg-tontine-purple dark:bg-tontine-light-purple" :
+                  "bg-green-500 dark:bg-green-600"
+                }`}
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{t('nextDue')}</p>
-            <p className="font-medium dark:text-white">{nextDue}</p>
+        )}
+        
+        <div className="flex flex-col space-y-3">
+          <div className="flex items-center">
+            <div className="w-8 h-8 rounded-full bg-tontine-soft-blue dark:bg-blue-900/50 flex items-center justify-center mr-3">
+              <Coins size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t('contribution')}</p>
+              <p className="font-medium dark:text-white">{contribution}</p>
+            </div>
           </div>
+          
+          <div className="flex items-center">
+            <div className="w-8 h-8 rounded-full bg-tontine-soft-green dark:bg-green-900/50 flex items-center justify-center mr-3">
+              <CalendarIcon size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t('nextDue')}</p>
+              <p className="font-medium dark:text-white">{nextDue}</p>
+            </div>
+          </div>
+          
+          {status === "active" && (
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-full bg-tontine-soft-purple dark:bg-purple-900/50 flex items-center justify-center mr-3">
+                <TrendingUp size={16} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{t('payoutStatus')}</p>
+                <p className="font-medium dark:text-white">{progress < 100 ? t('upcoming') : t('ready')}</p>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-      
-      <div className="mt-4 text-right">
-        <ChevronRight size={18} className="inline-block text-gray-400" />
+        
+        <div className="mt-4 text-right">
+          <ChevronRight size={18} className="inline-block text-gray-400" />
+        </div>
       </div>
     </motion.div>
   );

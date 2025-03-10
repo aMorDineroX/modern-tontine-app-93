@@ -1,66 +1,28 @@
 
 import { useState, useEffect } from "react";
-import { Plus, Search, Filter, SlidersHorizontal, Users } from "lucide-react";
+import { Plus, Search, Filter, SlidersHorizontal, Users, Info, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import TontineGroup from "@/components/TontineGroup";
 import CreateGroupModal from "@/components/CreateGroupModal";
+import MemberList from "@/components/MemberList";
 import { useApp } from "@/contexts/AppContext";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/utils/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
-// Mock data - this would typically come from an API
-const mockGroups = [
-  { 
-    id: 1, 
-    name: "Family Savings", 
-    members: 8, 
-    contribution: 50, 
-    frequency: "monthly", 
-    nextDue: "Jun 15, 2023",
-    status: "active" as const,
-    progress: 45
-  },
-  { 
-    id: 2, 
-    name: "Friends Circle", 
-    members: 5, 
-    contribution: 100, 
-    frequency: "monthly", 
-    nextDue: "Jun 22, 2023",
-    status: "pending" as const,
-    progress: 30
-  },
-  { 
-    id: 3, 
-    name: "Business Collective", 
-    members: 12, 
-    contribution: 200, 
-    frequency: "monthly", 
-    nextDue: "Jul 1, 2023",
-    status: "active" as const,
-    progress: 75
-  },
-  { 
-    id: 4, 
-    name: "Neighborhood Fund", 
-    members: 6, 
-    contribution: 75, 
-    frequency: "biweekly", 
-    nextDue: "Jun 18, 2023",
-    status: "completed" as const,
-    progress: 100
-  },
-  { 
-    id: 5, 
-    name: "School Parents", 
-    members: 15, 
-    contribution: 25, 
-    frequency: "weekly", 
-    nextDue: "Jun 10, 2023",
-    status: "active" as const,
-    progress: 60
-  },
-];
+// Group type definition
+type Group = {
+  id: string;
+  name: string;
+  members: number;
+  contribution: number;
+  frequency: string;
+  nextDue: string;
+  status: "active" | "pending" | "completed";
+  progress: number;
+};
 
 const Groups = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,31 +30,212 @@ const Groups = () => {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<"name" | "date" | "amount">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  
   const { t, formatAmount } = useApp();
+  const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  // Filter groups based on search and status
-  const filteredGroups = mockGroups.filter(group => {
+  // Fetch groups from the database
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        setIsLoading(true);
+        
+        if (!user) {
+          setGroups([]);
+          return;
+        }
+        
+        // Fetch groups where the user is a member
+        const { data: memberships, error: membershipError } = await supabase
+          .from('group_members')
+          .select('group_id, role, status')
+          .eq('user_id', user.id);
+        
+        if (membershipError) throw membershipError;
+        
+        if (!memberships || memberships.length === 0) {
+          setGroups([]);
+          setIsLoading(false);
+          return;
+        }
+        
+        const groupIds = memberships.map(m => m.group_id);
+        
+        // Fetch the actual group data
+        const { data: groupsData, error: groupsError } = await supabase
+          .from('tontine_groups')
+          .select('*')
+          .in('id', groupIds);
+        
+        if (groupsError) throw groupsError;
+        
+        if (!groupsData) {
+          setGroups([]);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Get member counts for each group
+        const groupsWithMemberCount = await Promise.all(
+          groupsData.map(async (group) => {
+            const { count, error } = await supabase
+              .from('group_members')
+              .select('*', { count: 'exact', head: true })
+              .eq('group_id', group.id);
+            
+            // Calculate next due date based on frequency and start date
+            const startDate = new Date(group.start_date);
+            let nextDue = new Date(startDate);
+            const today = new Date();
+            
+            while (nextDue < today) {
+              if (group.frequency === 'weekly') {
+                nextDue.setDate(nextDue.getDate() + 7);
+              } else if (group.frequency === 'biweekly') {
+                nextDue.setDate(nextDue.getDate() + 14);
+              } else {
+                nextDue.setMonth(nextDue.getMonth() + 1);
+              }
+            }
+            
+            // Calculate progress (mock implementation)
+            const progress = Math.min(
+              Math.round((today.getTime() - startDate.getTime()) / 
+              (nextDue.getTime() - startDate.getTime()) * 100),
+              100
+            );
+            
+            return {
+              id: group.id,
+              name: group.name,
+              members: count || 0,
+              contribution: group.contribution_amount,
+              frequency: group.frequency,
+              nextDue: nextDue.toLocaleDateString(),
+              status: memberships.find(m => m.group_id === group.id)?.status as "active" | "pending" | "completed" || "active",
+              progress: progress || 0
+            };
+          })
+        );
+        
+        setGroups(groupsWithMemberCount);
+      } catch (error) {
+        console.error('Error fetching groups:', error);
+        toast({
+          title: t('error'),
+          description: t('errorFetchingGroups'),
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchGroups();
+  }, [user, t, toast]);
+
+  // Filter and sort groups
+  const filteredGroups = groups.filter(group => {
     const matchesSearch = group.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !filterStatus || group.status === filterStatus;
     return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    if (sortBy === 'name') {
+      return sortOrder === 'asc' 
+        ? a.name.localeCompare(b.name) 
+        : b.name.localeCompare(a.name);
+    } else if (sortBy === 'amount') {
+      return sortOrder === 'asc' 
+        ? a.contribution - b.contribution 
+        : b.contribution - a.contribution;
+    } else {
+      // Default to sorting by date (using id as proxy)
+      return sortOrder === 'asc' 
+        ? a.id.localeCompare(b.id) 
+        : b.id.localeCompare(a.id);
+    }
   });
 
-  const handleCreateGroup = (data: { name: string; contribution: string; frequency: string; members: string }) => {
-    console.log("Creating new group:", data);
-    // Here you would normally send this data to your backend
-    setIsModalOpen(false);
+  const handleCreateGroup = async (data: { name: string; contribution: string; frequency: string; members: string }) => {
+    // The actual creation logic is now in the modal
+    // Here we just refresh the groups list
+    if (user) {
+      setIsLoading(true);
+      
+      // Brief delay to ensure database updates are complete
+      setTimeout(async () => {
+        try {
+          const { data: memberships, error: membershipError } = await supabase
+            .from('group_members')
+            .select('group_id')
+            .eq('user_id', user.id);
+          
+          if (membershipError) throw membershipError;
+          
+          const groupIds = memberships?.map(m => m.group_id) || [];
+          
+          const { data: groupsData, error: groupsError } = await supabase
+            .from('tontine_groups')
+            .select('*')
+            .in('id', groupIds);
+          
+          if (groupsError) throw groupsError;
+          
+          if (groupsData) {
+            // Simple refresh for now - in a real app you'd merge this with the same logic as in useEffect
+            const newGroups = groupsData.map(group => ({
+              id: group.id,
+              name: group.name,
+              members: 1, // At minimum the creator
+              contribution: group.contribution_amount,
+              frequency: group.frequency,
+              nextDue: new Date(group.start_date).toLocaleDateString(),
+              status: "active" as const,
+              progress: 0
+            }));
+            
+            setGroups(newGroups);
+          }
+        } catch (error) {
+          console.error('Error refreshing groups:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }, 1000);
+    }
   };
 
   const formatContribution = (amount: number, frequency: string) => {
     return `${formatAmount(amount)} / ${t(frequency as 'monthly' | 'weekly' | 'biweekly')}`;
   };
 
-  const openGroupDetails = (groupId: number) => {
+  const openGroupDetails = (groupId: string) => {
     // Navigate to group details page
-    console.log(`Navigating to group ${groupId} details`);
-    // navigate(`/groups/${groupId}`);
+    navigate(`/groups/${groupId}`);
   };
+
+  const toggleSort = (sortType: "name" | "date" | "amount") => {
+    if (sortBy === sortType) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(sortType);
+      setSortOrder('asc');
+    }
+  };
+
+  // Sample members for the sidebar
+  const sampleMembers = [
+    { id: 1, name: "Alex Smith", status: "active" as const },
+    { id: 2, name: "Jamie Williams", status: "pending" as const },
+    { id: 3, name: "Taylor Johnson", status: "paid" as const },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -101,12 +244,19 @@ const Groups = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <motion.h1 
-            className="text-3xl font-bold text-gray-900 dark:text-white"
+            className="text-3xl font-bold text-gray-900 dark:text-white flex items-center"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {t('yourGroups')}
+            <button 
+              onClick={() => setIsInfoOpen(!isInfoOpen)}
+              className="ml-2 p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Information"
+            >
+              <Info size={18} />
+            </button>
           </motion.h1>
           <motion.p 
             className="mt-2 text-sm text-gray-600 dark:text-gray-400"
@@ -116,6 +266,22 @@ const Groups = () => {
           >
             {t('manageGroups')}
           </motion.p>
+          
+          <AnimatePresence>
+            {isInfoOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-3 p-4 bg-tontine-soft-purple dark:bg-purple-900/30 rounded-lg text-sm"
+              >
+                <p className="text-gray-700 dark:text-gray-300">
+                  {t('groupsInfoText')}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <motion.div 
@@ -194,42 +360,95 @@ const Groups = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex flex-wrap gap-2">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2 flex items-center">
-                  <Filter size={16} className="mr-1" />
-                  {t('filterByStatus')}:
-                </p>
-                <button 
-                  onClick={() => setFilterStatus(null)}
-                  className={`px-3 py-1 text-sm rounded-full ${!filterStatus ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
-                >
-                  {t('all')}
-                </button>
-                <button 
-                  onClick={() => setFilterStatus('active')}
-                  className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
-                >
-                  {t('active')}
-                </button>
-                <button 
-                  onClick={() => setFilterStatus('pending')}
-                  className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
-                >
-                  {t('pending')}
-                </button>
-                <button 
-                  onClick={() => setFilterStatus('completed')}
-                  className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
-                >
-                  {t('completed')}
-                </button>
+              <div className="flex flex-wrap gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                    <Filter size={16} className="mr-1" />
+                    {t('filterByStatus')}:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      onClick={() => setFilterStatus(null)}
+                      className={`px-3 py-1 text-sm rounded-full ${!filterStatus ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('all')}
+                    </button>
+                    <button 
+                      onClick={() => setFilterStatus('active')}
+                      className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('active')}
+                    </button>
+                    <button 
+                      onClick={() => setFilterStatus('pending')}
+                      className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('pending')}
+                    </button>
+                    <button 
+                      onClick={() => setFilterStatus('completed')}
+                      className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('completed')}
+                    </button>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                    <ArrowUpDown size={16} className="mr-1" />
+                    {t('sortBy')}:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      onClick={() => toggleSort('name')}
+                      className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'name' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('name')}
+                      {sortBy === 'name' && (
+                        <span className="ml-1">
+                          {sortOrder === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </button>
+                    <button 
+                      onClick={() => toggleSort('date')}
+                      className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'date' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('date')}
+                      {sortBy === 'date' && (
+                        <span className="ml-1">
+                          {sortOrder === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </button>
+                    <button 
+                      onClick={() => toggleSort('amount')}
+                      className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'amount' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                    >
+                      {t('amount')}
+                      {sortBy === 'amount' && (
+                        <span className="ml-1">
+                          {sortOrder === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Groups List / Grid */}
-        {filteredGroups.length === 0 ? (
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-tontine-purple"></div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && filteredGroups.length === 0 && (
           <motion.div 
             className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             initial={{ opacity: 0 }}
@@ -238,7 +457,7 @@ const Groups = () => {
           >
             <Users size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">{t('noGroupsFound')}</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">{searchTerm ? t('noMatchingGroups') : t('createFirstGroup')}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">{searchTerm || filterStatus ? t('noMatchingGroups') : t('createFirstGroup')}</p>
             <button 
               className="tontine-button tontine-button-primary inline-flex items-center"
               onClick={() => setIsModalOpen(true)}
@@ -247,37 +466,52 @@ const Groups = () => {
               {t('createGroup')}
             </button>
           </motion.div>
-        ) : (
-          <motion.div 
-            className={`grid ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-6`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            {filteredGroups.map((group, index) => (
-              <motion.div
-                key={group.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <TontineGroup
-                  name={group.name}
-                  members={group.members}
-                  contribution={formatContribution(group.contribution, group.frequency)}
-                  nextDue={group.nextDue}
-                  status={group.status}
-                  progress={group.progress}
-                  onClick={() => openGroupDetails(group.id)}
+        )}
+
+        {/* Groups Display (Grid or List) */}
+        {!isLoading && filteredGroups.length > 0 && (
+          <div className="flex flex-col lg:flex-row gap-6">
+            <motion.div 
+              className={`${view === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"} flex-1`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {filteredGroups.map((group, index) => (
+                <motion.div
+                  key={group.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ scale: view === "grid" ? 1.02 : 1 }}
+                >
+                  <TontineGroup
+                    name={group.name}
+                    members={group.members}
+                    contribution={formatContribution(group.contribution, group.frequency)}
+                    nextDue={group.nextDue}
+                    status={group.status}
+                    progress={group.progress}
+                    onClick={() => openGroupDetails(group.id)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+            
+            {/* Recent Members Sidebar (only shown on larger screens) */}
+            <div className="hidden lg:block w-80">
+              <div className="sticky top-24">
+                <MemberList 
+                  members={sampleMembers} 
+                  title={t('recentMembers')} 
                 />
-              </motion.div>
-            ))}
-          </motion.div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Group Stats */}
-        {filteredGroups.length > 0 && (
+        {!isLoading && filteredGroups.length > 0 && (
           <motion.div 
             className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             initial={{ opacity: 0, y: 20 }}

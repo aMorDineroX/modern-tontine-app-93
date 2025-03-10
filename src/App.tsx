@@ -10,16 +10,28 @@ import SignUp from "./pages/Auth/SignUp";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
 import Groups from "./pages/Groups";
-import Profile from "./pages/Profile"; // Import the Profile component
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance with better error handling and retry configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
-// Composant pour l'écran de chargement
+// Loading screen component
 const LoadingScreen = ({ message = "Chargement..." }) => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
     <div className="text-center">
@@ -29,7 +41,7 @@ const LoadingScreen = ({ message = "Chargement..." }) => (
   </div>
 );
 
-// Composant amélioré pour gérer les callbacks d'authentification OAuth
+// Improved Auth Callback component
 const AuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -93,16 +105,14 @@ const AuthCallback = () => {
     processAuth();
   }, [location, navigate]);
   
-  // Afficher un indicateur de chargement pendant le traitement
   if (isProcessing) {
     return <LoadingScreen message="Authentification en cours..." />;
   }
   
-  // Si le traitement est terminé mais que nous sommes toujours sur le composant AuthCallback
-  // et pas sur la route /auth/callback, on rend les routes enfants
   return null;
 };
 
+// Improved Root component with better routing structure
 const RootComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -150,36 +160,35 @@ const RootComponent = () => {
     }
   }, [location, navigate]);
   
-  // Afficher un indicateur de chargement pendant le traitement de l'authentification à la racine
+  // Show loading screen while processing authentication
   if (isProcessingAuth) {
     return <LoadingScreen message="Traitement de l'authentification..." />;
   }
   
   return (
     <Routes>
-      {/* Landing page */}
+      {/* Public routes */}
       <Route path="/" element={<LandingPage />} />
-      
-      {/* Auth routes */}
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
-      {/* Protected routes */}
+      {/* Protected routes with improved organization */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Index />} />
         <Route path="/groups" element={<Groups />} />
-        <Route path="/profile" element={<Profile />} /> {/* Add the Profile route */}
-        {/* Add more protected routes here */}
+        <Route path="/profile" element={<Profile />} />
+        {/* Add more protected routes here if needed */}
       </Route>
       
-      {/* Fallback route */}
+      {/* Fallback for 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
 
+// Main App component with providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AppProvider>

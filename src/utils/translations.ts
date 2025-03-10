@@ -64,6 +64,9 @@ export type TranslationKeys = {
   totalGroups: string;
   totalMembers: string;
   avgContribution: string;
+  
+  // Adding deposit/withdraw key
+  depositWithdraw: string;
 };
 
 type TranslationsType = {
@@ -134,7 +137,10 @@ export const translations: TranslationsType = {
     groupSummary: 'Group Summary',
     totalGroups: 'Total Groups',
     totalMembers: 'Total Members',
-    avgContribution: 'Avg. Contribution'
+    avgContribution: 'Avg. Contribution',
+    
+    // Adding deposit/withdraw translation
+    depositWithdraw: 'Deposit/Withdraw'
   },
   fr: {
     welcome: 'Bienvenue !',
@@ -199,7 +205,10 @@ export const translations: TranslationsType = {
     groupSummary: 'Résumé des Groupes',
     totalGroups: 'Nombre Total de Groupes',
     totalMembers: 'Nombre Total de Membres',
-    avgContribution: 'Contribution Moyenne'
+    avgContribution: 'Contribution Moyenne',
+    
+    // Adding deposit/withdraw translation
+    depositWithdraw: 'Dépôt/Retrait'
   },
   es: {
     welcome: '¡Bienvenido de Nuevo!',
@@ -264,7 +273,10 @@ export const translations: TranslationsType = {
     groupSummary: 'Resumen de Grupos',
     totalGroups: 'Total de Grupos',
     totalMembers: 'Total de Miembros',
-    avgContribution: 'Contribución Media'
+    avgContribution: 'Contribución Media',
+    
+    // Adding deposit/withdraw translation
+    depositWithdraw: 'Depósito/Retiro'
   },
   ar: {
     welcome: 'مرحبًا بعودتك!',
@@ -329,7 +341,10 @@ export const translations: TranslationsType = {
     groupSummary: 'ملخص المجموعة',
     totalGroups: 'إجمالي المجموعات',
     totalMembers: 'إجمالي الأعضاء',
-    avgContribution: 'متوسط المساهمة'
+    avgContribution: 'متوسط المساهمة',
+    
+    // Adding deposit/withdraw translation
+    depositWithdraw: 'إيداع/سحب'
   },
   sw: {
     welcome: 'Karibu Tena!',
@@ -394,7 +409,10 @@ export const translations: TranslationsType = {
     groupSummary: 'Muhtasari wa Kikundi',
     totalGroups: 'Jumla ya Vikundi',
     totalMembers: 'Jumla ya Wanachama',
-    avgContribution: 'Wastani wa Mchango'
+    avgContribution: 'Wastani wa Mchango',
+    
+    // Adding deposit/withdraw translation
+    depositWithdraw: 'Amana/Kutoa'
   }
 };
 

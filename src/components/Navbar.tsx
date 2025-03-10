@@ -6,11 +6,12 @@ import ThemeToggle from "./ThemeToggle";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
 import SettingsModal from "./SettingsModal";
+import PaymentModal from "./PaymentModal";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const { t } = useApp();
   const { signOut } = useAuth();
 
@@ -47,9 +48,9 @@ export default function Navbar() {
             <ThemeToggle />
             <button 
               className="tontine-button tontine-button-primary"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsPaymentModalOpen(true)}
             >
-              {t('createNewGroup')}
+              {t('depositWithdraw')}
             </button>
             <button
               onClick={handleSignOut}
@@ -107,11 +108,11 @@ export default function Navbar() {
               <button 
                 onClick={() => {
                   setIsOpen(false);
-                  setIsModalOpen(true);
+                  setIsPaymentModalOpen(true);
                 }} 
                 className="w-full tontine-button tontine-button-primary"
               >
-                {t('createNewGroup')}
+                {t('depositWithdraw')}
               </button>
             </div>
             <button
@@ -128,6 +129,7 @@ export default function Navbar() {
       )}
       
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
     </nav>
   );
 }

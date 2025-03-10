@@ -9,7 +9,8 @@ import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
-import Groups from "./pages/Groups"; // Import the Groups component
+import Groups from "./pages/Groups";
+import Profile from "./pages/Profile"; // Import the Profile component
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -102,7 +103,6 @@ const AuthCallback = () => {
   return null;
 };
 
-// Composant Root pour traiter le hash dans l'URL avant le routage
 const RootComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -169,7 +169,8 @@ const RootComponent = () => {
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Index />} />
-        <Route path="/groups" element={<Groups />} /> {/* Add the Groups route */}
+        <Route path="/groups" element={<Groups />} />
+        <Route path="/profile" element={<Profile />} /> {/* Add the Profile route */}
         {/* Add more protected routes here */}
       </Route>
       

@@ -16,7 +16,7 @@ export type User = {
 };
 
 export type TontineGroup = {
-  id: string;
+  id: string | number;  // Allow both string and number types
   name: string;
   contribution_amount: number;
   frequency: 'weekly' | 'biweekly' | 'monthly';
@@ -27,8 +27,8 @@ export type TontineGroup = {
 };
 
 export type GroupMember = {
-  id: string;
-  group_id: string;
+  id: string | number;  // Allow both string and number types
+  group_id: string | number;  // Allow both string and number types
   user_id: string;
   role: 'admin' | 'member';
   status: 'active' | 'pending' | 'inactive';
@@ -36,8 +36,8 @@ export type GroupMember = {
 };
 
 export type Contribution = {
-  id: string;
-  group_id: string;
+  id: string | number;  // Allow both string and number types
+  group_id: string | number;  // Allow both string and number types
   user_id: string;
   amount: number;
   status: 'pending' | 'paid' | 'missed';
@@ -46,8 +46,8 @@ export type Contribution = {
 };
 
 export type Payout = {
-  id: string;
-  group_id: string;
+  id: string | number;  // Allow both string and number types
+  group_id: string | number;  // Allow both string and number types
   user_id: string;
   amount: number;
   payout_date: string;

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
@@ -43,8 +42,8 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
     
     if (!user) {
       toast({
-        title: t('error'),
-        description: t('mustBeLoggedIn'),
+        title: "Error",
+        description: "You must be logged in to create a group",
         variant: "destructive"
       });
       return;
@@ -58,6 +57,15 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         .split(',')
         .map(email => email.trim())
         .filter(email => email && email.includes('@')); // Basic validation
+      
+      console.log("Creating group with:", {
+        name,
+        contribution_amount: parseFloat(contribution),
+        frequency,
+        start_date: startDate || new Date().toISOString(),
+        payout_method: payoutMethod,
+        created_by: user.id
+      });
       
       // Create the group in the database
       const { data: groupData, error: groupError } = await supabase
@@ -73,7 +81,12 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         .select()
         .single();
       
-      if (groupError) throw groupError;
+      if (groupError) {
+        console.error("Group creation error:", groupError);
+        throw groupError;
+      }
+      
+      console.log("Group created successfully:", groupData);
       
       // Add creator as admin member
       if (groupData) {
@@ -86,12 +99,15 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
             status: 'active'
           });
         
-        if (memberError) throw memberError;
+        if (memberError) {
+          console.error("Error adding creator as member:", memberError);
+          throw memberError;
+        }
         
-        // If there are other members, send invitations (would usually trigger email invites)
+        // If there are other members, send invitations
         if (memberEmails.length > 0) {
-          // In a real app, we'd send email invitations here
           console.log(`Inviting members: ${memberEmails.join(', ')} to group ${groupData.id}`);
+          // In a real app, we'd send email invitations here
         }
       }
       
@@ -108,8 +124,8 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
       
       // Show success message
       toast({
-        title: t('success'),
-        description: t('groupCreated'),
+        title: "Success",
+        description: "Group created successfully",
       });
       
       // Close modal
@@ -117,8 +133,8 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
     } catch (error) {
       console.error('Error creating group:', error);
       toast({
-        title: t('error'),
-        description: t('errorCreatingGroup'),
+        title: "Error",
+        description: "Error creating group",
         variant: "destructive"
       });
     } finally {
@@ -239,7 +255,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
                   className="tontine-button tontine-button-primary w-full" 
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? t('creating') + '...' : t('createGroup')}
+                  {isSubmitting ? "Creating..." : t('createGroup')}
                 </button>
               </div>
             </form>

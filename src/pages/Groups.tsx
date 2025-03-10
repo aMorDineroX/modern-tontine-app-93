@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Plus, Search, Filter, SlidersHorizontal, Users, Info, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // Group type definition
 type Group = {
-  id: string;
+  id: string | number;
   name: string;
   members: number;
   contribution: number;
@@ -46,9 +45,11 @@ const Groups = () => {
     const fetchGroups = async () => {
       try {
         setIsLoading(true);
+        console.log("Fetching groups, user:", user);
         
         if (!user) {
           setGroups([]);
+          setIsLoading(false);
           return;
         }
         
@@ -58,7 +59,12 @@ const Groups = () => {
           .select('group_id, role, status')
           .eq('user_id', user.id);
         
-        if (membershipError) throw membershipError;
+        if (membershipError) {
+          console.error("Error fetching memberships:", membershipError);
+          throw membershipError;
+        }
+        
+        console.log("Memberships:", memberships);
         
         if (!memberships || memberships.length === 0) {
           setGroups([]);
@@ -67,6 +73,7 @@ const Groups = () => {
         }
         
         const groupIds = memberships.map(m => m.group_id);
+        console.log("Group IDs:", groupIds);
         
         // Fetch the actual group data
         const { data: groupsData, error: groupsError } = await supabase
@@ -74,9 +81,14 @@ const Groups = () => {
           .select('*')
           .in('id', groupIds);
         
-        if (groupsError) throw groupsError;
+        if (groupsError) {
+          console.error("Error fetching groups:", groupsError);
+          throw groupsError;
+        }
         
-        if (!groupsData) {
+        console.log("Groups data:", groupsData);
+        
+        if (!groupsData || groupsData.length === 0) {
           setGroups([]);
           setIsLoading(false);
           return;
@@ -89,6 +101,10 @@ const Groups = () => {
               .from('group_members')
               .select('*', { count: 'exact', head: true })
               .eq('group_id', group.id);
+            
+            if (error) {
+              console.error("Error counting members:", error);
+            }
             
             // Calculate next due date based on frequency and start date
             const startDate = new Date(group.start_date);
@@ -112,25 +128,28 @@ const Groups = () => {
               100
             );
             
+            const membershipStatus = memberships.find(m => m.group_id === group.id)?.status || "active";
+            
             return {
               id: group.id,
               name: group.name,
-              members: count || 0,
+              members: count || 1,  // Default to 1 if count is null
               contribution: group.contribution_amount,
               frequency: group.frequency,
               nextDue: nextDue.toLocaleDateString(),
-              status: memberships.find(m => m.group_id === group.id)?.status as "active" | "pending" | "completed" || "active",
+              status: membershipStatus as "active" | "pending" | "completed",
               progress: progress || 0
             };
           })
         );
         
+        console.log("Processed groups:", groupsWithMemberCount);
         setGroups(groupsWithMemberCount);
       } catch (error) {
         console.error('Error fetching groups:', error);
         toast({
-          title: t('error'),
-          description: t('errorFetchingGroups'),
+          title: "Error",
+          description: "Error fetching groups",
           variant: "destructive"
         });
       } finally {
@@ -139,7 +158,7 @@ const Groups = () => {
     };
     
     fetchGroups();
-  }, [user, t, toast]);
+  }, [user, toast]);
 
   // Filter and sort groups
   const filteredGroups = groups.filter(group => {
@@ -158,14 +177,16 @@ const Groups = () => {
     } else {
       // Default to sorting by date (using id as proxy)
       return sortOrder === 'asc' 
-        ? a.id.localeCompare(b.id) 
-        : b.id.localeCompare(a.id);
+        ? String(a.id).localeCompare(String(b.id)) 
+        : String(b.id).localeCompare(String(a.id));
     }
   });
 
   const handleCreateGroup = async (data: { name: string; contribution: string; frequency: string; members: string }) => {
+    console.log("Group created with data:", data);
+    
     // The actual creation logic is now in the modal
-    // Here we just refresh the groups list
+    // Here we refresh the groups list
     if (user) {
       setIsLoading(true);
       
@@ -177,31 +198,48 @@ const Groups = () => {
             .select('group_id')
             .eq('user_id', user.id);
           
-          if (membershipError) throw membershipError;
+          if (membershipError) {
+            console.error("Error fetching memberships after creation:", membershipError);
+            throw membershipError;
+          }
           
           const groupIds = memberships?.map(m => m.group_id) || [];
+          console.log("Group IDs after creation:", groupIds);
           
           const { data: groupsData, error: groupsError } = await supabase
             .from('tontine_groups')
             .select('*')
             .in('id', groupIds);
           
-          if (groupsError) throw groupsError;
+          if (groupsError) {
+            console.error("Error fetching groups after creation:", groupsError);
+            throw groupsError;
+          }
           
-          if (groupsData) {
-            // Simple refresh for now - in a real app you'd merge this with the same logic as in useEffect
-            const newGroups = groupsData.map(group => ({
-              id: group.id,
-              name: group.name,
-              members: 1, // At minimum the creator
-              contribution: group.contribution_amount,
-              frequency: group.frequency,
-              nextDue: new Date(group.start_date).toLocaleDateString(),
-              status: "active" as const,
-              progress: 0
-            }));
+          console.log("Groups data after creation:", groupsData);
+          
+          if (groupsData && groupsData.length > 0) {
+            // Transform the group data
+            const newGroups = groupsData.map(group => {
+              const startDate = new Date(group.start_date);
+              return {
+                id: group.id,
+                name: group.name,
+                members: 1, // At minimum the creator
+                contribution: group.contribution_amount,
+                frequency: group.frequency,
+                nextDue: startDate.toLocaleDateString(),
+                status: "active" as const,
+                progress: 0
+              };
+            });
             
-            setGroups(newGroups);
+            setGroups(prevGroups => {
+              // Merge with existing groups, avoiding duplicates
+              const existingIds = prevGroups.map(g => g.id);
+              const uniqueNewGroups = newGroups.filter(g => !existingIds.includes(g.id));
+              return [...prevGroups, ...uniqueNewGroups];
+            });
           }
         } catch (error) {
           console.error('Error refreshing groups:', error);
@@ -216,7 +254,7 @@ const Groups = () => {
     return `${formatAmount(amount)} / ${t(frequency as 'monthly' | 'weekly' | 'biweekly')}`;
   };
 
-  const openGroupDetails = (groupId: string) => {
+  const openGroupDetails = (groupId: string | number) => {
     // Navigate to group details page
     navigate(`/groups/${groupId}`);
   };

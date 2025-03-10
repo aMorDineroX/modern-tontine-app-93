@@ -27,17 +27,40 @@ export type Database = {
       group_members: {
         Row: {
           created_at: string
+          group_id: number
           id: number
+          joined_at: string
+          role: string
+          status: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          group_id: number
           id?: number
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          group_id?: number
           id?: number
+          joined_at?: string
+          role?: string
+          status?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "tontine_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payouts: {
         Row: {
@@ -71,16 +94,34 @@ export type Database = {
       }
       tontine_groups: {
         Row: {
+          contribution_amount: number
           created_at: string
+          created_by: string | null
+          frequency: string
           id: number
+          name: string
+          payout_method: string
+          start_date: string
         }
         Insert: {
+          contribution_amount?: number
           created_at?: string
+          created_by?: string | null
+          frequency?: string
           id?: number
+          name?: string
+          payout_method?: string
+          start_date?: string
         }
         Update: {
+          contribution_amount?: number
           created_at?: string
+          created_by?: string | null
+          frequency?: string
           id?: number
+          name?: string
+          payout_method?: string
+          start_date?: string
         }
         Relationships: []
       }

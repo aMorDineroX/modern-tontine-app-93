@@ -67,6 +67,24 @@ export type TranslationKeys = {
   
   // Adding deposit/withdraw key
   depositWithdraw: string;
+  
+  // Adding missing keys from error messages
+  error: string;
+  success: string;
+  mustBeLoggedIn: string;
+  groupCreated: string;
+  errorCreatingGroup: string;
+  creating: string;
+  progress: string;
+  payoutStatus: string;
+  upcoming: string;
+  ready: string;
+  errorFetchingGroups: string;
+  groupsInfoText: string;
+  sortBy: string;
+  name: string;
+  date: string;
+  amount: string;
 };
 
 type TranslationsType = {
@@ -126,7 +144,25 @@ export const translations: TranslationsType = {
     pageNotFound: 'Oops! Page not found',
     returnToDashboard: 'Return to Dashboard',
     
-    // New keys for Groups page
+    // Adding missing translations
+    error: 'Error',
+    success: 'Success',
+    mustBeLoggedIn: 'You must be logged in to create a group',
+    groupCreated: 'Group created successfully',
+    errorCreatingGroup: 'An error occurred while creating the group',
+    creating: 'Creating',
+    progress: 'Progress',
+    payoutStatus: 'Payout Status',
+    upcoming: 'Upcoming',
+    ready: 'Ready',
+    errorFetchingGroups: 'An error occurred while fetching groups',
+    groupsInfoText: 'Create and manage your tontine groups. Track contributions and payouts for each group.',
+    sortBy: 'Sort by',
+    name: 'Name',
+    date: 'Date',
+    amount: 'Amount',
+    
+    // Existing keys
     manageGroups: 'Manage and track your tontine groups',
     searchGroups: 'Search groups...',
     filterByStatus: 'Filter by status',
@@ -138,8 +174,6 @@ export const translations: TranslationsType = {
     totalGroups: 'Total Groups',
     totalMembers: 'Total Members',
     avgContribution: 'Avg. Contribution',
-    
-    // Adding deposit/withdraw translation
     depositWithdraw: 'Deposit/Withdraw'
   },
   fr: {
@@ -194,7 +228,25 @@ export const translations: TranslationsType = {
     pageNotFound: 'Oups ! Page non trouvée',
     returnToDashboard: 'Retourner au Tableau de Bord',
     
-    // New keys for Groups page
+    // Adding missing translations
+    error: 'Erreur',
+    success: 'Succès',
+    mustBeLoggedIn: 'Vous devez être connecté pour créer un groupe',
+    groupCreated: 'Groupe créé avec succès',
+    errorCreatingGroup: 'Une erreur est survenue lors de la création du groupe',
+    creating: 'Création',
+    progress: 'Progression',
+    payoutStatus: 'Statut de Paiement',
+    upcoming: 'À venir',
+    ready: 'Prêt',
+    errorFetchingGroups: 'Une erreur est survenue lors de la récupération des groupes',
+    groupsInfoText: 'Créez et gérez vos groupes de tontine. Suivez les contributions et les versements pour chaque groupe.',
+    sortBy: 'Trier par',
+    name: 'Nom',
+    date: 'Date',
+    amount: 'Montant',
+    
+    // Existing keys
     manageGroups: 'Gérez et suivez vos groupes de tontine',
     searchGroups: 'Rechercher des groupes...',
     filterByStatus: 'Filtrer par statut',
@@ -206,8 +258,6 @@ export const translations: TranslationsType = {
     totalGroups: 'Nombre Total de Groupes',
     totalMembers: 'Nombre Total de Membres',
     avgContribution: 'Contribution Moyenne',
-    
-    // Adding deposit/withdraw translation
     depositWithdraw: 'Dépôt/Retrait'
   },
   es: {
@@ -262,7 +312,25 @@ export const translations: TranslationsType = {
     pageNotFound: '¡Ups! Página no encontrada',
     returnToDashboard: 'Volver al Panel',
     
-    // New keys for Groups page
+    // Adding missing translations
+    error: 'Error',
+    success: 'Éxito',
+    mustBeLoggedIn: 'Debes iniciar sesión para crear un grupo',
+    groupCreated: 'Grupo creado con éxito',
+    errorCreatingGroup: 'Ocurrió un error al crear el grupo',
+    creating: 'Creando',
+    progress: 'Progreso',
+    payoutStatus: 'Estado de Pago',
+    upcoming: 'Próximo',
+    ready: 'Listo',
+    errorFetchingGroups: 'Ocurrió un error al obtener los grupos',
+    groupsInfoText: 'Crea y administra tus grupos de tontina. Sigue las contribuciones y pagos para cada grupo.',
+    sortBy: 'Ordenar por',
+    name: 'Nombre',
+    date: 'Fecha',
+    amount: 'Monto',
+    
+    // Existing keys
     manageGroups: 'Administra y sigue tus grupos de tontina',
     searchGroups: 'Buscar grupos...',
     filterByStatus: 'Filtrar por estado',
@@ -274,8 +342,6 @@ export const translations: TranslationsType = {
     totalGroups: 'Total de Grupos',
     totalMembers: 'Total de Miembros',
     avgContribution: 'Contribución Media',
-    
-    // Adding deposit/withdraw translation
     depositWithdraw: 'Depósito/Retiro'
   },
   ar: {
@@ -330,7 +396,25 @@ export const translations: TranslationsType = {
     pageNotFound: 'عذراً! الصفحة غير موجودة',
     returnToDashboard: 'العودة إلى لوحة التحكم',
     
-    // New keys for Groups page
+    // Adding missing translations
+    error: 'خطأ',
+    success: 'نجاح',
+    mustBeLoggedIn: 'يجب تسجيل الدخول لإنشاء مجموعة',
+    groupCreated: 'تم إنشاء المجموعة بنجاح',
+    errorCreatingGroup: 'حدث خطأ أثناء إنشاء المجموعة',
+    creating: 'جاري الإنشاء',
+    progress: 'التقدم',
+    payoutStatus: 'حالة الدفع',
+    upcoming: 'قادم',
+    ready: 'جاهز',
+    errorFetchingGroups: 'حدث خطأ أثناء جلب المجموعات',
+    groupsInfoText: 'إنشاء وإدارة مجموعات التونتين الخاصة بك. تتبع المساهمات والمدفوعات لكل مجموعة.',
+    sortBy: 'ترتيب حسب',
+    name: 'الاسم',
+    date: 'التاريخ',
+    amount: 'المبلغ',
+    
+    // Existing keys
     manageGroups: 'إدارة ومتابعة مجموعات التونتين الخاصة بك',
     searchGroups: 'البحث عن المجموعات...',
     filterByStatus: 'تصفية حسب الحالة',
@@ -342,8 +426,6 @@ export const translations: TranslationsType = {
     totalGroups: 'إجمالي المجموعات',
     totalMembers: 'إجمالي الأعضاء',
     avgContribution: 'متوسط المساهمة',
-    
-    // Adding deposit/withdraw translation
     depositWithdraw: 'إيداع/سحب'
   },
   sw: {
@@ -398,7 +480,25 @@ export const translations: TranslationsType = {
     pageNotFound: 'Samahani! Ukurasa haukupatikana',
     returnToDashboard: 'Rudi kwenye Dashibodi',
     
-    // New keys for Groups page
+    // Adding missing translations
+    error: 'Hitilafu',
+    success: 'Mafanikio',
+    mustBeLoggedIn: 'Lazima uwe umejiandikisha ili kuunda kikundi',
+    groupCreated: 'Kikundi kimeundwa kwa mafanikio',
+    errorCreatingGroup: 'Hitilafu imetokea wakati wa kuunda kikundi',
+    creating: 'Inaunda',
+    progress: 'Maendeleo',
+    payoutStatus: 'Hali ya Malipo',
+    upcoming: 'Inayokuja',
+    ready: 'Tayari',
+    errorFetchingGroups: 'Hitilafu imetokea wakati wa kuleta vikundi',
+    groupsInfoText: 'Unda na usimamie vikundi vyako vya tontine. Fuatilia michango na malipo kwa kila kikundi.',
+    sortBy: 'Panga kwa',
+    name: 'Jina',
+    date: 'Tarehe',
+    amount: 'Kiasi',
+    
+    // Existing keys
     manageGroups: 'Simamia na fuatilia vikundi vyako vya tontine',
     searchGroups: 'Tafuta vikundi...',
     filterByStatus: 'Chuja kwa hali',
@@ -410,8 +510,6 @@ export const translations: TranslationsType = {
     totalGroups: 'Jumla ya Vikundi',
     totalMembers: 'Jumla ya Wanachama',
     avgContribution: 'Wastani wa Mchango',
-    
-    // Adding deposit/withdraw translation
     depositWithdraw: 'Amana/Kutoa'
   }
 };

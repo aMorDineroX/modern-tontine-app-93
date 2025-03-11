@@ -1,3 +1,4 @@
+
 export type Language = 'en' | 'fr' | 'es' | 'ar' | 'sw';
 
 export const currencies = [
@@ -88,7 +89,6 @@ type TranslationKeys = {
   noMessages: string;
   noMessagesDesc: string;
   checkOut: string;
-  profile: string;
   joinTontine: string;
   
   // Adding missing keys for ContributionManager component
@@ -97,7 +97,7 @@ type TranslationKeys = {
   missed: string;
   frequency: string;
   
-  // Ajout des clés de traduction pour les fonctionnalités sociales
+  // Social features translations
   share: string;
   copyLink: string;
   linkCopied: string;
@@ -115,10 +115,6 @@ type TranslationKeys = {
   sendMessage: string;
   recentActivity: string;
   noRecentActivity: string;
-  activityContribution: string;
-  activityPayout: string;
-  activityJoin: string;
-  activityCreation: string;
   minute: string;
   minutes: string;
   hour: string;
@@ -128,6 +124,64 @@ type TranslationKeys = {
   ago: string;
   invitationSent: string;
   invitationSentDesc: string;
+  
+  // Adding all missing translation keys from errors
+  contributionAmount: string;
+  contributionFrequency: string;
+  weekly: string;
+  biweekly: string;
+  monthly: string;
+  startDate: string;
+  payoutMethod: string;
+  rotation: string;
+  randomSelection: string;
+  biddingSystem: string;
+  contribution: string;
+  depositWithdraw: string;
+  lightMode: string;
+  completed: string;
+  progress: string;
+  nextDue: string;
+  payoutStatus: string;
+  ready: string;
+  yourGroups: string;
+  manageGroups: string;
+  groupsInfoText: string;
+  searchGroups: string;
+  filterByStatus: string;
+  all: string;
+  sortBy: string;
+  name: string;
+  date: string;
+  amount: string;
+  noGroupsFound: string;
+  noMatchingGroups: string;
+  createFirstGroup: string;
+  recentMembers: string;
+  groupSummary: string;
+  totalGroups: string;
+  activeGroups: string;
+  totalMembers: string;
+  avgContribution: string;
+  trackContributions: string;
+  payments: string;
+  createNewGroup: string;
+  availableBalance: string;
+  viewAll: string;
+  paymentCalendar: string;
+  receivedPayout: string;
+  hoursAgo: string;
+  joinedGroup: string;
+  yesterday: string;
+  madeContribution: string;
+  daysAgo: string;
+  returnToDashboard: string;
+  
+  // Activity feed template strings
+  activityContribution: string;
+  activityPayout: string;
+  activityJoin: string;
+  activityCreation: string;
 };
 
 type TranslationsType = {
@@ -204,7 +258,6 @@ export const translations: TranslationsType = {
     noMessages: 'No messages',
     noMessagesDesc: 'You have no messages yet.',
     checkOut: 'Check out',
-    profile: 'profile',
     joinTontine: 'Join this Tontine!',
     
     // Adding new translations for ContributionManager component
@@ -244,6 +297,58 @@ export const translations: TranslationsType = {
     ago: 'ago',
     invitationSent: 'Invitation Sent',
     invitationSentDesc: 'Your friend will receive an invitation email shortly',
+    
+    // Adding all missing translations from error list
+    contributionAmount: 'Contribution Amount',
+    contributionFrequency: 'Contribution Frequency',
+    weekly: 'Weekly',
+    biweekly: 'Biweekly',
+    monthly: 'Monthly',
+    startDate: 'Start Date',
+    payoutMethod: 'Payout Method',
+    rotation: 'Rotation',
+    randomSelection: 'Random Selection',
+    biddingSystem: 'Bidding System',
+    contribution: 'Contribution',
+    depositWithdraw: 'Deposit/Withdraw',
+    lightMode: 'Light Mode',
+    completed: 'Completed',
+    progress: 'Progress',
+    nextDue: 'Next Due',
+    payoutStatus: 'Payout Status',
+    ready: 'Ready',
+    yourGroups: 'Your Groups',
+    manageGroups: 'Manage Groups',
+    groupsInfoText: 'Create and join savings groups with friends, family or colleagues',
+    searchGroups: 'Search Groups',
+    filterByStatus: 'Filter by Status',
+    all: 'All',
+    sortBy: 'Sort by',
+    name: 'Name',
+    date: 'Date',
+    amount: 'Amount',
+    noGroupsFound: 'No groups found',
+    noMatchingGroups: 'No matching groups',
+    createFirstGroup: 'Create your first group',
+    recentMembers: 'Recent Members',
+    groupSummary: 'Group Summary',
+    totalGroups: 'Total Groups',
+    activeGroups: 'Active Groups',
+    totalMembers: 'Total Members',
+    avgContribution: 'Average Contribution',
+    trackContributions: 'Track Contributions',
+    payments: 'Payments',
+    createNewGroup: 'Create New Group',
+    availableBalance: 'Available Balance',
+    viewAll: 'View All',
+    paymentCalendar: 'Payment Calendar',
+    receivedPayout: 'Received payout',
+    hoursAgo: 'hours ago',
+    joinedGroup: 'joined group',
+    yesterday: 'yesterday',
+    madeContribution: 'Made contribution',
+    daysAgo: 'days ago',
+    returnToDashboard: 'Return to Dashboard',
   },
   fr: {
     welcome: 'Bienvenue',
@@ -310,7 +415,6 @@ export const translations: TranslationsType = {
     noMessages: 'Aucun message',
     noMessagesDesc: 'Vous n\'avez pas encore de messages.',
     checkOut: 'Découvrez',
-    profile: 'profil',
     joinTontine: 'Rejoignez cette Tontine !',
     
     // Adding new translations for ContributionManager component
@@ -350,6 +454,58 @@ export const translations: TranslationsType = {
     ago: 'il y a',
     invitationSent: 'Invitation Envoyée',
     invitationSentDesc: 'Votre ami recevra un email d\'invitation sous peu',
+    
+    // Adding all missing translations from error list
+    contributionAmount: 'Montant de la contribution',
+    contributionFrequency: 'Fréquence de contribution',
+    weekly: 'Hebdomadaire',
+    biweekly: 'Bimensuel',
+    monthly: 'Mensuel',
+    startDate: 'Date de début',
+    payoutMethod: 'Méthode de paiement',
+    rotation: 'Rotation',
+    randomSelection: 'Sélection aléatoire',
+    biddingSystem: 'Système d\'enchères',
+    contribution: 'Contribution',
+    depositWithdraw: 'Dépôt/Retrait',
+    lightMode: 'Mode clair',
+    completed: 'Terminé',
+    progress: 'Progression',
+    nextDue: 'Prochain paiement dû',
+    payoutStatus: 'Statut de paiement',
+    ready: 'Prêt',
+    yourGroups: 'Vos groupes',
+    manageGroups: 'Gérer les groupes',
+    groupsInfoText: 'Créez et rejoignez des groupes d\'épargne avec des amis, la famille ou des collègues',
+    searchGroups: 'Rechercher des groupes',
+    filterByStatus: 'Filtrer par statut',
+    all: 'Tous',
+    sortBy: 'Trier par',
+    name: 'Nom',
+    date: 'Date',
+    amount: 'Montant',
+    noGroupsFound: 'Aucun groupe trouvé',
+    noMatchingGroups: 'Aucun groupe correspondant',
+    createFirstGroup: 'Créez votre premier groupe',
+    recentMembers: 'Membres récents',
+    groupSummary: 'Résumé du groupe',
+    totalGroups: 'Total des groupes',
+    activeGroups: 'Groupes actifs',
+    totalMembers: 'Total des membres',
+    avgContribution: 'Contribution moyenne',
+    trackContributions: 'Suivre les contributions',
+    payments: 'Paiements',
+    createNewGroup: 'Créer un nouveau groupe',
+    availableBalance: 'Solde disponible',
+    viewAll: 'Voir tout',
+    paymentCalendar: 'Calendrier de paiement',
+    receivedPayout: 'A reçu un paiement',
+    hoursAgo: 'heures',
+    joinedGroup: 'a rejoint le groupe',
+    yesterday: 'hier',
+    madeContribution: 'A fait une contribution',
+    daysAgo: 'jours',
+    returnToDashboard: 'Retour au tableau de bord',
   },
   es: {
     welcome: 'Bienvenido',
@@ -416,7 +572,6 @@ export const translations: TranslationsType = {
     noMessages: 'Sin mensajes',
     noMessagesDesc: 'Aún no tienes mensajes.',
     checkOut: 'Echa un vistazo',
-    profile: 'perfil',
     joinTontine: '¡Únete a esta Tontine!',
     
     // Adding new translations for ContributionManager component
@@ -456,6 +611,58 @@ export const translations: TranslationsType = {
     ago: 'hace',
     invitationSent: 'Invitación enviada',
     invitationSentDesc: 'Tu amigo recibirá un correo de invitación en breve',
+    
+    // Adding all missing translations from error list
+    contributionAmount: 'Monto de contribución',
+    contributionFrequency: 'Frecuencia de contribución',
+    weekly: 'Semanal',
+    biweekly: 'Quincenal',
+    monthly: 'Mensual',
+    startDate: 'Fecha de inicio',
+    payoutMethod: 'Método de pago',
+    rotation: 'Rotación',
+    randomSelection: 'Selección aleatoria',
+    biddingSystem: 'Sistema de licitación',
+    contribution: 'Contribución',
+    depositWithdraw: 'Depositar/Retirar',
+    lightMode: 'Modo claro',
+    completed: 'Completado',
+    progress: 'Progreso',
+    nextDue: 'Próximo vencimiento',
+    payoutStatus: 'Estado de pago',
+    ready: 'Listo',
+    yourGroups: 'Tus grupos',
+    manageGroups: 'Administrar grupos',
+    groupsInfoText: 'Crea y únete a grupos de ahorro con amigos, familiares o colegas',
+    searchGroups: 'Buscar grupos',
+    filterByStatus: 'Filtrar por estado',
+    all: 'Todos',
+    sortBy: 'Ordenar por',
+    name: 'Nombre',
+    date: 'Fecha',
+    amount: 'Monto',
+    noGroupsFound: 'No se encontraron grupos',
+    noMatchingGroups: 'No hay grupos coincidentes',
+    createFirstGroup: 'Crea tu primer grupo',
+    recentMembers: 'Miembros recientes',
+    groupSummary: 'Resumen de grupo',
+    totalGroups: 'Total de grupos',
+    activeGroups: 'Grupos activos',
+    totalMembers: 'Total de miembros',
+    avgContribution: 'Contribución promedio',
+    trackContributions: 'Seguimiento de contribuciones',
+    payments: 'Pagos',
+    createNewGroup: 'Crear nuevo grupo',
+    availableBalance: 'Saldo disponible',
+    viewAll: 'Ver todo',
+    paymentCalendar: 'Calendario de pagos',
+    receivedPayout: 'Recibió pago',
+    hoursAgo: 'horas atrás',
+    joinedGroup: 'se unió al grupo',
+    yesterday: 'ayer',
+    madeContribution: 'Hizo una contribución',
+    daysAgo: 'días atrás',
+    returnToDashboard: 'Volver al tablero',
   },
   ar: {
     welcome: 'مرحبا',
@@ -522,7 +729,6 @@ export const translations: TranslationsType = {
     noMessages: 'لا توجد رسائل',
     noMessagesDesc: 'ليس لديك رسائل بعد.',
     checkOut: 'تحقق من',
-    profile: 'الملف الشخصي',
     joinTontine: 'انضم إلى هذه التونتين!',
     
     // Adding new translations for ContributionManager component
@@ -562,6 +768,58 @@ export const translations: TranslationsType = {
     ago: 'منذ',
     invitationSent: 'تم إرسال الدعوة',
     invitationSentDesc: 'سيتلقى صديقك رسالة دعوة عبر البريد الإلكتروني قريبًا',
+    
+    // Adding all missing translations from error list
+    contributionAmount: 'مبلغ المساهمة',
+    contributionFrequency: 'تكرار المساهمة',
+    weekly: 'أسبوعي',
+    biweekly: 'نصف شهري',
+    monthly: 'شهري',
+    startDate: 'تاريخ البدء',
+    payoutMethod: 'طريقة الدفع',
+    rotation: 'التناوب',
+    randomSelection: 'اختيار عشوائي',
+    biddingSystem: 'نظام المزايدة',
+    contribution: 'مساهمة',
+    depositWithdraw: 'إيداع/سحب',
+    lightMode: 'الوضع الفاتح',
+    completed: 'مكتمل',
+    progress: 'التقدم',
+    nextDue: 'الاستحقاق التالي',
+    payoutStatus: 'حالة الدفع',
+    ready: 'جاهز',
+    yourGroups: 'مجموعاتك',
+    manageGroups: 'إدارة المجموعات',
+    groupsInfoText: 'أنشئ وانضم إلى مجموعات الادخار مع الأصدقاء والعائلة أو الزملاء',
+    searchGroups: 'البحث عن مجموعات',
+    filterByStatus: 'تصفية حسب الحالة',
+    all: 'الكل',
+    sortBy: 'ترتيب حسب',
+    name: 'الاسم',
+    date: 'التاريخ',
+    amount: 'المبلغ',
+    noGroupsFound: 'لم يتم العثور على مجموعات',
+    noMatchingGroups: 'لا توجد مجموعات مطابقة',
+    createFirstGroup: 'إنشاء مجموعتك الأولى',
+    recentMembers: 'الأعضاء الأخيرون',
+    groupSummary: 'ملخص المجموعة',
+    totalGroups: 'إجمالي المجموعات',
+    activeGroups: 'المجموعات النشطة',
+    totalMembers: 'إجمالي الأعضاء',
+    avgContribution: 'متوسط المساهمة',
+    trackContributions: 'تتبع المساهمات',
+    payments: 'المدفوعات',
+    createNewGroup: 'إنشاء مجموعة جديدة',
+    availableBalance: 'الرصيد المتاح',
+    viewAll: 'عرض الكل',
+    paymentCalendar: 'تقويم المدفوعات',
+    receivedPayout: 'استلم الدفعة',
+    hoursAgo: 'ساعات مضت',
+    joinedGroup: 'انضم إلى المجموعة',
+    yesterday: 'أمس',
+    madeContribution: 'قدم مساهمة',
+    daysAgo: 'أيام مضت',
+    returnToDashboard: 'العودة إلى لوحة التحكم',
   },
   sw: {
     welcome: 'Karibu',
@@ -628,7 +886,6 @@ export const translations: TranslationsType = {
     noMessages: 'Hakuna ujumbe',
     noMessagesDesc: 'Huna ujumbe bado.',
     checkOut: 'Angalia',
-    profile: 'wasifu',
     joinTontine: 'Jiunge na Tontine hii!',
     
     // Adding new translations for ContributionManager component
@@ -668,5 +925,58 @@ export const translations: TranslationsType = {
     ago: 'iliyopita',
     invitationSent: 'Mwaliko Umetumwa',
     invitationSentDesc: 'Rafiki yako atapokea barua pepe ya mwaliko hivi karibuni',
+    
+    // Adding all missing translations from error list
+    contributionAmount: 'Kiasi cha Mchango',
+    contributionFrequency: 'Marudio ya Mchango',
+    weekly: 'Kila Wiki',
+    biweekly: 'Kila Wiki Mbili',
+    monthly: 'Kila Mwezi',
+    startDate: 'Tarehe ya Kuanza',
+    payoutMethod: 'Njia ya Malipo',
+    rotation: 'Mzunguko',
+    randomSelection: 'Uteuzi wa Nasibu',
+    biddingSystem: 'Mfumo wa Mnada',
+    contribution: 'Mchango',
+    depositWithdraw: 'Weka/Toa Pesa',
+    lightMode: 'Hali ya Mwanga',
+    completed: 'Imekamilika',
+    progress: 'Maendeleo',
+    nextDue: 'Malipo Yanayofuata',
+    payoutStatus: 'Hali ya Malipo',
+    ready: 'Tayari',
+    yourGroups: 'Vikundi Vyako',
+    manageGroups: 'Simamia Vikundi',
+    groupsInfoText: 'Unda na jiunge na vikundi vya kuweka akiba na marafiki, familia au wafanyakazi wenzako',
+    searchGroups: 'Tafuta Vikundi',
+    filterByStatus: 'Chuja kwa Hali',
+    all: 'Vyote',
+    sortBy: 'Panga Kwa',
+    name: 'Jina',
+    date: 'Tarehe',
+    amount: 'Kiasi',
+    noGroupsFound: 'Hakuna vikundi vilivyopatikana',
+    noMatchingGroups: 'Hakuna vikundi vinavyolingana',
+    createFirstGroup: 'Unda kikundi chako cha kwanza',
+    recentMembers: 'Wanachama wa Hivi Karibuni',
+    groupSummary: 'Muhtasari wa Kikundi',
+    totalGroups: 'Jumla ya Vikundi',
+    activeGroups: 'Vikundi Vinavyotumika',
+    totalMembers: 'Jumla ya Wanachama',
+    avgContribution: 'Wastani wa Mchango',
+    trackContributions: 'Fuatilia Michango',
+    payments: 'Malipo',
+    createNewGroup: 'Unda Kikundi Kipya',
+    availableBalance: 'Salio Linalotumika',
+    viewAll: 'Ona Yote',
+    paymentCalendar: 'Kalenda ya Malipo',
+    receivedPayout: 'Alipokea malipo',
+    hoursAgo: 'masaa yaliyopita',
+    joinedGroup: 'alijiunga na kikundi',
+    yesterday: 'jana',
+    madeContribution: 'Alifanya mchango',
+    daysAgo: 'siku zilizopita',
+    returnToDashboard: 'Rudi kwenye Dashibodi',
   }
 };
+

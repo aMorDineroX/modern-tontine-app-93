@@ -123,32 +123,19 @@ export default function ActivityFeed({ groupId, limit = 5 }: ActivityFeedProps) 
   };
   
   const getActivityMessage = (activity: Activity) => {
-    switch (activity.type) {
-      case "contribution":
-        return t('activityContribution', {
-          user: activity.user.name,
-          amount: formatAmount(activity.amount || 0),
-          group: activity.groupName
-        });
-      case "payout":
-        return t('activityPayout', {
-          user: activity.user.name,
-          amount: formatAmount(activity.amount || 0),
-          group: activity.groupName
-        });
-      case "join":
-        return t('activityJoin', {
-          user: activity.user.name,
-          group: activity.groupName
-        });
-      case "creation":
-        return t('activityCreation', {
-          user: activity.user.name,
-          group: activity.groupName
-        });
-      default:
-        return "";
+    const tKey = `activity${activity.type.charAt(0).toUpperCase() + activity.type.slice(1)}`;
+    let message = t(tKey as any);
+    
+    // Replace template placeholders with actual values
+    message = message.replace('{user}', activity.user.name);
+    if (activity.amount) {
+      message = message.replace('{amount}', formatAmount(activity.amount));
     }
+    if (activity.groupName) {
+      message = message.replace('{group}', activity.groupName);
+    }
+    
+    return message;
   };
   
   if (loading) {

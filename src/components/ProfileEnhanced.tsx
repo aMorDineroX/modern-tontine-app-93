@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { User, Camera, EditIcon, Bookmark, Bell, Calendar, Eye, Clock, MessageSquare } from "lucide-react";
+import { User, Camera, EditIcon, Bookmark, Bell, Calendar, Eye, Clock, MessageSquare, DollarSign } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";

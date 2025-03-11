@@ -1,565 +1,672 @@
-export type Language = 'fr' | 'en' | 'es' | 'ar' | 'sw';
+export type Language = 'en' | 'fr' | 'es' | 'ar' | 'sw';
 
-export type TranslationKeys = {
+export const currencies = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  { code: 'CAD', symbol: 'CA$', name: 'Canadian Dollar' },
+  { code: 'AUD', symbol: 'AU$', name: 'Australian Dollar' },
+  { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc' },
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
+  { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
+  { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
+  { code: 'MXN', symbol: 'Mex$', name: 'Mexican Peso' },
+  { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
+  { code: 'HKD', symbol: 'HK$', name: 'Hong Kong Dollar' },
+  { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
+  { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
+  { code: 'TRY', symbol: '₺', name: 'Turkish Lira' },
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
+];
+
+type TranslationKeys = {
   welcome: string;
-  trackContributions: string;
-  createNewGroup: string;
-  totalContributions: string;
-  availableBalance: string;
-  activeGroups: string;
-  nextPayout: string;
-  yourGroups: string;
-  viewAll: string;
-  paymentCalendar: string;
-  recentMembers: string;
-  recentActivity: string;
-  receivedPayout: string;
-  joinedGroup: string;
-  madeContribution: string;
-  hoursAgo: string;
-  yesterday: string;
-  daysAgo: string;
+  dashboard: string;
+  groups: string;
+  profile: string;
+  signOut: string;
+  signIn: string;
+  signUp: string;
+  forgotPassword: string;
+  resetPassword: string;
+  pageNotFound: string;
+  goHome: string;
+  email: string;
+  password: string;
+  fullName: string;
+  confirmPassword: string;
+  resetPasswordEmailSent: string;
+  resetPasswordSuccess: string;
+  newPassword: string;
+  passwordNotMatch: string;
+  invalidEmail: string;
+  passwordRequired: string;
+  nameRequired: string;
+  confirmPasswordRequired: string;
+  passwordsMustMatch: string;
+  createGroup: string;
+  groupName: string;
+  groupDescription: string;
+  create: string;
+  cancel: string;
+  groupNameRequired: string;
+  groupDescriptionRequired: string;
+  myGroups: string;
+  noGroupsYet: string;
+  createYourFirstGroup: string;
   members: string;
-  contribution: string;
-  nextDue: string;
   active: string;
   pending: string;
   paid: string;
-  completed: string;
-  complete: string;
-  groupName: string;
-  contributionAmount: string;
-  contributionFrequency: string;
-  startDate: string;
-  payoutMethod: string;
+  search: string;
+  noMembersYet: string;
   inviteMembers: string;
-  createGroup: string;
-  weekly: string;
-  biweekly: string;
-  monthly: string;
-  rotation: string;
-  randomSelection: string;
-  biddingSystem: string;
-  dashboard: string;
-  myGroups: string;
-  profile: string;
-  currency: string;
-  language: string;
   settings: string;
-  payments: string;
+  general: string;
+  account: string;
+  notifications: string;
+  language: string;
+  currency: string;
   darkMode: string;
-  lightMode: string;
-  pageNotFound: string;
-  returnToDashboard: string;
-  
-  // Adding missing keys for the Groups page
-  manageGroups: string;
-  searchGroups: string;
-  filterByStatus: string;
-  all: string; 
-  noGroupsFound: string;
-  noMatchingGroups: string;
-  createFirstGroup: string;
-  groupSummary: string;
-  totalGroups: string;
-  totalMembers: string;
-  avgContribution: string;
-  
-  // Adding deposit/withdraw key
-  depositWithdraw: string;
-  
-  // Adding missing keys from error messages
-  error: string;
-  success: string;
-  mustBeLoggedIn: string;
-  groupCreated: string;
-  errorCreatingGroup: string;
-  creating: string;
-  progress: string;
-  payoutStatus: string;
+  saveChanges: string;
+  editProfile: string;
+  memberSince: string;
+  totalContributions: string;
+  groupsJoined: string;
+  upcomingPayments: string;
+  actions: string;
+  activity: string;
   upcoming: string;
-  ready: string;
-  errorFetchingGroups: string;
-  groupsInfoText: string;
-  sortBy: string;
-  name: string;
-  date: string;
-  amount: string;
+  savedGroups: string;
+  messages: string;
+  noUpcomingPayments: string;
+  nextPayout: string;
+  noMessages: string;
+  noMessagesDesc: string;
+  checkOut: string;
+  profile: string;
+  joinTontine: string;
   
   // Adding missing keys for ContributionManager component
   contributions: string;
   addContribution: string;
   missed: string;
   frequency: string;
+  
+  // Ajout des clés de traduction pour les fonctionnalités sociales
+  share: string;
+  copyLink: string;
+  linkCopied: string;
+  close: string;
+  inviteFriends: string;
+  inviteFriendsTitle: string;
+  inviteByEmail: string;
+  send: string;
+  orShareLink: string;
+  copied: string;
+  copy: string;
+  success: string;
+  less: string;
+  more: string;
+  sendMessage: string;
+  recentActivity: string;
+  noRecentActivity: string;
+  activityContribution: string;
+  activityPayout: string;
+  activityJoin: string;
+  activityCreation: string;
+  minute: string;
+  minutes: string;
+  hour: string;
+  hours: string;
+  day: string;
+  days: string;
+  ago: string;
+  invitationSent: string;
+  invitationSentDesc: string;
 };
 
 type TranslationsType = {
-  [key in Language]: TranslationKeys;
+  en: TranslationKeys;
+  fr: TranslationKeys;
+  es: TranslationKeys;
+  ar: TranslationKeys;
+  sw: TranslationKeys;
 };
 
 export const translations: TranslationsType = {
   en: {
-    welcome: 'Welcome Back!',
-    trackContributions: 'Track your tontine contributions and manage your savings groups',
-    createNewGroup: 'Create New Group',
-    totalContributions: 'Total Contributions',
-    availableBalance: 'Available Balance',
-    activeGroups: 'Active Groups',
-    nextPayout: 'Next Payout',
-    yourGroups: 'Your Tontine Groups',
-    viewAll: 'View All',
-    paymentCalendar: 'Payment Calendar',
-    recentMembers: 'Recent Members',
-    recentActivity: 'Recent Activity',
-    receivedPayout: 'You received a payout of',
-    joinedGroup: 'joined',
-    madeContribution: 'You made a contribution of',
-    hoursAgo: 'hours ago',
-    yesterday: 'Yesterday',
-    daysAgo: 'days ago',
-    members: 'members',
-    contribution: 'Contribution',
-    nextDue: 'Next Due',
+    welcome: 'Welcome',
+    dashboard: 'Dashboard',
+    groups: 'Groups',
+    profile: 'Profile',
+    signOut: 'Sign Out',
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
+    forgotPassword: 'Forgot Password',
+    resetPassword: 'Reset Password',
+    pageNotFound: 'Page Not Found',
+    goHome: 'Go Home',
+    email: 'Email',
+    password: 'Password',
+    fullName: 'Full Name',
+    confirmPassword: 'Confirm Password',
+    resetPasswordEmailSent: 'Password reset email sent. Please check your inbox.',
+    resetPasswordSuccess: 'Your password has been successfully reset.',
+    newPassword: 'New Password',
+    passwordNotMatch: 'Passwords do not match',
+    invalidEmail: 'Invalid email address',
+    passwordRequired: 'Password is required',
+    nameRequired: 'Name is required',
+    confirmPasswordRequired: 'Confirm password is required',
+    passwordsMustMatch: 'Passwords must match',
+    createGroup: 'Create Group',
+    groupName: 'Group Name',
+    groupDescription: 'Group Description',
+    create: 'Create',
+    cancel: 'Cancel',
+    groupNameRequired: 'Group name is required',
+    groupDescriptionRequired: 'Group description is required',
+    myGroups: 'My Groups',
+    noGroupsYet: 'No groups yet',
+    createYourFirstGroup: 'Create your first group',
+    members: 'Members',
     active: 'Active',
     pending: 'Pending',
     paid: 'Paid',
-    completed: 'Completed',
-    complete: 'Complete',
-    groupName: 'Group Name',
-    contributionAmount: 'Contribution Amount',
-    contributionFrequency: 'Contribution Frequency',
-    startDate: 'Start Date',
-    payoutMethod: 'Payout Method',
-    inviteMembers: 'Invite Members (email addresses, comma separated)',
-    createGroup: 'Create Tontine Group',
-    weekly: 'Weekly',
-    biweekly: 'Bi-weekly',
-    monthly: 'Monthly',
-    rotation: 'Rotation',
-    randomSelection: 'Random Selection',
-    biddingSystem: 'Bidding System',
-    dashboard: 'Dashboard',
-    myGroups: 'My Groups',
-    profile: 'Profile',
-    currency: 'Currency',
-    language: 'Language',
+    search: 'Search',
+    noMembersYet: 'No members yet',
+    inviteMembers: 'Invite Members',
     settings: 'Settings',
-    payments: 'Payments',
+    general: 'General',
+    account: 'Account',
+    notifications: 'Notifications',
+    language: 'Language',
+    currency: 'Currency',
     darkMode: 'Dark Mode',
-    lightMode: 'Light Mode',
-    pageNotFound: 'Oops! Page not found',
-    returnToDashboard: 'Return to Dashboard',
-    
-    // Adding missing translations
-    error: 'Error',
-    success: 'Success',
-    mustBeLoggedIn: 'You must be logged in to create a group',
-    groupCreated: 'Group created successfully',
-    errorCreatingGroup: 'An error occurred while creating the group',
-    creating: 'Creating',
-    progress: 'Progress',
-    payoutStatus: 'Payout Status',
+    saveChanges: 'Save Changes',
+    editProfile: 'Edit Profile',
+    memberSince: 'Member Since',
+    totalContributions: 'Total Contributions',
+    groupsJoined: 'Groups Joined',
+    upcomingPayments: 'Upcoming Payments',
+    actions: 'Actions',
+    activity: 'Activity',
     upcoming: 'Upcoming',
-    ready: 'Ready',
-    errorFetchingGroups: 'An error occurred while fetching groups',
-    groupsInfoText: 'Create and manage your tontine groups. Track contributions and payouts for each group.',
-    sortBy: 'Sort by',
-    name: 'Name',
-    date: 'Date',
-    amount: 'Amount',
-    
-    // Existing keys
-    manageGroups: 'Manage and track your tontine groups',
-    searchGroups: 'Search groups...',
-    filterByStatus: 'Filter by status',
-    all: 'All',
-    noGroupsFound: 'No groups found',
-    noMatchingGroups: 'No groups match your search criteria',
-    createFirstGroup: 'Create your first group to get started',
-    groupSummary: 'Group Summary',
-    totalGroups: 'Total Groups',
-    totalMembers: 'Total Members',
-    avgContribution: 'Avg. Contribution',
-    depositWithdraw: 'Deposit/Withdraw',
+    savedGroups: 'Saved Groups',
+    messages: 'Messages',
+    noUpcomingPayments: 'No upcoming payments',
+    nextPayout: 'Next Payout',
+    noMessages: 'No messages',
+    noMessagesDesc: 'You have no messages yet.',
+    checkOut: 'Check out',
+    profile: 'profile',
+    joinTontine: 'Join this Tontine!',
     
     // Adding new translations for ContributionManager component
     contributions: 'Contributions',
     addContribution: 'Add Contribution',
     missed: 'Missed',
-    frequency: 'Frequency'
+    frequency: 'Frequency',
+    
+    // Social features translations
+    share: 'Share',
+    copyLink: 'Copy Link',
+    linkCopied: 'Link copied to clipboard',
+    close: 'Close',
+    inviteFriends: 'Invite Friends',
+    inviteFriendsTitle: 'Invite your friends to join',
+    inviteByEmail: 'Invite by email',
+    send: 'Send',
+    orShareLink: 'Or share this invitation link',
+    copied: 'Copied',
+    copy: 'Copy',
+    success: 'Success',
+    less: 'Less',
+    more: 'More',
+    sendMessage: 'Send Message',
+    recentActivity: 'Recent Activity',
+    noRecentActivity: 'No recent activity to show',
+    activityContribution: '{user} contributed {amount} to {group}',
+    activityPayout: '{user} received {amount} from {group}',
+    activityJoin: '{user} joined {group}',
+    activityCreation: '{user} created {group}',
+    minute: 'minute',
+    minutes: 'minutes',
+    hour: 'hour',
+    hours: 'hours',
+    day: 'day',
+    days: 'days',
+    ago: 'ago',
+    invitationSent: 'Invitation Sent',
+    invitationSentDesc: 'Your friend will receive an invitation email shortly',
   },
   fr: {
-    welcome: 'Bienvenue !',
-    trackContributions: 'Suivez vos contributions à la tontine et gérez vos groupes d\'épargne',
-    createNewGroup: 'Créer un Nouveau Groupe',
-    totalContributions: 'Contributions Totales',
-    availableBalance: 'Solde Disponible',
-    activeGroups: 'Groupes Actifs',
-    nextPayout: 'Prochain Versement',
-    yourGroups: 'Vos Groupes de Tontine',
-    viewAll: 'Voir Tout',
-    paymentCalendar: 'Calendrier de Paiement',
-    recentMembers: 'Membres Récents',
-    recentActivity: 'Activité Récente',
-    receivedPayout: 'Vous avez reçu un versement de',
-    joinedGroup: 'a rejoint',
-    madeContribution: 'Vous avez fait une contribution de',
-    hoursAgo: 'heures',
-    yesterday: 'Hier',
-    daysAgo: 'jours',
-    members: 'membres',
-    contribution: 'Contribution',
-    nextDue: 'Prochaine Échéance',
+    welcome: 'Bienvenue',
+    dashboard: 'Tableau de bord',
+    groups: 'Groupes',
+    profile: 'Profil',
+    signOut: 'Déconnexion',
+    signIn: 'Connexion',
+    signUp: 'Inscription',
+    forgotPassword: 'Mot de passe oublié',
+    resetPassword: 'Réinitialiser le mot de passe',
+    pageNotFound: 'Page non trouvée',
+    goHome: 'Retour à l\'accueil',
+    email: 'Email',
+    password: 'Mot de passe',
+    fullName: 'Nom complet',
+    confirmPassword: 'Confirmer le mot de passe',
+    resetPasswordEmailSent: 'Email de réinitialisation du mot de passe envoyé. Veuillez vérifier votre boîte de réception.',
+    resetPasswordSuccess: 'Votre mot de passe a été réinitialisé avec succès.',
+    newPassword: 'Nouveau mot de passe',
+    passwordNotMatch: 'Les mots de passe ne correspondent pas',
+    invalidEmail: 'Adresse email invalide',
+    passwordRequired: 'Le mot de passe est requis',
+    nameRequired: 'Le nom est requis',
+    confirmPasswordRequired: 'La confirmation du mot de passe est requise',
+    passwordsMustMatch: 'Les mots de passe doivent correspondre',
+    createGroup: 'Créer un groupe',
+    groupName: 'Nom du groupe',
+    groupDescription: 'Description du groupe',
+    create: 'Créer',
+    cancel: 'Annuler',
+    groupNameRequired: 'Le nom du groupe est requis',
+    groupDescriptionRequired: 'La description du groupe est requise',
+    myGroups: 'Mes groupes',
+    noGroupsYet: 'Aucun groupe pour le moment',
+    createYourFirstGroup: 'Créer votre premier groupe',
+    members: 'Membres',
     active: 'Actif',
     pending: 'En attente',
     paid: 'Payé',
-    completed: 'Terminé',
-    complete: 'Terminé',
-    groupName: 'Nom du Groupe',
-    contributionAmount: 'Montant de la Contribution',
-    contributionFrequency: 'Fréquence de Contribution',
-    startDate: 'Date de Début',
-    payoutMethod: 'Méthode de Versement',
-    inviteMembers: 'Inviter des Membres (adresses e-mail, séparées par des virgules)',
-    createGroup: 'Créer un Groupe de Tontine',
-    weekly: 'Hebdomadaire',
-    biweekly: 'Bimensuel',
-    monthly: 'Mensuel',
-    rotation: 'Rotation',
-    randomSelection: 'Sélection Aléatoire',
-    biddingSystem: 'Système d\'Enchères',
-    dashboard: 'Tableau de Bord',
-    myGroups: 'Mes Groupes',
-    profile: 'Profil',
-    currency: 'Devise',
-    language: 'Langue',
+    search: 'Rechercher',
+    noMembersYet: 'Aucun membre pour le moment',
+    inviteMembers: 'Inviter des membres',
     settings: 'Paramètres',
-    payments: 'Paiements',
-    darkMode: 'Mode Sombre',
-    lightMode: 'Mode Clair',
-    pageNotFound: 'Oups ! Page non trouvée',
-    returnToDashboard: 'Retourner au Tableau de Bord',
-    
-    // Adding missing translations
-    error: 'Erreur',
-    success: 'Succès',
-    mustBeLoggedIn: 'Vous devez être connecté pour créer un groupe',
-    groupCreated: 'Groupe créé avec succès',
-    errorCreatingGroup: 'Une erreur est survenue lors de la création du groupe',
-    creating: 'Création',
-    progress: 'Progression',
-    payoutStatus: 'Statut de Paiement',
+    general: 'Général',
+    account: 'Compte',
+    notifications: 'Notifications',
+    language: 'Langue',
+    currency: 'Devise',
+    darkMode: 'Mode sombre',
+    saveChanges: 'Enregistrer les modifications',
+    editProfile: 'Modifier le profil',
+    memberSince: 'Membre depuis',
+    totalContributions: 'Contributions totales',
+    groupsJoined: 'Groupes rejoints',
+    upcomingPayments: 'Paiements à venir',
+    actions: 'Actions',
+    activity: 'Activité',
     upcoming: 'À venir',
-    ready: 'Prêt',
-    errorFetchingGroups: 'Une erreur est survenue lors de la récupération des groupes',
-    groupsInfoText: 'Créez et gérez vos groupes de tontine. Suivez les contributions et les versements pour chaque groupe.',
-    sortBy: 'Trier par',
-    name: 'Nom',
-    date: 'Date',
-    amount: 'Montant',
-    
-    // Existing keys
-    manageGroups: 'Gérez et suivez vos groupes de tontine',
-    searchGroups: 'Rechercher des groupes...',
-    filterByStatus: 'Filtrer par statut',
-    all: 'Tous',
-    noGroupsFound: 'Aucun groupe trouvé',
-    noMatchingGroups: 'Aucun groupe ne correspond à vos critères de recherche',
-    createFirstGroup: 'Créez votre premier groupe pour commencer',
-    groupSummary: 'Résumé des Groupes',
-    totalGroups: 'Nombre Total de Groupes',
-    totalMembers: 'Nombre Total de Membres',
-    avgContribution: 'Contribution Moyenne',
-    depositWithdraw: 'Dépôt/Retrait',
+    savedGroups: 'Groupes enregistrés',
+    messages: 'Messages',
+    noUpcomingPayments: 'Aucun paiement à venir',
+    nextPayout: 'Prochain paiement',
+    noMessages: 'Aucun message',
+    noMessagesDesc: 'Vous n\'avez pas encore de messages.',
+    checkOut: 'Découvrez',
+    profile: 'profil',
+    joinTontine: 'Rejoignez cette Tontine !',
     
     // Adding new translations for ContributionManager component
     contributions: 'Contributions',
     addContribution: 'Ajouter une Contribution',
     missed: 'Manquée',
-    frequency: 'Fréquence'
+    frequency: 'Fréquence',
+    
+    // Social features translations
+    share: 'Partager',
+    copyLink: 'Copier le lien',
+    linkCopied: 'Lien copié dans le presse-papiers',
+    close: 'Fermer',
+    inviteFriends: 'Inviter des amis',
+    inviteFriendsTitle: 'Invitez vos amis à rejoindre',
+    inviteByEmail: 'Inviter par email',
+    send: 'Envoyer',
+    orShareLink: 'Ou partagez ce lien d\'invitation',
+    copied: 'Copié',
+    copy: 'Copier',
+    success: 'Succès',
+    less: 'Moins',
+    more: 'Plus',
+    sendMessage: 'Envoyer un message',
+    recentActivity: 'Activité récente',
+    noRecentActivity: 'Aucune activité récente à afficher',
+    activityContribution: '{user} a contribué {amount} à {group}',
+    activityPayout: '{user} a reçu {amount} de {group}',
+    activityJoin: '{user} a rejoint {group}',
+    activityCreation: '{user} a créé {group}',
+    minute: 'minute',
+    minutes: 'minutes',
+    hour: 'heure',
+    hours: 'heures',
+    day: 'jour',
+    days: 'jours',
+    ago: 'il y a',
+    invitationSent: 'Invitation Envoyée',
+    invitationSentDesc: 'Votre ami recevra un email d\'invitation sous peu',
   },
   es: {
-    welcome: '¡Bienvenido de Nuevo!',
-    trackContributions: 'Sigue tus contribuciones a la tontina y administra tus grupos de ahorro',
-    createNewGroup: 'Crear Nuevo Grupo',
-    totalContributions: 'Contribuciones Totales',
-    availableBalance: 'Saldo Disponible',
-    activeGroups: 'Grupos Activos',
-    nextPayout: 'Próximo Pago',
-    yourGroups: 'Tus Grupos de Tontina',
-    viewAll: 'Ver Todo',
-    paymentCalendar: 'Calendario de Pagos',
-    recentMembers: 'Miembros Recientes',
-    recentActivity: 'Actividad Reciente',
-    receivedPayout: 'Recibiste un pago de',
-    joinedGroup: 'se unió a',
-    madeContribution: 'Hiciste una contribución de',
-    hoursAgo: 'horas atrás',
-    yesterday: 'Ayer',
-    daysAgo: 'días atrás',
-    members: 'miembros',
-    contribution: 'Contribución',
-    nextDue: 'Próximo Vencimiento',
+    welcome: 'Bienvenido',
+    dashboard: 'Tablero',
+    groups: 'Grupos',
+    profile: 'Perfil',
+    signOut: 'Cerrar sesión',
+    signIn: 'Iniciar sesión',
+    signUp: 'Registrarse',
+    forgotPassword: 'Olvidé mi contraseña',
+    resetPassword: 'Restablecer la contraseña',
+    pageNotFound: 'Página no encontrada',
+    goHome: 'Ir a la página de inicio',
+    email: 'Correo electrónico',
+    password: 'Contraseña',
+    fullName: 'Nombre completo',
+    confirmPassword: 'Confirmar contraseña',
+    resetPasswordEmailSent: 'Se ha enviado un correo electrónico para restablecer la contraseña. Por favor, revise su bandeja de entrada.',
+    resetPasswordSuccess: 'Su contraseña ha sido restablecida con éxito.',
+    newPassword: 'Nueva contraseña',
+    passwordNotMatch: 'Las contraseñas no coinciden',
+    invalidEmail: 'Dirección de correo electrónico no válida',
+    passwordRequired: 'Se requiere contraseña',
+    nameRequired: 'Se requiere nombre',
+    confirmPasswordRequired: 'Se requiere confirmar la contraseña',
+    passwordsMustMatch: 'Las contraseñas deben coincidir',
+    createGroup: 'Crear grupo',
+    groupName: 'Nombre del grupo',
+    groupDescription: 'Descripción del grupo',
+    create: 'Crear',
+    cancel: 'Cancelar',
+    groupNameRequired: 'Se requiere el nombre del grupo',
+    groupDescriptionRequired: 'Se requiere la descripción del grupo',
+    myGroups: 'Mis grupos',
+    noGroupsYet: 'Aún no hay grupos',
+    createYourFirstGroup: 'Crea tu primer grupo',
+    members: 'Miembros',
     active: 'Activo',
     pending: 'Pendiente',
     paid: 'Pagado',
-    completed: 'Completado',
-    complete: 'Completo',
-    groupName: 'Nombre del Grupo',
-    contributionAmount: 'Monto de Contribución',
-    contributionFrequency: 'Frecuencia de Contribución',
-    startDate: 'Fecha de Inicio',
-    payoutMethod: 'Método de Pago',
-    inviteMembers: 'Invitar Miembros (direcciones de correo, separadas por comas)',
-    createGroup: 'Crear Grupo de Tontina',
-    weekly: 'Semanal',
-    biweekly: 'Quincenal',
-    monthly: 'Mensual',
-    rotation: 'Rotación',
-    randomSelection: 'Selección Aleatoria',
-    biddingSystem: 'Sistema de Pujas',
-    dashboard: 'Panel',
-    myGroups: 'Mis Grupos',
-    profile: 'Perfil',
-    currency: 'Moneda',
-    language: 'Idioma',
+    search: 'Buscar',
+    noMembersYet: 'Aún no hay miembros',
+    inviteMembers: 'Invitar miembros',
     settings: 'Ajustes',
-    payments: 'Pagos',
-    darkMode: 'Modo Oscuro',
-    lightMode: 'Modo Claro',
-    pageNotFound: '¡Ups! Página no encontrada',
-    returnToDashboard: 'Volver al Panel',
-    
-    // Adding missing translations
-    error: 'Error',
-    success: 'Éxito',
-    mustBeLoggedIn: 'Debes iniciar sesión para crear un grupo',
-    groupCreated: 'Grupo creado con éxito',
-    errorCreatingGroup: 'Ocurrió un error al crear el grupo',
-    creating: 'Creando',
-    progress: 'Progreso',
-    payoutStatus: 'Estado de Pago',
+    general: 'General',
+    account: 'Cuenta',
+    notifications: 'Notificaciones',
+    language: 'Idioma',
+    currency: 'Moneda',
+    darkMode: 'Modo oscuro',
+    saveChanges: 'Guardar cambios',
+    editProfile: 'Editar perfil',
+    memberSince: 'Miembro desde',
+    totalContributions: 'Contribuciones totales',
+    groupsJoined: 'Grupos unidos',
+    upcomingPayments: 'Próximos pagos',
+    actions: 'Acciones',
+    activity: 'Actividad',
     upcoming: 'Próximo',
-    ready: 'Listo',
-    errorFetchingGroups: 'Ocurrió un error al obtener los grupos',
-    groupsInfoText: 'Crea y administra tus grupos de tontina. Sigue las contribuciones y pagos para cada grupo.',
-    sortBy: 'Ordenar por',
-    name: 'Nombre',
-    date: 'Fecha',
-    amount: 'Monto',
-    
-    // Existing keys
-    manageGroups: 'Administra y sigue tus grupos de tontina',
-    searchGroups: 'Buscar grupos...',
-    filterByStatus: 'Filtrar por estado',
-    all: 'Todos',
-    noGroupsFound: 'No se encontraron grupos',
-    noMatchingGroups: 'Ningún grupo coincide con tus criterios de búsqueda',
-    createFirstGroup: 'Crea tu primer grupo para comenzar',
-    groupSummary: 'Resumen de Grupos',
-    totalGroups: 'Total de Grupos',
-    totalMembers: 'Total de Miembros',
-    avgContribution: 'Contribución Media',
-    depositWithdraw: 'Depósito/Retiro',
+    savedGroups: 'Grupos guardados',
+    messages: 'Mensajes',
+    noUpcomingPayments: 'No hay próximos pagos',
+    nextPayout: 'Próximo pago',
+    noMessages: 'Sin mensajes',
+    noMessagesDesc: 'Aún no tienes mensajes.',
+    checkOut: 'Echa un vistazo',
+    profile: 'perfil',
+    joinTontine: '¡Únete a esta Tontine!',
     
     // Adding new translations for ContributionManager component
     contributions: 'Contribuciones',
     addContribution: 'Añadir Contribución',
     missed: 'Perdidas',
-    frequency: 'Frecuencia'
+    frequency: 'Frecuencia',
+    
+    // Social features translations
+    share: 'Compartir',
+    copyLink: 'Copiar enlace',
+    linkCopied: 'Enlace copiado al portapapeles',
+    close: 'Cerrar',
+    inviteFriends: 'Invitar amigos',
+    inviteFriendsTitle: 'Invita a tus amigos a unirse',
+    inviteByEmail: 'Invitar por email',
+    send: 'Enviar',
+    orShareLink: 'O comparte este enlace de invitación',
+    copied: 'Copiado',
+    copy: 'Copiar',
+    success: 'Éxito',
+    less: 'Menos',
+    more: 'Más',
+    sendMessage: 'Enviar mensaje',
+    recentActivity: 'Actividad reciente',
+    noRecentActivity: 'No hay actividad reciente para mostrar',
+    activityContribution: '{user} contribuyó {amount} a {group}',
+    activityPayout: '{user} recibió {amount} de {group}',
+    activityJoin: '{user} se unió a {group}',
+    activityCreation: '{user} creó {group}',
+    minute: 'minuto',
+    minutes: 'minutos',
+    hour: 'hora',
+    hours: 'horas',
+    day: 'día',
+    days: 'días',
+    ago: 'hace',
+    invitationSent: 'Invitación enviada',
+    invitationSentDesc: 'Tu amigo recibirá un correo de invitación en breve',
   },
   ar: {
-    welcome: 'مرحبًا بعودتك!',
-    trackContributions: 'تتبع مساهماتك في التونتين وإدارة مجموعات التوفير الخاصة بك',
-    createNewGroup: 'إنشاء مجموعة جديدة',
-    totalContributions: 'إجمالي المساهمات',
-    availableBalance: 'الرصيد المتاح',
-    activeGroups: 'المجموعات النشطة',
-    nextPayout: 'الدفعة التالية',
-    yourGroups: 'مجموعات التونتين الخاصة بك',
-    viewAll: 'عرض الكل',
-    paymentCalendar: 'تقويم الدفع',
-    recentMembers: 'الأعضاء الأخيرون',
-    recentActivity: 'النشاط الأخير',
-    receivedPayout: 'لقد تلقيت دفعة بقيمة',
-    joinedGroup: 'انضم إلى',
-    madeContribution: 'قمت بمساهمة بقيمة',
-    hoursAgo: 'ساعات مضت',
-    yesterday: 'الأمس',
-    daysAgo: 'أيام مضت',
+    welcome: 'مرحبا',
+    dashboard: 'لوحة التحكم',
+    groups: 'المجموعات',
+    profile: 'الملف الشخصي',
+    signOut: 'تسجيل الخروج',
+    signIn: 'تسجيل الدخول',
+    signUp: 'إنشاء حساب',
+    forgotPassword: 'نسيت كلمة المرور',
+    resetPassword: 'إعادة تعيين كلمة المرور',
+    pageNotFound: 'الصفحة غير موجودة',
+    goHome: 'العودة إلى الصفحة الرئيسية',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    fullName: 'الاسم الكامل',
+    confirmPassword: 'تأكيد كلمة المرور',
+    resetPasswordEmailSent: 'تم إرسال رسالة بريد إلكتروني لإعادة تعيين كلمة المرور. يرجى التحقق من صندوق الوارد الخاص بك.',
+    resetPasswordSuccess: 'تمت إعادة تعيين كلمة المرور بنجاح.',
+    newPassword: 'كلمة مرور جديدة',
+    passwordNotMatch: 'كلمات المرور غير متطابقة',
+    invalidEmail: 'عنوان بريد إلكتروني غير صالح',
+    passwordRequired: 'كلمة المرور مطلوبة',
+    nameRequired: 'الاسم مطلوب',
+    confirmPasswordRequired: 'تأكيد كلمة المرور مطلوب',
+    passwordsMustMatch: 'يجب أن تتطابق كلمات المرور',
+    createGroup: 'إنشاء مجموعة',
+    groupName: 'اسم المجموعة',
+    groupDescription: 'وصف المجموعة',
+    create: 'إنشاء',
+    cancel: 'إلغاء',
+    groupNameRequired: 'اسم المجموعة مطلوب',
+    groupDescriptionRequired: 'وصف المجموعة مطلوب',
+    myGroups: 'مجموعاتي',
+    noGroupsYet: 'لا توجد مجموعات حتى الآن',
+    createYourFirstGroup: 'أنشئ مجموعتك الأولى',
     members: 'الأعضاء',
-    contribution: 'المساهمة',
-    nextDue: 'الاستحقاق التالي',
     active: 'نشط',
     pending: 'قيد الانتظار',
     paid: 'مدفوع',
-    completed: 'مكتمل',
-    complete: 'كامل',
-    groupName: 'اسم المجموعة',
-    contributionAmount: 'مبلغ المساهمة',
-    contributionFrequency: 'تكرار المساهمة',
-    startDate: 'تاريخ البدء',
-    payoutMethod: 'طريقة الدفع',
-    inviteMembers: 'دعوة أعضاء (عناوين البريد الإلكتروني، مفصولة بفواصل)',
-    createGroup: 'إنشاء مجموعة تونتين',
-    weekly: 'أسبوعي',
-    biweekly: 'نصف شهري',
-    monthly: 'شهري',
-    rotation: 'تناوب',
-    randomSelection: 'اختيار عشوائي',
-    biddingSystem: 'نظام المزايدة',
-    dashboard: 'لوحة التحكم',
-    myGroups: 'مجموعاتي',
-    profile: 'الملف الشخصي',
-    currency: 'العملة',
-    language: 'اللغة',
+    search: 'بحث',
+    noMembersYet: 'لا يوجد أعضاء حتى الآن',
+    inviteMembers: 'دعوة أعضاء',
     settings: 'الإعدادات',
-    payments: 'المدفوعات',
+    general: 'عام',
+    account: 'الحساب',
+    notifications: 'الإشعارات',
+    language: 'اللغة',
+    currency: 'العملة',
     darkMode: 'الوضع الداكن',
-    lightMode: 'الوضع الفاتح',
-    pageNotFound: 'عذراً! الصفحة غير موجودة',
-    returnToDashboard: 'العودة إلى لوحة التحكم',
-    
-    // Adding missing translations
-    error: 'خطأ',
-    success: 'نجاح',
-    mustBeLoggedIn: 'يجب تسجيل الدخول لإنشاء مجموعة',
-    groupCreated: 'تم إنشاء المجموعة بنجاح',
-    errorCreatingGroup: 'حدث خطأ أثناء إنشاء المجموعة',
-    creating: 'جاري الإنشاء',
-    progress: 'التقدم',
-    payoutStatus: 'حالة الدفع',
-    upcoming: 'قادم',
-    ready: 'جاهز',
-    errorFetchingGroups: 'حدث خطأ أثناء جلب المجموعات',
-    groupsInfoText: 'إنشاء وإدارة مجموعات التونتين الخاصة بك. تتبع المساهمات والمدفوعات لكل مجموعة.',
-    sortBy: 'ترتيب حسب',
-    name: 'الاسم',
-    date: 'التاريخ',
-    amount: 'المبلغ',
-    
-    // Existing keys
-    manageGroups: 'إدارة ومتابعة مجموعات التونتين الخاصة بك',
-    searchGroups: 'البحث عن المجموعات...',
-    filterByStatus: 'تصفية حسب الحالة',
-    all: 'الكل',
-    noGroupsFound: 'لم يتم العثور على مجموعات',
-    noMatchingGroups: 'لا توجد مجموعات تطابق معايير البحث الخاصة بك',
-    createFirstGroup: 'أنشئ مجموعتك الأولى للبدء',
-    groupSummary: 'ملخص المجموعة',
-    totalGroups: 'إجمالي المجموعات',
-    totalMembers: 'إجمالي الأعضاء',
-    avgContribution: 'متوسط المساهمة',
-    depositWithdraw: 'إيداع/سحب',
+    saveChanges: 'حفظ التغييرات',
+    editProfile: 'تعديل الملف الشخصي',
+    memberSince: 'عضو منذ',
+    totalContributions: 'إجمالي المساهمات',
+    groupsJoined: 'المجموعات التي انضممت إليها',
+    upcomingPayments: 'المدفوعات القادمة',
+    actions: 'الإجراءات',
+    activity: 'نشاط',
+    upcoming: 'القادمة',
+    savedGroups: 'المجموعات المحفوظة',
+    messages: 'رسائل',
+    noUpcomingPayments: 'لا توجد مدفوعات قادمة',
+    nextPayout: 'الدفعة التالية',
+    noMessages: 'لا توجد رسائل',
+    noMessagesDesc: 'ليس لديك رسائل بعد.',
+    checkOut: 'تحقق من',
+    profile: 'الملف الشخصي',
+    joinTontine: 'انضم إلى هذه التونتين!',
     
     // Adding new translations for ContributionManager component
     contributions: 'المساهمات',
     addContribution: 'إضافة مساهمة',
     missed: 'فائتة',
-    frequency: 'التكرار'
+    frequency: 'التكرار',
+    
+    // Social features translations
+    share: 'مشاركة',
+    copyLink: 'نسخ الرابط',
+    linkCopied: 'تم نسخ الرابط إلى الحافظة',
+    close: 'إغلاق',
+    inviteFriends: 'دعوة الأصدقاء',
+    inviteFriendsTitle: 'ادعُ أصدقاءك للانضمام',
+    inviteByEmail: 'دعوة عبر البريد الإلكتروني',
+    send: 'إرسال',
+    orShareLink: 'أو شارك رابط الدعوة هذا',
+    copied: 'تم النسخ',
+    copy: 'نسخ',
+    success: 'نجاح',
+    less: 'أقل',
+    more: 'المزيد',
+    sendMessage: 'إرسال رسالة',
+    recentActivity: 'النشاط الأخير',
+    noRecentActivity: 'لا يوجد نشاط حديث لعرضه',
+    activityContribution: 'ساهم {user} بمبلغ {amount} في {group}',
+    activityPayout: 'استلم {user} مبلغ {amount} من {group}',
+    activityJoin: 'انضم {user} إلى {group}',
+    activityCreation: 'أنشأ {user} مجموعة {group}',
+    minute: 'دقيقة',
+    minutes: 'دقائق',
+    hour: 'ساعة',
+    hours: 'ساعات',
+    day: 'يوم',
+    days: 'أيام',
+    ago: 'منذ',
+    invitationSent: 'تم إرسال الدعوة',
+    invitationSentDesc: 'سيتلقى صديقك رسالة دعوة عبر البريد الإلكتروني قريبًا',
   },
   sw: {
-    welcome: 'Karibu Tena!',
-    trackContributions: 'Fuatilia michango yako ya tontine na usimamie vikundi vyako vya akiba',
-    createNewGroup: 'Unda Kikundi Kipya',
-    totalContributions: 'Michango Yote',
-    availableBalance: 'Salio Linalotumika',
-    activeGroups: 'Vikundi Vinavyofanya Kazi',
-    nextPayout: 'Malipo Yajayo',
-    yourGroups: 'Vikundi Vyako vya Tontine',
-    viewAll: 'Tazama Vyote',
-    paymentCalendar: 'Kalenda ya Malipo',
-    recentMembers: 'Wanachama wa Hivi Karibuni',
-    recentActivity: 'Shughuli za Hivi Karibuni',
-    receivedPayout: 'Umepokea malipo ya',
-    joinedGroup: 'alijiunga na',
-    madeContribution: 'Umetoa mchango wa',
-    hoursAgo: 'saa zilizopita',
-    yesterday: 'Jana',
-    daysAgo: 'siku zilizopita',
-    members: 'wanachama',
-    contribution: 'Mchango',
-    nextDue: 'Inayofuata',
-    active: 'Inayofanya Kazi',
+    welcome: 'Karibu',
+    dashboard: 'Dashibodi',
+    groups: 'Vikundi',
+    profile: 'Wasifu',
+    signOut: 'Ondoka',
+    signIn: 'Ingia',
+    signUp: 'Jisajili',
+    forgotPassword: 'Umesahau Nenosiri',
+    resetPassword: 'Weka Upya Nenosiri',
+    pageNotFound: 'Ukurasa Haupatikani',
+    goHome: 'Nenda Nyumbani',
+    email: 'Barua pepe',
+    password: 'Nenosiri',
+    fullName: 'Jina Kamili',
+    confirmPassword: 'Thibitisha Nenosiri',
+    resetPasswordEmailSent: 'Barua pepe ya kuweka upya nenosiri imetumwa. Tafadhali angalia kikasha chako.',
+    resetPasswordSuccess: 'Nenosiri lako limewekwa upya kwa mafanikio.',
+    newPassword: 'Nenosiri Jipya',
+    passwordNotMatch: 'Nenosiri hailingani',
+    invalidEmail: 'Anwani ya barua pepe si sahihi',
+    passwordRequired: 'Nenosiri linahitajika',
+    nameRequired: 'Jina linahitajika',
+    confirmPasswordRequired: 'Uthibitisho wa nenosiri unahitajika',
+    passwordsMustMatch: 'Nenosiri lazima zilingane',
+    createGroup: 'Unda Kikundi',
+    groupName: 'Jina la Kikundi',
+    groupDescription: 'Maelezo ya Kikundi',
+    create: 'Unda',
+    cancel: 'Ghairi',
+    groupNameRequired: 'Jina la kikundi linahitajika',
+    groupDescriptionRequired: 'Maelezo ya kikundi yanahitajika',
+    myGroups: 'Vikundi Vyangu',
+    noGroupsYet: 'Hakuna vikundi bado',
+    createYourFirstGroup: 'Unda kikundi chako cha kwanza',
+    members: 'Wanachama',
+    active: 'Inayotumika',
     pending: 'Inasubiri',
     paid: 'Imelipwa',
-    completed: 'Imekamilika',
-    complete: 'Kamili',
-    groupName: 'Jina la Kikundi',
-    contributionAmount: 'Kiasi cha Mchango',
-    contributionFrequency: 'Mara ya Mchango',
-    startDate: 'Tarehe ya Kuanza',
-    payoutMethod: 'Njia ya Malipo',
-    inviteMembers: 'Alika Wanachama (barua pepe, zitenganishwe kwa koma)',
-    createGroup: 'Unda Kikundi cha Tontine',
-    weekly: 'Kila Wiki',
-    biweekly: 'Kila Wiki Mbili',
-    monthly: 'Kila Mwezi',
-    rotation: 'Mzunguko',
-    randomSelection: 'Uchaguzi wa Kinasibu',
-    biddingSystem: 'Mfumo wa Zabuni',
-    dashboard: 'Dashibodi',
-    myGroups: 'Vikundi Vyangu',
-    profile: 'Wasifu',
-    currency: 'Sarafu',
-    language: 'Lugha',
+    search: 'Tafuta',
+    noMembersYet: 'Hakuna wanachama bado',
+    inviteMembers: 'Alika Wanachama',
     settings: 'Mipangilio',
-    payments: 'Malipo',
+    general: 'Jumla',
+    account: 'Akaunti',
+    notifications: 'Arifa',
+    language: 'Lugha',
+    currency: 'Sarafu',
     darkMode: 'Hali ya Giza',
-    lightMode: 'Hali ya Mwanga',
-    pageNotFound: 'Samahani! Ukurasa haukupatikana',
-    returnToDashboard: 'Rudi kwenye Dashibodi',
-    
-    // Adding missing translations
-    error: 'Hitilafu',
-    success: 'Mafanikio',
-    mustBeLoggedIn: 'Lazima uwe umejiandikisha ili kuunda kikundi',
-    groupCreated: 'Kikundi kimeundwa kwa mafanikio',
-    errorCreatingGroup: 'Hitilafu imetokea wakati wa kuunda kikundi',
-    creating: 'Inaunda',
-    progress: 'Maendeleo',
-    payoutStatus: 'Hali ya Malipo',
-    upcoming: 'Inayokuja',
-    ready: 'Tayari',
-    errorFetchingGroups: 'Hitilafu imetokea wakati wa kuleta vikundi',
-    groupsInfoText: 'Unda na usimamie vikundi vyako vya tontine. Fuatilia michango na malipo kwa kila kikundi.',
-    sortBy: 'Panga kwa',
-    name: 'Jina',
-    date: 'Tarehe',
-    amount: 'Kiasi',
-    
-    // Existing keys
-    manageGroups: 'Simamia na fuatilia vikundi vyako vya tontine',
-    searchGroups: 'Tafuta vikundi...',
-    filterByStatus: 'Chuja kwa hali',
-    all: 'Vyote',
-    noGroupsFound: 'Hakuna vikundi vilivyopatikana',
-    noMatchingGroups: 'Hakuna vikundi vinavyolingana na vigezo vyako vya utafutaji',
-    createFirstGroup: 'Unda kikundi chako cha kwanza kuanza',
-    groupSummary: 'Muhtasari wa Kikundi',
-    totalGroups: 'Jumla ya Vikundi',
-    totalMembers: 'Jumla ya Wanachama',
-    avgContribution: 'Wastani wa Mchango',
-    depositWithdraw: 'Amana/Kutoa',
+    saveChanges: 'Hifadhi Mabadiliko',
+    editProfile: 'Hariri Wasifu',
+    memberSince: 'Mwanachama Tangu',
+    totalContributions: 'Jumla ya Michango',
+    groupsJoined: 'Vikundi Vilivyounganishwa',
+    upcomingPayments: 'Malipo Yanayokuja',
+    actions: 'Vitendo',
+    activity: 'Shughuli',
+    upcoming: 'Yanayokuja',
+    savedGroups: 'Vikundi Vilivyohifadhiwa',
+    messages: 'Ujumbe',
+    noUpcomingPayments: 'Hakuna malipo yanayokuja',
+    nextPayout: 'Malipo Yanayofuata',
+    noMessages: 'Hakuna ujumbe',
+    noMessagesDesc: 'Huna ujumbe bado.',
+    checkOut: 'Angalia',
+    profile: 'wasifu',
+    joinTontine: 'Jiunge na Tontine hii!',
     
     // Adding new translations for ContributionManager component
     contributions: 'Michango',
     addContribution: 'Ongeza Mchango',
     missed: 'Imekosekana',
-    frequency: 'Mara'
+    frequency: 'Mara',
+    
+    // Social features translations
+    share: 'Shiriki',
+    copyLink: 'Nakili Kiungo',
+    linkCopied: 'Kiungo kimenakiliwa kwenye ubao',
+    close: 'Funga',
+    inviteFriends: 'Alika Marafiki',
+    inviteFriendsTitle: 'Alika marafiki zako kujiunga',
+    inviteByEmail: 'Alika kwa barua pepe',
+    send: 'Tuma',
+    orShareLink: 'Au shiriki kiungo hiki cha mwaliko',
+    copied: 'Imenakiliwa',
+    copy: 'Nakili',
+    success: 'Imefanikiwa',
+    less: 'Chache',
+    more: 'Zaidi',
+    sendMessage: 'Tuma Ujumbe',
+    recentActivity: 'Shughuli za Hivi Karibuni',
+    noRecentActivity: 'Hakuna shughuli za hivi karibuni za kuonyesha',
+    activityContribution: '{user} amechangia {amount} kwa {group}',
+    activityPayout: '{user} amepokea {amount} kutoka {group}',
+    activityJoin: '{user} amejiunga na {group}',
+    activityCreation: '{user} ameunda {group}',
+    minute: 'dakika',
+    minutes: 'dakika',
+    hour: 'saa',
+    hours: 'masaa',
+    day: 'siku',
+    days: 'siku',
+    ago: 'iliyopita',
+    invitationSent: 'Mwaliko Umetumwa',
+    invitationSentDesc: 'Rafiki yako atapokea barua pepe ya mwaliko hivi karibuni',
   }
 };
-
-// Define available currencies
-export const currencies = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'XOF', symbol: 'CFA', name: 'West African CFA Franc' },
-  { code: 'XAF', symbol: 'FCFA', name: 'Central African CFA Franc' },
-  { code: 'GHS', symbol: '₵', name: 'Ghanaian Cedi' },
-  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
-  { code: 'KES', symbol: 'Ksh', name: 'Kenyan Shilling' },
-  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
-  { code: 'MAD', symbol: 'DH', name: 'Moroccan Dirham' },
-  { code: 'EGP', symbol: 'E£', name: 'Egyptian Pound' }
-];

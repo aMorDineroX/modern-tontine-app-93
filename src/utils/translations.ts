@@ -85,6 +85,12 @@ export type TranslationKeys = {
   name: string;
   date: string;
   amount: string;
+  
+  // Adding missing keys for ContributionManager component
+  contributions: string;
+  addContribution: string;
+  missed: string;
+  frequency: string;
 };
 
 type TranslationsType = {
@@ -174,7 +180,13 @@ export const translations: TranslationsType = {
     totalGroups: 'Total Groups',
     totalMembers: 'Total Members',
     avgContribution: 'Avg. Contribution',
-    depositWithdraw: 'Deposit/Withdraw'
+    depositWithdraw: 'Deposit/Withdraw',
+    
+    // Adding new translations for ContributionManager component
+    contributions: 'Contributions',
+    addContribution: 'Add Contribution',
+    missed: 'Missed',
+    frequency: 'Frequency'
   },
   fr: {
     welcome: 'Bienvenue !',
@@ -258,7 +270,13 @@ export const translations: TranslationsType = {
     totalGroups: 'Nombre Total de Groupes',
     totalMembers: 'Nombre Total de Membres',
     avgContribution: 'Contribution Moyenne',
-    depositWithdraw: 'Dépôt/Retrait'
+    depositWithdraw: 'Dépôt/Retrait',
+    
+    // Adding new translations for ContributionManager component
+    contributions: 'Contributions',
+    addContribution: 'Ajouter une Contribution',
+    missed: 'Manquée',
+    frequency: 'Fréquence'
   },
   es: {
     welcome: '¡Bienvenido de Nuevo!',
@@ -342,7 +360,13 @@ export const translations: TranslationsType = {
     totalGroups: 'Total de Grupos',
     totalMembers: 'Total de Miembros',
     avgContribution: 'Contribución Media',
-    depositWithdraw: 'Depósito/Retiro'
+    depositWithdraw: 'Depósito/Retiro',
+    
+    // Adding new translations for ContributionManager component
+    contributions: 'Contribuciones',
+    addContribution: 'Añadir Contribución',
+    missed: 'Perdidas',
+    frequency: 'Frecuencia'
   },
   ar: {
     welcome: 'مرحبًا بعودتك!',
@@ -426,7 +450,13 @@ export const translations: TranslationsType = {
     totalGroups: 'إجمالي المجموعات',
     totalMembers: 'إجمالي الأعضاء',
     avgContribution: 'متوسط المساهمة',
-    depositWithdraw: 'إيداع/سحب'
+    depositWithdraw: 'إيداع/سحب',
+    
+    // Adding new translations for ContributionManager component
+    contributions: 'المساهمات',
+    addContribution: 'إضافة مساهمة',
+    missed: 'فائتة',
+    frequency: 'التكرار'
   },
   sw: {
     welcome: 'Karibu Tena!',
@@ -510,7 +540,13 @@ export const translations: TranslationsType = {
     totalGroups: 'Jumla ya Vikundi',
     totalMembers: 'Jumla ya Wanachama',
     avgContribution: 'Wastani wa Mchango',
-    depositWithdraw: 'Amana/Kutoa'
+    depositWithdraw: 'Amana/Kutoa',
+    
+    // Adding new translations for ContributionManager component
+    contributions: 'Michango',
+    addContribution: 'Ongeza Mchango',
+    missed: 'Imekosekana',
+    frequency: 'Mara'
   }
 };
 

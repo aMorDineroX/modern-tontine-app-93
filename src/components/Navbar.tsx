@@ -30,7 +30,7 @@ export default function Navbar() {
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
-            <Link to="/" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
+            <Link to="/dashboard" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
               {t('dashboard')}
             </Link>
             <Link to="/groups" className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple transition-colors">
@@ -84,7 +84,7 @@ export default function Navbar() {
         <div className="sm:hidden absolute w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 animate-slide-down">
           <div className="pt-2 pb-3 space-y-1">
             <Link
-              to="/"
+              to="/dashboard"
               className="block px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple"
               onClick={() => setIsOpen(false)}
             >

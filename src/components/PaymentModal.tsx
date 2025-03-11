@@ -8,24 +8,47 @@ import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, Wallet, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { processPayment } from "@/utils/supabase";
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (type: "deposit" | "withdraw", amount: number) => void;
 }
 
-export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) {
   const [activeTab, setActiveTab] = useState<string>("deposit");
   const [amount, setAmount] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [selectedMethod, setSelectedMethod] = useState<string>("");
   const { t, currency } = useApp();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handlePayment = async (type: "deposit" | "withdraw") => {
+    if (!user) {
+      toast({
+        title: "Authentification requise",
+        description: "Veuillez vous connecter pour effectuer cette opération",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       toast({
-        title: "Invalid amount",
-        description: "Please enter a valid amount greater than 0",
+        title: "Montant invalide",
+        description: "Veuillez entrer un montant valide supérieur à 0",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedMethod) {
+      toast({
+        title: "Méthode de paiement requise",
+        description: "Veuillez sélectionner une méthode de paiement",
         variant: "destructive",
       });
       return;
@@ -34,28 +57,49 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
     setIsProcessing(true);
     
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Traiter le paiement avec Supabase
+      const { success, error } = await processPayment(
+        user.id,
+        Number(amount),
+        type
+      );
       
-      // Success message
+      if (!success) {
+        throw error || new Error("Une erreur est survenue lors du traitement");
+      }
+      
+      // Afficher un message de réussite
       toast({
-        title: type === "deposit" ? "Deposit successful" : "Withdrawal successful",
-        description: `${type === "deposit" ? "Deposited" : "Withdrawn"} ${currency.symbol}${amount}`,
+        title: type === "deposit" ? "Dépôt réussi" : "Retrait réussi",
+        description: `${type === "deposit" ? "Dépôt de" : "Retrait de"} ${currency.symbol}${amount}`,
         variant: "default",
       });
       
-      // Reset form
+      // Réinitialiser le formulaire
       setAmount("");
+      setSelectedMethod("");
+      
+      // Appeler le callback onSuccess si fourni
+      if (onSuccess) {
+        onSuccess(type, Number(amount));
+      }
+      
+      // Fermer la modale
       onClose();
     } catch (error) {
+      console.error("Erreur de paiement:", error);
       toast({
-        title: "Payment failed",
-        description: "An error occurred during the transaction",
+        title: "Échec du paiement",
+        description: "Une erreur s'est produite lors de la transaction",
         variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleMethodSelect = (method: string) => {
+    setSelectedMethod(method === selectedMethod ? "" : method);
   };
 
   return (
@@ -64,7 +108,7 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold">{t('depositWithdraw')}</DialogTitle>
           <DialogDescription className="text-center">
-            Manage your Tontine balance easily and securely.
+            Gérez votre solde Tontine facilement et en toute sécurité.
           </DialogDescription>
         </DialogHeader>
         
@@ -72,18 +116,18 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="deposit" className="flex items-center gap-2">
               <ArrowDownToLine size={16} />
-              <span>Deposit</span>
+              <span>Dépôt</span>
             </TabsTrigger>
             <TabsTrigger value="withdraw" className="flex items-center gap-2">
               <ArrowUpFromLine size={16} />
-              <span>Withdraw</span>
+              <span>Retrait</span>
             </TabsTrigger>
           </TabsList>
           
           <TabsContent value="deposit" className="py-4">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="deposit-amount">Deposit Amount</Label>
+                <Label htmlFor="deposit-amount">Montant du dépôt</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                     {currency.symbol}
@@ -102,13 +146,25 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               </div>
               
               <div className="space-y-2">
-                <Label>Payment Method</Label>
+                <Label>Méthode de paiement</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="flex justify-center items-center gap-2 h-20">
+                  <Button 
+                    variant={selectedMethod === "creditcard" ? "default" : "outline"} 
+                    className={`flex justify-center items-center gap-2 h-20 ${
+                      selectedMethod === "creditcard" ? "bg-tontine-purple text-white" : ""
+                    }`}
+                    onClick={() => handleMethodSelect("creditcard")}
+                  >
                     <CreditCard className="h-6 w-6" />
-                    <span>Credit Card</span>
+                    <span>Carte de crédit</span>
                   </Button>
-                  <Button variant="outline" className="flex justify-center items-center gap-2 h-20">
+                  <Button 
+                    variant={selectedMethod === "mobilemoney" ? "default" : "outline"} 
+                    className={`flex justify-center items-center gap-2 h-20 ${
+                      selectedMethod === "mobilemoney" ? "bg-tontine-purple text-white" : ""
+                    }`}
+                    onClick={() => handleMethodSelect("mobilemoney")}
+                  >
                     <Wallet className="h-6 w-6" />
                     <span>Mobile Money</span>
                   </Button>
@@ -116,11 +172,11 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               </div>
               
               <Button 
-                className="w-full" 
+                className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
                 disabled={isProcessing}
                 onClick={() => handlePayment("deposit")}
               >
-                {isProcessing ? "Processing..." : "Deposit Funds"}
+                {isProcessing ? "Traitement en cours..." : "Déposer des fonds"}
               </Button>
             </div>
           </TabsContent>
@@ -128,7 +184,7 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
           <TabsContent value="withdraw" className="py-4">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="withdraw-amount">Withdraw Amount</Label>
+                <Label htmlFor="withdraw-amount">Montant du retrait</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                     {currency.symbol}
@@ -147,13 +203,25 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               </div>
               
               <div className="space-y-2">
-                <Label>Withdrawal Method</Label>
+                <Label>Méthode de retrait</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="flex justify-center items-center gap-2 h-20">
+                  <Button 
+                    variant={selectedMethod === "bankaccount" ? "default" : "outline"} 
+                    className={`flex justify-center items-center gap-2 h-20 ${
+                      selectedMethod === "bankaccount" ? "bg-tontine-purple text-white" : ""
+                    }`}
+                    onClick={() => handleMethodSelect("bankaccount")}
+                  >
                     <CreditCard className="h-6 w-6" />
-                    <span>Bank Account</span>
+                    <span>Compte bancaire</span>
                   </Button>
-                  <Button variant="outline" className="flex justify-center items-center gap-2 h-20">
+                  <Button 
+                    variant={selectedMethod === "mobilemoney" ? "default" : "outline"} 
+                    className={`flex justify-center items-center gap-2 h-20 ${
+                      selectedMethod === "mobilemoney" ? "bg-tontine-purple text-white" : ""
+                    }`}
+                    onClick={() => handleMethodSelect("mobilemoney")}
+                  >
                     <Wallet className="h-6 w-6" />
                     <span>Mobile Money</span>
                   </Button>
@@ -161,11 +229,11 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               </div>
               
               <Button 
-                className="w-full" 
+                className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
                 disabled={isProcessing}
                 onClick={() => handlePayment("withdraw")}
               >
-                {isProcessing ? "Processing..." : "Withdraw Funds"}
+                {isProcessing ? "Traitement en cours..." : "Retirer des fonds"}
               </Button>
             </div>
           </TabsContent>

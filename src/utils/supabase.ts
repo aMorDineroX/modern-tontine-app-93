@@ -33,6 +33,7 @@ export type GroupMember = {
   role: 'admin' | 'member';
   status: 'active' | 'pending' | 'inactive';
   joined_at: string;
+  created_at: string;
 };
 
 export type Contribution = {

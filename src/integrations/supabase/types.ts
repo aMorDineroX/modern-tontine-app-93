@@ -11,18 +11,41 @@ export type Database = {
     Tables: {
       contributions: {
         Row: {
+          amount: number
           created_at: string
+          group_id: number | null
           id: number
+          payment_date: string
+          status: string
+          user_id: string | null
         }
         Insert: {
+          amount?: number
           created_at?: string
+          group_id?: number | null
           id?: number
+          payment_date?: string
+          status?: string
+          user_id?: string | null
         }
         Update: {
+          amount?: number
           created_at?: string
+          group_id?: number | null
           id?: number
+          payment_date?: string
+          status?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contributions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "tontine_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       group_members: {
         Row: {

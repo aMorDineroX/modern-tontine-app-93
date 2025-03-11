@@ -53,33 +53,10 @@ const Groups = () => {
           return;
         }
         
-        // Fetch groups where the user is a member
-        const { data: memberships, error: membershipError } = await supabase
-          .from('group_members')
-          .select('group_id, role, status')
-          .eq('user_id', user.id);
-        
-        if (membershipError) {
-          console.error("Error fetching memberships:", membershipError);
-          throw membershipError;
-        }
-        
-        console.log("Memberships:", memberships);
-        
-        if (!memberships || memberships.length === 0) {
-          setGroups([]);
-          setIsLoading(false);
-          return;
-        }
-        
-        const groupIds = memberships.map(m => m.group_id);
-        console.log("Group IDs:", groupIds);
-        
-        // Fetch the actual group data
+        // Fetch groups directly - RLS will handle filtering to show only groups the user created or is a member of
         const { data: groupsData, error: groupsError } = await supabase
           .from('tontine_groups')
-          .select('*')
-          .in('id', groupIds);
+          .select('*');
         
         if (groupsError) {
           console.error("Error fetching groups:", groupsError);
@@ -128,7 +105,15 @@ const Groups = () => {
               100
             );
             
-            const membershipStatus = memberships.find(m => m.group_id === group.id)?.status || "active";
+            // Fetch the status of the current user in this group
+            const { data: membershipData, error: membershipError } = await supabase
+              .from('group_members')
+              .select('status')
+              .eq('group_id', group.id)
+              .eq('user_id', user.id)
+              .single();
+            
+            const status = membershipData ? membershipData.status : "active";
             
             return {
               id: group.id,
@@ -137,7 +122,7 @@ const Groups = () => {
               contribution: group.contribution_amount,
               frequency: group.frequency,
               nextDue: nextDue.toLocaleDateString(),
-              status: membershipStatus as "active" | "pending" | "completed",
+              status: status as "active" | "pending" | "completed",
               progress: progress || 0
             };
           })
@@ -185,68 +170,72 @@ const Groups = () => {
   const handleCreateGroup = async (data: { name: string; contribution: string; frequency: string; members: string }) => {
     console.log("Group created with data:", data);
     
-    // The actual creation logic is now in the modal
-    // Here we refresh the groups list
+    // After group creation, refresh the groups list
     if (user) {
       setIsLoading(true);
       
-      // Brief delay to ensure database updates are complete
-      setTimeout(async () => {
-        try {
-          const { data: memberships, error: membershipError } = await supabase
-            .from('group_members')
-            .select('group_id')
-            .eq('user_id', user.id);
-          
-          if (membershipError) {
-            console.error("Error fetching memberships after creation:", membershipError);
-            throw membershipError;
-          }
-          
-          const groupIds = memberships?.map(m => m.group_id) || [];
-          console.log("Group IDs after creation:", groupIds);
-          
-          const { data: groupsData, error: groupsError } = await supabase
-            .from('tontine_groups')
-            .select('*')
-            .in('id', groupIds);
-          
-          if (groupsError) {
-            console.error("Error fetching groups after creation:", groupsError);
-            throw groupsError;
-          }
-          
-          console.log("Groups data after creation:", groupsData);
-          
-          if (groupsData && groupsData.length > 0) {
-            // Transform the group data
-            const newGroups = groupsData.map(group => {
-              const startDate = new Date(group.start_date);
-              return {
-                id: group.id,
-                name: group.name,
-                members: 1, // At minimum the creator
-                contribution: group.contribution_amount,
-                frequency: group.frequency,
-                nextDue: startDate.toLocaleDateString(),
-                status: "active" as const,
-                progress: 0
-              };
-            });
-            
-            setGroups(prevGroups => {
-              // Merge with existing groups, avoiding duplicates
-              const existingIds = prevGroups.map(g => g.id);
-              const uniqueNewGroups = newGroups.filter(g => !existingIds.includes(g.id));
-              return [...prevGroups, ...uniqueNewGroups];
-            });
-          }
-        } catch (error) {
-          console.error('Error refreshing groups:', error);
-        } finally {
-          setIsLoading(false);
+      try {
+        // Fetch all groups the user has access to (based on RLS policies)
+        const { data: groupsData, error: groupsError } = await supabase
+          .from('tontine_groups')
+          .select('*');
+        
+        if (groupsError) {
+          console.error("Error fetching groups after creation:", groupsError);
+          throw groupsError;
         }
-      }, 1000);
+        
+        console.log("Groups data after creation:", groupsData);
+        
+        if (groupsData && groupsData.length > 0) {
+          // Transform the group data
+          const newGroups = await Promise.all(groupsData.map(async (group) => {
+            const startDate = new Date(group.start_date);
+            
+            // Get member count
+            const { count } = await supabase
+              .from('group_members')
+              .select('*', { count: 'exact', head: true })
+              .eq('group_id', group.id);
+            
+            // Calculate next due date
+            let nextDue = new Date(startDate);
+            const today = new Date();
+            
+            while (nextDue < today) {
+              if (group.frequency === 'weekly') {
+                nextDue.setDate(nextDue.getDate() + 7);
+              } else if (group.frequency === 'biweekly') {
+                nextDue.setDate(nextDue.getDate() + 14);
+              } else {
+                nextDue.setMonth(nextDue.getMonth() + 1);
+              }
+            }
+            
+            return {
+              id: group.id,
+              name: group.name,
+              members: count || 1,
+              contribution: group.contribution_amount,
+              frequency: group.frequency,
+              nextDue: nextDue.toLocaleDateString(),
+              status: "active" as const,
+              progress: 0
+            };
+          }));
+          
+          setGroups(newGroups);
+        }
+      } catch (error) {
+        console.error('Error refreshing groups:', error);
+        toast({
+          title: "Error",
+          description: "Error refreshing groups after creation",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
@@ -83,6 +84,11 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
       
       if (groupError) {
         console.error("Group creation error:", groupError);
+        toast({
+          title: "Error",
+          description: "Error creating group: " + groupError.message,
+          variant: "destructive"
+        });
         throw groupError;
       }
       
@@ -101,7 +107,11 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         
         if (memberError) {
           console.error("Error adding creator as member:", memberError);
-          throw memberError;
+          toast({
+            title: "Warning",
+            description: "Group created but there was an error adding you as a member",
+            variant: "destructive"
+          });
         }
         
         // If there are other members, send invitations
@@ -132,11 +142,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
       onClose();
     } catch (error) {
       console.error('Error creating group:', error);
-      toast({
-        title: "Error",
-        description: "Error creating group",
-        variant: "destructive"
-      });
+      // Toast message is now handled in the error case above
     } finally {
       setIsSubmitting(false);
     }

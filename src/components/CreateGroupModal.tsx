@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/utils/supabase";
+import { createGroup, addGroupMember } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 
 type CreateGroupModalProps = {
@@ -68,19 +67,15 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         created_by: user.id
       });
       
-      // Create the group in the database
-      const { data: groupData, error: groupError } = await supabase
-        .from('tontine_groups')
-        .insert({
-          name,
-          contribution_amount: parseFloat(contribution),
-          frequency,
-          start_date: startDate || new Date().toISOString(),
-          payout_method: payoutMethod,
-          created_by: user.id
-        })
-        .select()
-        .single();
+      // Create the group using the utility function
+      const { data: groupData, error: groupError } = await createGroup({
+        name,
+        contribution_amount: parseFloat(contribution),
+        frequency: frequency as 'weekly' | 'biweekly' | 'monthly',
+        start_date: startDate || new Date().toISOString(),
+        payout_method: payoutMethod as 'rotation' | 'random' | 'bidding',
+        created_by: user.id
+      });
       
       if (groupError) {
         console.error("Group creation error:", groupError);
@@ -96,14 +91,12 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
       
       // Add creator as admin member
       if (groupData) {
-        const { error: memberError } = await supabase
-          .from('group_members')
-          .insert({
-            group_id: groupData.id,
-            user_id: user.id,
-            role: 'admin',
-            status: 'active'
-          });
+        const { error: memberError } = await addGroupMember({
+          group_id: groupData.id,
+          user_id: user.id,
+          role: 'admin',
+          status: 'active'
+        });
         
         if (memberError) {
           console.error("Error adding creator as member:", memberError);

@@ -8,7 +8,7 @@ import CreateGroupModal from "@/components/CreateGroupModal";
 import MemberList from "@/components/MemberList";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/utils/supabase";
+import { supabase, fetchUserGroups } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 
 // Group type definition
@@ -53,14 +53,12 @@ const Groups = () => {
           return;
         }
         
-        // Fetch groups directly - RLS will handle filtering to show only groups the user created or is a member of
-        const { data: groupsData, error: groupsError } = await supabase
-          .from('tontine_groups')
-          .select('*');
+        // Use the fetchUserGroups utility function
+        const { data: groupsData, error } = await fetchUserGroups(user.id);
         
-        if (groupsError) {
-          console.error("Error fetching groups:", groupsError);
-          throw groupsError;
+        if (error) {
+          console.error("Error fetching groups:", error);
+          throw error;
         }
         
         console.log("Groups data:", groupsData);

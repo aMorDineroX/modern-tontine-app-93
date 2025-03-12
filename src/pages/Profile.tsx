@@ -1,5 +1,5 @@
 
-import { Helmet } from "@react-helmet-async";
+import { Helmet } from "react-helmet";
 import { useApp } from "@/contexts/AppContext";
 import ProfileEnhanced from "@/components/ProfileEnhanced";
 import Navbar from "@/components/Navbar";

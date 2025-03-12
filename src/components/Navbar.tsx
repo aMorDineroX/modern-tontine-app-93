@@ -30,6 +30,9 @@ export default function Navbar() {
   // Mock notification count
   const notificationCount = 3;
 
+  // Define a search placeholder since it's missing in translations
+  const searchPlaceholderText = "Search for groups, members, or transactions...";
+
   return (
     <nav className="relative z-20 bg-white dark:bg-gray-900 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,7 +148,7 @@ export default function Navbar() {
             <div className="relative">
               <input
                 type="search"
-                placeholder={t('searchPlaceholder')}
+                placeholder={searchPlaceholderText}
                 className="w-full p-3 pl-10 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 autoFocus
               />

@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/Auth/SignIn";
@@ -17,7 +18,6 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 
-// Create a new QueryClient instance with better error handling and retry configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -31,7 +31,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading screen component
 const LoadingScreen = ({ message = "Chargement..." }) => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
     <div className="text-center">
@@ -41,7 +40,6 @@ const LoadingScreen = ({ message = "Chargement..." }) => (
   </div>
 );
 
-// Improved Auth Callback component
 const AuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +56,6 @@ const AuthCallback = () => {
         console.log("Access token found in hash, processing...");
         
         try {
-          // Laisser Supabase traiter le hash fragment
           const { data, error } = await supabase.auth.getSession();
           
           if (error) {
@@ -69,7 +66,6 @@ const AuthCallback = () => {
             
             if (data.session) {
               console.log("Authentication successful, redirecting to dashboard");
-              // Effacer le hash de l'URL pour des raisons de sécurité
               navigate('/dashboard', { replace: true });
               return;
             }
@@ -82,9 +78,6 @@ const AuthCallback = () => {
       
       if (search && search.includes("code=")) {
         console.log("Authorization code found in search params, processing...");
-        // Le code d'autorisation sera traité automatiquement par Supabase
-        
-        // Vérifier si la session a été établie
         const { data } = await supabase.auth.getSession();
         if (data.session) {
           console.log("Session established with code, redirecting to dashboard");
@@ -93,10 +86,8 @@ const AuthCallback = () => {
         }
       }
       
-      // Si le traitement est terminé et qu'aucune redirection n'a eu lieu
       setIsProcessing(false);
       
-      // Si nous arrivons ici sans redirection, on redirige vers la page de connexion
       if (window.location.pathname === "/auth/callback") {
         navigate('/signin', { replace: true });
       }
@@ -112,28 +103,23 @@ const AuthCallback = () => {
   return null;
 };
 
-// Improved Root component with better routing structure
 const RootComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
   
   useEffect(() => {
-    // Vérifier s'il y a un hash fragment d'authentification dans l'URL
     const { hash } = location;
     if (hash && hash.includes('access_token')) {
       console.log('Detected access_token in URL hash, processing...');
       setIsProcessingAuth(true);
       
-      // Traiter le token directement ici pour éviter des redirections inutiles
       (async () => {
         try {
-          // Extraire le token du hash pour le débogage
           const hashParams = new URLSearchParams(hash.substring(1));
           const accessToken = hashParams.get('access_token');
           console.log("Extracted access token from hash:", accessToken ? "Present (first chars: " + accessToken.substring(0, 10) + "...)" : "Not found");
           
-          // Forcer Supabase à utiliser le token dans l'URL
           const { data, error } = await supabase.auth.getSession();
           
           if (error) {
@@ -141,7 +127,6 @@ const RootComponent = () => {
             navigate('/signin', { replace: true });
           } else if (data.session) {
             console.log("Successfully processed auth token from URL hash");
-            // Rediriger vers le dashboard
             navigate('/dashboard', { replace: true });
           } else {
             console.log("No session established from URL hash");
@@ -155,51 +140,46 @@ const RootComponent = () => {
         }
       })();
       
-      // Retourner early pour éviter que le reste du composant ne s'exécute
       return;
     }
   }, [location, navigate]);
   
-  // Show loading screen while processing authentication
   if (isProcessingAuth) {
     return <LoadingScreen message="Traitement de l'authentification..." />;
   }
   
   return (
     <Routes>
-      {/* Public routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
-      {/* Protected routes with improved organization */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Index />} />
         <Route path="/groups" element={<Groups />} />
         <Route path="/profile" element={<Profile />} />
-        {/* Add more protected routes here if needed */}
       </Route>
       
-      {/* Fallback for 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
 
-// Main App component with providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AppProvider>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <RootComponent />
-          </BrowserRouter>
-        </TooltipProvider>
+        <HelmetProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <RootComponent />
+            </BrowserRouter>
+          </TooltipProvider>
+        </HelmetProvider>
       </AuthProvider>
     </AppProvider>
   </QueryClientProvider>

@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'fr' | 'es' | 'ar' | 'sw';
 
 export const currencies = [
@@ -91,7 +90,7 @@ type TranslationKeys = {
   checkOut: string;
   joinTontine: string;
   
-  // Adding missing keys for ContributionManager component
+  // Adding new translations for ContributionManager component
   contributions: string;
   addContribution: string;
   missed: string;
@@ -182,6 +181,9 @@ type TranslationKeys = {
   activityPayout: string;
   activityJoin: string;
   activityCreation: string;
+  
+  // Add the missing premium key
+  premium: string;
 };
 
 type TranslationsType = {
@@ -349,6 +351,9 @@ export const translations: TranslationsType = {
     madeContribution: 'Made contribution',
     daysAgo: 'days ago',
     returnToDashboard: 'Return to Dashboard',
+    
+    // Add premium translation
+    premium: 'Premium',
   },
   fr: {
     welcome: 'Bienvenue',
@@ -506,6 +511,9 @@ export const translations: TranslationsType = {
     madeContribution: 'A fait une contribution',
     daysAgo: 'jours',
     returnToDashboard: 'Retour au tableau de bord',
+    
+    // Add premium translation
+    premium: 'Premium',
   },
   es: {
     welcome: 'Bienvenido',
@@ -663,6 +671,9 @@ export const translations: TranslationsType = {
     madeContribution: 'Hizo una contribución',
     daysAgo: 'días atrás',
     returnToDashboard: 'Volver al tablero',
+    
+    // Add premium translation
+    premium: 'Premium',
   },
   ar: {
     welcome: 'مرحبا',
@@ -820,6 +831,9 @@ export const translations: TranslationsType = {
     madeContribution: 'قدم مساهمة',
     daysAgo: 'أيام مضت',
     returnToDashboard: 'العودة إلى لوحة التحكم',
+    
+    // Add premium translation
+    premium: 'المميز',
   },
   sw: {
     welcome: 'Karibu',
@@ -836,147 +850,3 @@ export const translations: TranslationsType = {
     email: 'Barua pepe',
     password: 'Nenosiri',
     fullName: 'Jina Kamili',
-    confirmPassword: 'Thibitisha Nenosiri',
-    resetPasswordEmailSent: 'Barua pepe ya kuweka upya nenosiri imetumwa. Tafadhali angalia kikasha chako.',
-    resetPasswordSuccess: 'Nenosiri lako limewekwa upya kwa mafanikio.',
-    newPassword: 'Nenosiri Jipya',
-    passwordNotMatch: 'Nenosiri hailingani',
-    invalidEmail: 'Anwani ya barua pepe si sahihi',
-    passwordRequired: 'Nenosiri linahitajika',
-    nameRequired: 'Jina linahitajika',
-    confirmPasswordRequired: 'Uthibitisho wa nenosiri unahitajika',
-    passwordsMustMatch: 'Nenosiri lazima zilingane',
-    createGroup: 'Unda Kikundi',
-    groupName: 'Jina la Kikundi',
-    groupDescription: 'Maelezo ya Kikundi',
-    create: 'Unda',
-    cancel: 'Ghairi',
-    groupNameRequired: 'Jina la kikundi linahitajika',
-    groupDescriptionRequired: 'Maelezo ya kikundi yanahitajika',
-    myGroups: 'Vikundi Vyangu',
-    noGroupsYet: 'Hakuna vikundi bado',
-    createYourFirstGroup: 'Unda kikundi chako cha kwanza',
-    members: 'Wanachama',
-    active: 'Inayotumika',
-    pending: 'Inasubiri',
-    paid: 'Imelipwa',
-    search: 'Tafuta',
-    noMembersYet: 'Hakuna wanachama bado',
-    inviteMembers: 'Alika Wanachama',
-    settings: 'Mipangilio',
-    general: 'Jumla',
-    account: 'Akaunti',
-    notifications: 'Arifa',
-    language: 'Lugha',
-    currency: 'Sarafu',
-    darkMode: 'Hali ya Giza',
-    saveChanges: 'Hifadhi Mabadiliko',
-    editProfile: 'Hariri Wasifu',
-    memberSince: 'Mwanachama Tangu',
-    totalContributions: 'Jumla ya Michango',
-    groupsJoined: 'Vikundi Vilivyounganishwa',
-    upcomingPayments: 'Malipo Yanayokuja',
-    actions: 'Vitendo',
-    activity: 'Shughuli',
-    upcoming: 'Yanayokuja',
-    savedGroups: 'Vikundi Vilivyohifadhiwa',
-    messages: 'Ujumbe',
-    noUpcomingPayments: 'Hakuna malipo yanayokuja',
-    nextPayout: 'Malipo Yanayofuata',
-    noMessages: 'Hakuna ujumbe',
-    noMessagesDesc: 'Huna ujumbe bado.',
-    checkOut: 'Angalia',
-    joinTontine: 'Jiunge na Tontine hii!',
-    
-    // Adding new translations for ContributionManager component
-    contributions: 'Michango',
-    addContribution: 'Ongeza Mchango',
-    missed: 'Imekosekana',
-    frequency: 'Mara',
-    
-    // Social features translations
-    share: 'Shiriki',
-    copyLink: 'Nakili Kiungo',
-    linkCopied: 'Kiungo kimenakiliwa kwenye ubao',
-    close: 'Funga',
-    inviteFriends: 'Alika Marafiki',
-    inviteFriendsTitle: 'Alika marafiki zako kujiunga',
-    inviteByEmail: 'Alika kwa barua pepe',
-    send: 'Tuma',
-    orShareLink: 'Au shiriki kiungo hiki cha mwaliko',
-    copied: 'Imenakiliwa',
-    copy: 'Nakili',
-    success: 'Imefanikiwa',
-    less: 'Chache',
-    more: 'Zaidi',
-    sendMessage: 'Tuma Ujumbe',
-    recentActivity: 'Shughuli za Hivi Karibuni',
-    noRecentActivity: 'Hakuna shughuli za hivi karibuni za kuonyesha',
-    activityContribution: '{user} amechangia {amount} kwa {group}',
-    activityPayout: '{user} amepokea {amount} kutoka {group}',
-    activityJoin: '{user} amejiunga na {group}',
-    activityCreation: '{user} ameunda {group}',
-    minute: 'dakika',
-    minutes: 'dakika',
-    hour: 'saa',
-    hours: 'masaa',
-    day: 'siku',
-    days: 'siku',
-    ago: 'iliyopita',
-    invitationSent: 'Mwaliko Umetumwa',
-    invitationSentDesc: 'Rafiki yako atapokea barua pepe ya mwaliko hivi karibuni',
-    
-    // Adding all missing translations from error list
-    contributionAmount: 'Kiasi cha Mchango',
-    contributionFrequency: 'Marudio ya Mchango',
-    weekly: 'Kila Wiki',
-    biweekly: 'Kila Wiki Mbili',
-    monthly: 'Kila Mwezi',
-    startDate: 'Tarehe ya Kuanza',
-    payoutMethod: 'Njia ya Malipo',
-    rotation: 'Mzunguko',
-    randomSelection: 'Uteuzi wa Nasibu',
-    biddingSystem: 'Mfumo wa Mnada',
-    contribution: 'Mchango',
-    depositWithdraw: 'Weka/Toa Pesa',
-    lightMode: 'Hali ya Mwanga',
-    completed: 'Imekamilika',
-    progress: 'Maendeleo',
-    nextDue: 'Malipo Yanayofuata',
-    payoutStatus: 'Hali ya Malipo',
-    ready: 'Tayari',
-    yourGroups: 'Vikundi Vyako',
-    manageGroups: 'Simamia Vikundi',
-    groupsInfoText: 'Unda na jiunge na vikundi vya kuweka akiba na marafiki, familia au wafanyakazi wenzako',
-    searchGroups: 'Tafuta Vikundi',
-    filterByStatus: 'Chuja kwa Hali',
-    all: 'Vyote',
-    sortBy: 'Panga Kwa',
-    name: 'Jina',
-    date: 'Tarehe',
-    amount: 'Kiasi',
-    noGroupsFound: 'Hakuna vikundi vilivyopatikana',
-    noMatchingGroups: 'Hakuna vikundi vinavyolingana',
-    createFirstGroup: 'Unda kikundi chako cha kwanza',
-    recentMembers: 'Wanachama wa Hivi Karibuni',
-    groupSummary: 'Muhtasari wa Kikundi',
-    totalGroups: 'Jumla ya Vikundi',
-    activeGroups: 'Vikundi Vinavyotumika',
-    totalMembers: 'Jumla ya Wanachama',
-    avgContribution: 'Wastani wa Mchango',
-    trackContributions: 'Fuatilia Michango',
-    payments: 'Malipo',
-    createNewGroup: 'Unda Kikundi Kipya',
-    availableBalance: 'Salio Linalotumika',
-    viewAll: 'Ona Yote',
-    paymentCalendar: 'Kalenda ya Malipo',
-    receivedPayout: 'Alipokea malipo',
-    hoursAgo: 'masaa yaliyopita',
-    joinedGroup: 'alijiunga na kikundi',
-    yesterday: 'jana',
-    madeContribution: 'Alifanya mchango',
-    daysAgo: 'siku zilizopita',
-    returnToDashboard: 'Rudi kwenye Dashibodi',
-  }
-};
-

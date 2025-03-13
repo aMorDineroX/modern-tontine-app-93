@@ -1,160 +1,176 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, UserRound, KeyRound, Facebook, Twitter, Github } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+
+import { useState } from "react";
+import { Helmet } from "react-helmet";
+import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Sparkles } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const { signIn, signInWithProvider, user } = useAuth();
-  const { t } = useApp();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Redirect to dashboard if already logged in
-  useEffect(() => {
-    if (user) {
-      console.log("User already authenticated, redirecting to dashboard");
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
+  const { t } = useApp();
+  const { signIn, signInWithGoogle } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
-      setIsSubmitting(true);
-      await signIn(email, password);
+      const { error } = await signIn(email, password);
       
-      // Get the intended destination or default to dashboard
-      const from = location.state?.from || "/dashboard";
-      console.log("Sign in successful, redirecting to:", from);
-      navigate(from);
-    } catch (error) {
-      console.error("Sign in error:", error);
+      if (error) {
+        throw error;
+      }
+      
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Erreur de connexion",
+        description: error.message || "Échec de la connexion. Veuillez vérifier vos informations et réessayer.",
+        variant: "destructive",
+      });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'twitter' | 'github') => {
+  const handleGoogleSignIn = async () => {
     try {
-      setSocialLoading(provider);
-      console.log(`Attempting to sign in with ${provider}...`);
-      await signInWithProvider(provider);
-      // Note: No navigation here as the OAuth flow will handle the redirect
-    } catch (error) {
-      console.error(`Sign in with ${provider} error:`, error);
-    } finally {
-      setSocialLoading(null);
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      console.error("Google sign in error:", error);
+      toast({
+        title: "Erreur de connexion Google",
+        description: error.message || "Échec de la connexion avec Google. Veuillez réessayer.",
+        variant: "destructive",
+      });
     }
+  };
+
+  const handlePremiumClick = () => {
+    navigate("/premium");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold tontine-text-gradient mb-4">Tontine</h1>
-          <p className="text-gray-600 dark:text-gray-400">Connectez-vous pour gérer vos groupes de tontine</p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <Helmet>
+        <title>{t("signIn")} | Tontine</title>
+      </Helmet>
+      
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+            {t("signIn")}
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {t("signInPrompt")}
+            <Link to="/signup" className="font-medium text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple ml-1">
+              {t("signUp")}
+            </Link>
+          </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <UserRound size={18} className="text-gray-400" />
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t("email")}
+                </label>
+                <div className="mt-1">
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm"
+                  />
                 </div>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
-                  placeholder="vous@exemple.com"
-                  required
-                />
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <KeyRound size={18} className="text-gray-400" />
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t("password")}
+                </label>
+                <div className="mt-1">
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm"
+                  />
                 </div>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
-                  placeholder="••••••••"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-tontine-purple focus:ring-tontine-purple border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                    Se souvenir de moi
+                  </label>
+                </div>
+
+                <div className="text-sm">
+                  <Link to="/forgot-password" className="font-medium text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple">
+                    {t("forgotPassword")}
+                  </Link>
+                </div>
+              </div>
+
+              <div>
+                <Button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-tontine-purple hover:bg-tontine-dark-purple"
+                  disabled={isLoading}
                 >
-                  {showPassword ? (
-                    <EyeOff size={18} className="text-gray-400" />
-                  ) : (
-                    <Eye size={18} className="text-gray-400" />
-                  )}
-                </button>
+                  {isLoading ? "Connexion en cours..." : t("signIn")}
+                </Button>
               </div>
-              <div className="flex justify-end mt-1">
-                <Link to="/forgot-password" className="text-sm text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple">
-                  Mot de passe oublié?
-                </Link>
-              </div>
-            </div>
+            </form>
 
-            <button
-              type="submit"
-              className="tontine-button tontine-button-primary w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Connexion en cours..." : "Se connecter"}
-            </button>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                    Ou continuer avec
+                  </span>
+                </div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  Ou connectez-vous avec
-                </span>
-              </div>
-            </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handleSocialSignIn("google")}
-                disabled={socialLoading !== null}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                {socialLoading === "google" ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin mr-2 h-4 w-4 border-t-2 border-b-2 border-blue-500 rounded-full"></div>
-                    <span>Connexion...</span>
-                  </div>
-                ) : (
-                  <>
-                    <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
+              <div className="mt-6 grid grid-cols-1 gap-3">
+                <div>
+                  <Button
+                    type="button"
+                    className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                         <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
                         <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
@@ -163,82 +179,23 @@ export default function SignIn() {
                       </g>
                     </svg>
                     Google
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialSignIn("facebook")}
-                disabled={socialLoading !== null}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                {socialLoading === "facebook" ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin mr-2 h-4 w-4 border-t-2 border-b-2 border-blue-600 rounded-full"></div>
-                    <span>Connexion...</span>
-                  </div>
-                ) : (
-                  <>
-                    <Facebook className="h-5 w-5 mr-2 text-blue-600" />
-                    Facebook
-                  </>
-                )}
-              </button>
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handleSocialSignIn("twitter")}
-                disabled={socialLoading !== null}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                {socialLoading === "twitter" ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin mr-2 h-4 w-4 border-t-2 border-b-2 border-blue-400 rounded-full"></div>
-                    <span>Connexion...</span>
-                  </div>
-                ) : (
-                  <>
-                    <Twitter className="h-5 w-5 mr-2 text-blue-400" />
-                    Twitter
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialSignIn("github")}
-                disabled={socialLoading !== null}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                {socialLoading === "github" ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin mr-2 h-4 w-4 border-t-2 border-b-2 border-gray-500 rounded-full"></div>
-                    <span>Connexion...</span>
-                  </div>
-                ) : (
-                  <>
-                    <Github className="h-5 w-5 mr-2" />
-                    GitHub
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Vous n'avez pas de compte?{" "}
-              <Link to="/signup" className="text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple font-medium">
-                S'inscrire
-              </Link>
-            </p>
+            {/* Bouton "Passé à Premium" */}
+            <div className="mt-8">
+              <Button
+                type="button"
+                onClick={handlePremiumClick}
+                className="w-full flex justify-center items-center gap-2 py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 transition-all"
+              >
+                <Sparkles className="h-5 w-5" />
+                Passé à Premium
+              </Button>
+            </div>
           </div>
-        </div>
-        
-        <div className="mt-4 text-center">
-          <Link to="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-tontine-purple dark:hover:text-tontine-light-purple">
-            ← Retour à la page d'accueil
-          </Link>
         </div>
       </div>
     </div>

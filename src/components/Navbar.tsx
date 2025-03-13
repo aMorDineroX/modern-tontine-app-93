@@ -1,4 +1,3 @@
-
 import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -21,7 +20,6 @@ export default function Navbar() {
   const { signOut } = useAuth();
   const location = useLocation();
 
-  // Function to check if the current route is active
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -30,15 +28,11 @@ export default function Navbar() {
     await signOut();
   };
 
-  // Mock notification count
   const notificationCount = 3;
 
-  // Define a search placeholder since it's missing in translations
   const searchPlaceholderText = "Search for groups, members, or transactions...";
-  
-  // Show premium features
+
   const handlePremiumClick = () => {
-    // You can implement premium feature activation here
     setShowPremiumTooltip(!showPremiumTooltip);
   };
 
@@ -87,33 +81,17 @@ export default function Navbar() {
               {t('profile')}
             </Link>
             
-            {/* Premium features button */}
-            <TooltipProvider>
-              <Tooltip open={showPremiumTooltip} onOpenChange={setShowPremiumTooltip}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handlePremiumClick}
-                    variant="outline"
-                    size="sm"
-                    className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
-                  >
-                    <Gem size={16} className="mr-1" />
-                    Premium
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="p-3 max-w-xs">
-                  <p className="font-semibold mb-1">Premium Features:</p>
-                  <ul className="list-disc ml-4 text-sm">
-                    <li>Unlimited groups</li>
-                    <li>Advanced analytics</li>
-                    <li>Lower transaction fees</li>
-                    <li>Priority customer support</li>
-                  </ul>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Link to="/premium">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              >
+                <Gem size={16} className="mr-1" />
+                Premium
+              </Button>
+            </Link>
             
-            {/* Search button */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -122,7 +100,6 @@ export default function Navbar() {
               <Search size={20} className="text-gray-700 dark:text-gray-300" />
             </button>
             
-            {/* Notifications button with badge */}
             <button
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative"
               aria-label="Notifications"
@@ -158,24 +135,15 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center sm:hidden">
-            {/* Mobile premium button */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handlePremiumClick}
-                    variant="outline"
-                    size="sm"
-                    className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
-                  >
-                    <Gem size={16} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Premium Features</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Link to="/premium">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              >
+                <Gem size={16} />
+              </Button>
+            </Link>
             
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -195,7 +163,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Search overlay */}
       {searchOpen && (
         <div className="absolute top-16 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg p-4 animate-slide-down border-t border-gray-200 dark:border-gray-700">
           <div className="max-w-3xl mx-auto">
@@ -258,21 +225,17 @@ export default function Navbar() {
               {t('profile')}
             </Link>
             
-            {/* Premium features in mobile menu */}
             <div className="px-3 py-2">
-              <button 
-                onClick={() => {
-                  handlePremiumClick();
-                  setIsOpen(false);
-                }}
+              <Link 
+                to="/premium"
                 className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-800 rounded-md"
+                onClick={() => setIsOpen(false)}
               >
                 <Gem size={18} />
                 Premium Features
-              </button>
+              </Link>
             </div>
             
-            {/* Search in mobile menu */}
             <div className="px-3 py-2">
               <button 
                 onClick={() => {
@@ -286,7 +249,6 @@ export default function Navbar() {
               </button>
             </div>
             
-            {/* Notifications in mobile menu */}
             <div className="px-3 py-2">
               <button className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 relative">
                 <Bell size={18} />

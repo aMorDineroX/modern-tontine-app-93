@@ -176,12 +176,6 @@ type TranslationKeys = {
   daysAgo: string;
   returnToDashboard: string;
   
-  // Activity feed template strings
-  activityContribution: string;
-  activityPayout: string;
-  activityJoin: string;
-  activityCreation: string;
-  
   // Add the missing premium key
   premium: string;
 };
@@ -850,3 +844,5 @@ export const translations: TranslationsType = {
     email: 'Barua pepe',
     password: 'Nenosiri',
     fullName: 'Jina Kamili',
+    confirmPassword: 'Thibitisha Nenosiri',
+    resetPasswordEmailSent: 'Barua pepe ya kuweka upya nenosiri imetumwa. Taf

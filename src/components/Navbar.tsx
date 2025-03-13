@@ -1,6 +1,7 @@
+
 import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import { useApp } from "@/contexts/AppContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,6 +20,7 @@ export default function Navbar() {
   const { t } = useApp();
   const { signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -33,7 +35,8 @@ export default function Navbar() {
   const searchPlaceholderText = "Search for groups, members, or transactions...";
 
   const handlePremiumClick = () => {
-    setShowPremiumTooltip(!showPremiumTooltip);
+    navigate('/premium');
+    setShowPremiumTooltip(false);
   };
 
   return (
@@ -81,16 +84,15 @@ export default function Navbar() {
               {t('profile')}
             </Link>
             
-            <Link to="/premium">
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
-              >
-                <Gem size={16} className="mr-1" />
-                Premium
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              onClick={handlePremiumClick}
+            >
+              <Gem size={16} className="mr-1" />
+              {t('premium')}
+            </Button>
             
             <button
               onClick={() => setSearchOpen(!searchOpen)}
@@ -135,15 +137,14 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center sm:hidden">
-            <Link to="/premium">
-              <Button
-                variant="outline"
-                size="sm"
-                className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
-              >
-                <Gem size={16} />
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              onClick={handlePremiumClick}
+            >
+              <Gem size={16} />
+            </Button>
             
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -226,14 +227,16 @@ export default function Navbar() {
             </Link>
             
             <div className="px-3 py-2">
-              <Link 
-                to="/premium"
+              <button 
+                onClick={() => {
+                  navigate('/premium');
+                  setIsOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-800 rounded-md"
-                onClick={() => setIsOpen(false)}
               >
                 <Gem size={18} />
-                Premium Features
-              </Link>
+                {t('premium')}
+              </button>
             </div>
             
             <div className="px-3 py-2">

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,7 @@ import ForgotPassword from "./pages/Auth/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
 import Groups from "./pages/Groups";
 import Profile from "./pages/Profile";
+import Premium from "./pages/Premium";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -155,6 +157,7 @@ const RootComponent = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/premium" element={<Premium />} />
       
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Index />} />

@@ -1,5 +1,5 @@
 
-import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search } from "lucide-react";
+import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
@@ -8,12 +8,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import SettingsModal from "./SettingsModal";
 import PaymentModal from "./PaymentModal";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showPremiumTooltip, setShowPremiumTooltip] = useState(false);
   const { t } = useApp();
   const { signOut } = useAuth();
   const location = useLocation();
@@ -32,6 +35,12 @@ export default function Navbar() {
 
   // Define a search placeholder since it's missing in translations
   const searchPlaceholderText = "Search for groups, members, or transactions...";
+  
+  // Show premium features
+  const handlePremiumClick = () => {
+    // You can implement premium feature activation here
+    setShowPremiumTooltip(!showPremiumTooltip);
+  };
 
   return (
     <nav className="relative z-20 bg-white dark:bg-gray-900 shadow-sm">
@@ -43,13 +52,13 @@ export default function Navbar() {
             </Link>
           </div>
           
-          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
+          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
             <Link 
               to="/dashboard" 
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/dashboard') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
             >
               <Home size={18} />
@@ -59,8 +68,8 @@ export default function Navbar() {
               to="/groups" 
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/groups') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
             >
               <Users size={18} />
@@ -70,13 +79,39 @@ export default function Navbar() {
               to="/profile" 
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/profile') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
             >
               <User size={18} />
               {t('profile')}
             </Link>
+            
+            {/* Premium features button */}
+            <TooltipProvider>
+              <Tooltip open={showPremiumTooltip} onOpenChange={setShowPremiumTooltip}>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handlePremiumClick}
+                    variant="outline"
+                    size="sm"
+                    className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+                  >
+                    <Gem size={16} className="mr-1" />
+                    Premium
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="p-3 max-w-xs">
+                  <p className="font-semibold mb-1">Premium Features:</p>
+                  <ul className="list-disc ml-4 text-sm">
+                    <li>Unlimited groups</li>
+                    <li>Advanced analytics</li>
+                    <li>Lower transaction fees</li>
+                    <li>Priority customer support</li>
+                  </ul>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
             {/* Search button */}
             <button
@@ -123,6 +158,25 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center sm:hidden">
+            {/* Mobile premium button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handlePremiumClick}
+                    variant="outline"
+                    size="sm"
+                    className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+                  >
+                    <Gem size={16} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Premium Features</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
             <button
               onClick={() => setIsSettingsOpen(true)}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors mr-2"
@@ -171,8 +225,8 @@ export default function Navbar() {
               to="/dashboard"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
                 isActive('/dashboard') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -183,8 +237,8 @@ export default function Navbar() {
               to="/groups"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
                 isActive('/groups') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -195,14 +249,28 @@ export default function Navbar() {
               to="/profile"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
                 isActive('/profile') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
               }`}
               onClick={() => setIsOpen(false)}
             >
               <User size={18} />
               {t('profile')}
             </Link>
+            
+            {/* Premium features in mobile menu */}
+            <div className="px-3 py-2">
+              <button 
+                onClick={() => {
+                  handlePremiumClick();
+                  setIsOpen(false);
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-800 rounded-md"
+              >
+                <Gem size={18} />
+                Premium Features
+              </button>
+            </div>
             
             {/* Search in mobile menu */}
             <div className="px-3 py-2">
@@ -220,7 +288,7 @@ export default function Navbar() {
             
             {/* Notifications in mobile menu */}
             <div className="px-3 py-2">
-              <button className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <button className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 relative">
                 <Bell size={18} />
                 {t('notifications')}
                 {notificationCount > 0 && (

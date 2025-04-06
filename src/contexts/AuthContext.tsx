@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
@@ -11,17 +10,18 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error?: Error }>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   signInWithProvider: (provider: Provider) => Promise<void>;
+  signInWithGoogle: () => Promise<{ error?: Error }>;
   googleMapsApiKey: string; // Add Google Maps API key to the context
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Fonction utilitaire pour détecter l'environnement d'exécution
+// Function to detect the execution environment
 const getEnvironmentInfo = () => {
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
@@ -100,16 +100,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           description: error.message,
           variant: "destructive",
         });
-        throw error;
+        return { error };
       }
       
       toast({
         title: "Bienvenue !",
         description: "Vous êtes maintenant connecté.",
       });
+      
+      return {};
     } catch (error) {
       console.error('Error signing in:', error);
-      throw error;
+      return { error: error as Error };
     } finally {
       setLoading(false);
     }
@@ -182,8 +184,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           redirectTo: redirectUrl,
           scopes: 'email profile',
           queryParams: {
-            prompt: 'select_account', // Force l'affichage de la sélection de compte Google
-            access_type: 'offline' // Demande un refresh token
+            prompt: 'select_account',
+            access_type: 'offline'
           }
         }
       });
@@ -202,6 +204,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (error) {
       console.error(`Error signing in with ${provider}:`, error);
       throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: 'email profile',
+          queryParams: {
+            prompt: 'select_account',
+            access_type: 'offline'
+          }
+        }
+      });
+      
+      if (error) {
+        toast({
+          title: "Erreur de connexion avec Google",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+      
+      return {};
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+      return { error: error as Error };
     } finally {
       setLoading(false);
     }
@@ -264,7 +299,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     signOut,
     resetPassword,
     signInWithProvider,
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY, // Provide the Google Maps API key
+    signInWithGoogle,
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   };
 
   return (

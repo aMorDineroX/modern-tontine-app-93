@@ -174,6 +174,7 @@ export type TranslationKeys = {
   activityJoin: string;
   activityCreation: string;
   premium: string;
+  signInPrompt: string;
 };
 
 type TranslationsType = {
@@ -336,6 +337,7 @@ export const translations: TranslationsType = {
     activityJoin: '{user} joined {group}',
     activityCreation: '{user} created {group}',
     premium: 'Premium',
+    signInPrompt: 'Don\'t have an account?',
   },
   fr: {
     welcome: 'Bienvenue',
@@ -488,6 +490,7 @@ export const translations: TranslationsType = {
     activityJoin: '{user} a rejoint {group}',
     activityCreation: '{user} a créé {group}',
     premium: 'Premium',
+    signInPrompt: 'Vous n\'avez pas de compte ?',
   },
   es: {
     welcome: 'Bienvenido',
@@ -640,6 +643,7 @@ export const translations: TranslationsType = {
     activityJoin: '{user} se unió a {group}',
     activityCreation: '{user} creó {group}',
     premium: 'Premium',
+    signInPrompt: '¿No tienes una cuenta?',
   },
   ar: {
     welcome: 'مرحبا',
@@ -792,6 +796,7 @@ export const translations: TranslationsType = {
     activityJoin: '{user} انضم إلى {group}',
     activityCreation: '{user} أنشأ {group}',
     premium: 'Premium',
+    signInPrompt: 'ليس لديك حساب؟',
   },
   sw: {
     welcome: 'Karibu',
@@ -944,5 +949,6 @@ export const translations: TranslationsType = {
     activityJoin: '{user} amejiunga na {group}',
     activityCreation: '{user} ameunda {group}',
     premium: 'Premium',
+    signInPrompt: 'Huna akaunti?',
   }
 };

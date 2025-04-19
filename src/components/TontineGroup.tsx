@@ -1,4 +1,3 @@
-
 import { CalendarIcon, Coins, Users, ChevronRight, TrendingUp } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
@@ -26,30 +25,21 @@ export default function TontineGroup({
   
   const getStatusColor = () => {
     switch(status) {
-      case "active": return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-      case "pending": return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-      case "completed": return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-      default: return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400";
+      case "active": return "bg-tontine-green-100 text-tontine-green-700";
+      case "pending": return "bg-tontine-green-50 text-tontine-green-600";
+      case "completed": return "bg-tontine-green-200 text-tontine-green-800";
     }
   };
-  
+
   return (
     <motion.div 
-      className="tontine-card hover:shadow-md transition-all dark:bg-gray-800 dark:border-gray-700 cursor-pointer overflow-hidden"
+      className={`rounded-xl p-4 ${getStatusColor()} green-card`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Status Bar (colored based on status) */}
-      <div className={`h-1 w-full ${
-        status === "active" ? "bg-green-500 dark:bg-green-600" : 
-        status === "pending" ? "bg-yellow-500 dark:bg-yellow-600" : 
-        "bg-blue-500 dark:bg-blue-600"
-      }`} />
-      
       <div className="p-4">
         <div className="flex justify-between items-start mb-4">
           <div>

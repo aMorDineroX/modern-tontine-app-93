@@ -175,6 +175,41 @@ export type TranslationKeys = {
   activityCreation: string;
   premium: string;
   signInPrompt: string;
+
+  // WhatsApp Integration
+  whatsAppIntegration: string;
+  whatsAppIntegrationDescription: string;
+  chatOnWhatsApp: string;
+  createWhatsAppGroup: string;
+  whatsAppQRCode: string;
+  scanQRCodeToChat: string;
+  scanWithWhatsApp: string;
+  whatsAppNotifications: string;
+  notificationsEnabled: string;
+  notificationsDisabled: string;
+  enableWhatsAppNotifications: string;
+  whatsAppNotificationsEnabled: string;
+  whatsAppNotificationsDisabled: string;
+  forGroup: string;
+  addMembers: string;
+  add: string;
+  createGroup: string;
+  whatsAppGroupInitiated: string;
+  addAtLeastOneMember: string;
+  pleaseCreateGroupWith: string;
+  inviteToJoinGroup: string;
+  hello: string;
+  fromNaat: string;
+  onNaat: string;
+  shareGroupDescription: string;
+  startChatDescription: string;
+  createGroupDescription: string;
+  qrCodeDescription: string;
+  notificationsDescription: string;
+  chat: string;
+  group: string;
+  qrCode: string;
+  error: string;
 };
 
 type TranslationsType = {
@@ -338,6 +373,41 @@ export const translations: TranslationsType = {
     activityCreation: '{user} created {group}',
     premium: 'Premium',
     signInPrompt: 'Don\'t have an account?',
+
+    // WhatsApp Integration
+    whatsAppIntegration: 'WhatsApp Integration',
+    whatsAppIntegrationDescription: 'Connect and communicate with your group members via WhatsApp',
+    chatOnWhatsApp: 'Chat on WhatsApp',
+    createWhatsAppGroup: 'Create WhatsApp Group',
+    whatsAppQRCode: 'WhatsApp QR Code',
+    scanQRCodeToChat: 'Scan QR Code to Chat',
+    scanWithWhatsApp: 'Scan this QR code with your phone camera to start a WhatsApp conversation',
+    whatsAppNotifications: 'WhatsApp Notifications',
+    notificationsEnabled: 'Notifications are enabled',
+    notificationsDisabled: 'Notifications are disabled',
+    enableWhatsAppNotifications: 'I want to enable WhatsApp notifications for',
+    whatsAppNotificationsEnabled: 'WhatsApp notifications have been enabled',
+    whatsAppNotificationsDisabled: 'WhatsApp notifications have been disabled',
+    forGroup: 'for group',
+    addMembers: 'Add Members',
+    add: 'Add',
+    createGroup: 'Create Group',
+    whatsAppGroupInitiated: 'WhatsApp group creation initiated',
+    addAtLeastOneMember: 'Please add at least one member',
+    pleaseCreateGroupWith: 'Please create a WhatsApp group with these members',
+    inviteToJoinGroup: 'You are invited to join the group',
+    hello: 'Hello',
+    fromNaat: 'from Naat',
+    onNaat: 'on Naat',
+    shareGroupDescription: 'Share this group with your contacts via WhatsApp',
+    startChatDescription: 'Start a direct WhatsApp conversation with a group member',
+    createGroupDescription: 'Create a WhatsApp group for your Naat members',
+    qrCodeDescription: 'Generate a QR code that others can scan to chat with you on WhatsApp',
+    notificationsDescription: 'Receive payment reminders and group updates via WhatsApp',
+    chat: 'Chat',
+    group: 'Group',
+    qrCode: 'QR Code',
+    error: 'Error',
   },
   fr: {
     welcome: 'Bienvenue',
@@ -491,6 +561,41 @@ export const translations: TranslationsType = {
     activityCreation: '{user} a créé {group}',
     premium: 'Premium',
     signInPrompt: 'Vous n\'avez pas de compte ?',
+
+    // WhatsApp Integration
+    whatsAppIntegration: 'Intégration WhatsApp',
+    whatsAppIntegrationDescription: 'Connectez-vous et communiquez avec les membres de votre groupe via WhatsApp',
+    chatOnWhatsApp: 'Discuter sur WhatsApp',
+    createWhatsAppGroup: 'Créer un groupe WhatsApp',
+    whatsAppQRCode: 'Code QR WhatsApp',
+    scanQRCodeToChat: 'Scanner le code QR pour discuter',
+    scanWithWhatsApp: 'Scannez ce code QR avec la caméra de votre téléphone pour démarrer une conversation WhatsApp',
+    whatsAppNotifications: 'Notifications WhatsApp',
+    notificationsEnabled: 'Les notifications sont activées',
+    notificationsDisabled: 'Les notifications sont désactivées',
+    enableWhatsAppNotifications: 'Je souhaite activer les notifications WhatsApp pour',
+    whatsAppNotificationsEnabled: 'Les notifications WhatsApp ont été activées',
+    whatsAppNotificationsDisabled: 'Les notifications WhatsApp ont été désactivées',
+    forGroup: 'pour le groupe',
+    addMembers: 'Ajouter des membres',
+    add: 'Ajouter',
+    createGroup: 'Créer un groupe',
+    whatsAppGroupInitiated: 'Création du groupe WhatsApp initiée',
+    addAtLeastOneMember: 'Veuillez ajouter au moins un membre',
+    pleaseCreateGroupWith: 'Veuillez créer un groupe WhatsApp avec ces membres',
+    inviteToJoinGroup: 'Vous êtes invité à rejoindre le groupe',
+    hello: 'Bonjour',
+    fromNaat: 'de Naat',
+    onNaat: 'sur Naat',
+    shareGroupDescription: 'Partagez ce groupe avec vos contacts via WhatsApp',
+    startChatDescription: 'Démarrez une conversation WhatsApp directe avec un membre du groupe',
+    createGroupDescription: 'Créez un groupe WhatsApp pour vos membres Naat',
+    qrCodeDescription: 'Générez un code QR que d\'autres peuvent scanner pour discuter avec vous sur WhatsApp',
+    notificationsDescription: 'Recevez des rappels de paiement et des mises à jour de groupe via WhatsApp',
+    chat: 'Discussion',
+    group: 'Groupe',
+    qrCode: 'Code QR',
+    error: 'Erreur',
   },
   es: {
     welcome: 'Bienvenido',
@@ -644,6 +749,41 @@ export const translations: TranslationsType = {
     activityCreation: '{user} creó {group}',
     premium: 'Premium',
     signInPrompt: '¿No tienes una cuenta?',
+
+    // WhatsApp Integration
+    whatsAppIntegration: 'Integración de WhatsApp',
+    whatsAppIntegrationDescription: 'Conéctate y comunícate con los miembros de tu grupo a través de WhatsApp',
+    chatOnWhatsApp: 'Chatear en WhatsApp',
+    createWhatsAppGroup: 'Crear grupo de WhatsApp',
+    whatsAppQRCode: 'Código QR de WhatsApp',
+    scanQRCodeToChat: 'Escanea el código QR para chatear',
+    scanWithWhatsApp: 'Escanea este código QR con la cámara de tu teléfono para iniciar una conversación de WhatsApp',
+    whatsAppNotifications: 'Notificaciones de WhatsApp',
+    notificationsEnabled: 'Las notificaciones están habilitadas',
+    notificationsDisabled: 'Las notificaciones están deshabilitadas',
+    enableWhatsAppNotifications: 'Quiero habilitar las notificaciones de WhatsApp para',
+    whatsAppNotificationsEnabled: 'Las notificaciones de WhatsApp han sido habilitadas',
+    whatsAppNotificationsDisabled: 'Las notificaciones de WhatsApp han sido deshabilitadas',
+    forGroup: 'para el grupo',
+    addMembers: 'Añadir miembros',
+    add: 'Añadir',
+    createGroup: 'Crear grupo',
+    whatsAppGroupInitiated: 'Creación de grupo de WhatsApp iniciada',
+    addAtLeastOneMember: 'Por favor, añade al menos un miembro',
+    pleaseCreateGroupWith: 'Por favor, crea un grupo de WhatsApp con estos miembros',
+    inviteToJoinGroup: 'Estás invitado a unirte al grupo',
+    hello: 'Hola',
+    fromNaat: 'desde Naat',
+    onNaat: 'en Naat',
+    shareGroupDescription: 'Comparte este grupo con tus contactos a través de WhatsApp',
+    startChatDescription: 'Inicia una conversación directa de WhatsApp con un miembro del grupo',
+    createGroupDescription: 'Crea un grupo de WhatsApp para tus miembros de Naat',
+    qrCodeDescription: 'Genera un código QR que otros pueden escanear para chatear contigo en WhatsApp',
+    notificationsDescription: 'Recibe recordatorios de pago y actualizaciones de grupo a través de WhatsApp',
+    chat: 'Chat',
+    group: 'Grupo',
+    qrCode: 'Código QR',
+    error: 'Error',
   },
   ar: {
     welcome: 'مرحبا',

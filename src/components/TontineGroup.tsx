@@ -2,6 +2,12 @@ import { CalendarIcon, Coins, Users, ChevronRight, TrendingUp } from "lucide-rea
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
 
+type ActionItem = {
+  icon: React.ReactNode;
+  label: string;
+  onClick: (e: React.MouseEvent) => void;
+};
+
 type TontineGroupProps = {
   name: string;
   members: number;
@@ -10,6 +16,7 @@ type TontineGroupProps = {
   status?: "active" | "pending" | "completed";
   progress?: number;
   onClick?: () => void;
+  actions?: ActionItem[];
 };
 
 export default function TontineGroup({
@@ -19,7 +26,8 @@ export default function TontineGroup({
   nextDue,
   status = "active",
   progress = 0,
-  onClick
+  onClick,
+  actions = []
 }: TontineGroupProps) {
   const { t } = useApp();
 
@@ -110,7 +118,19 @@ export default function TontineGroup({
           )}
         </div>
 
-        <div className="mt-4 text-right">
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex space-x-2">
+            {actions.map((action, index) => (
+              <button
+                key={index}
+                className="p-1.5 rounded-full hover:bg-secondary transition-colors"
+                onClick={action.onClick}
+                title={action.label}
+              >
+                {action.icon}
+              </button>
+            ))}
+          </div>
           <ChevronRight size={18} className="inline-block text-muted-foreground" />
         </div>
       </div>

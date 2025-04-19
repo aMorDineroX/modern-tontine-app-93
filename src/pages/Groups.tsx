@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-import { Plus, Search, Filter, SlidersHorizontal, Users, Info, ArrowUpDown } from "lucide-react";
+import { Plus, Search, Filter, SlidersHorizontal, Users, Info, ArrowUpDown, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import TontineGroup from "@/components/TontineGroup";
 import CreateGroupModal from "@/components/CreateGroupModal";
 import MemberList from "@/components/MemberList";
+import WhatsAppIntegration from "@/components/WhatsAppIntegration";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase, fetchUserGroups } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Group type definition
 type Group = {
@@ -33,6 +35,8 @@ const Groups = () => {
   const [sortBy, setSortBy] = useState<"name" | "date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<any>(null);
 
   const { t, formatAmount } = useApp();
   const { toast } = useToast();
@@ -245,6 +249,11 @@ const Groups = () => {
     navigate(`/groups/${groupId}`);
   };
 
+  const openWhatsAppIntegration = (group: any) => {
+    setSelectedGroup(group);
+    setIsWhatsAppModalOpen(true);
+  };
+
   const toggleSort = (sortType: "name" | "date" | "amount") => {
     if (sortBy === sortType) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -362,13 +371,26 @@ const Groups = () => {
                 </svg>
               </button>
             </div>
-            <button
-              className="tontine-button tontine-button-primary flex items-center"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Plus size={18} className="mr-2" />
-              {t('createGroup')}
-            </button>
+            <div className="flex space-x-2">
+              <button
+                className="tontine-button tontine-button-primary flex items-center"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <Plus size={18} className="mr-2" />
+                {t('createGroup')}
+              </button>
+              <button
+                className="tontine-button flex items-center bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => setIsWhatsAppModalOpen(true)}
+              >
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                  alt="WhatsApp"
+                  className="h-4 w-4 mr-2"
+                />
+                WhatsApp
+              </button>
+            </div>
           </div>
         </motion.div>
 
@@ -515,6 +537,16 @@ const Groups = () => {
                     status={group.status}
                     progress={group.progress}
                     onClick={() => openGroupDetails(group.id)}
+                    actions={[
+                      {
+                        icon: <MessageSquare size={16} className="text-green-600" />,
+                        label: "WhatsApp",
+                        onClick: (e) => {
+                          e.stopPropagation();
+                          openWhatsAppIntegration(group);
+                        }
+                      }
+                    ]}
                   />
                 </motion.div>
               ))}
@@ -578,6 +610,24 @@ const Groups = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateGroup}
       />
+
+      {/* WhatsApp Integration Modal */}
+      <Dialog open={isWhatsAppModalOpen} onOpenChange={setIsWhatsAppModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedGroup ?
+                `${t('whatsAppIntegration')}: ${selectedGroup.name}` :
+                t('whatsAppIntegration')}
+            </DialogTitle>
+          </DialogHeader>
+          <WhatsAppIntegration
+            groupName={selectedGroup?.name || "Naat Group"}
+            groupDescription={`${t('contribution')}: ${selectedGroup ? formatContribution(selectedGroup.contribution, selectedGroup.frequency) : ''}`}
+            groupId={selectedGroup?.id}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

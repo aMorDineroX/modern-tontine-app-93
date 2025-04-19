@@ -1,63 +1,125 @@
-# Welcome to Naat - Modern Tontine App
+# Naat - Application Moderne de Tontine
 
-## Project info
+<p align="center">
+  <img src="public/logo.svg" alt="Naat Logo" width="200" />
+</p>
 
-Naat is a modern tontine application designed to help users manage group savings and contributions.
+## À propos de Naat
 
-## How can I edit this code?
+Naat est une application moderne de tontine conçue pour simplifier la gestion des groupes d'épargne rotative et des contributions financières collectives. Inspirée par les pratiques traditionnelles de tontine répandues en Afrique et dans d'autres régions du monde, Naat apporte une solution numérique sécurisée et transparente pour gérer ces systèmes d'épargne communautaire.
 
-There are several ways of editing your application.
+### Qu'est-ce qu'une tontine ?
 
-**Use your preferred IDE**
+Une tontine est un système d'épargne collective où les membres d'un groupe contribuent régulièrement à un fonds commun. À tour de rôle, chaque membre reçoit la totalité des contributions collectées. Ce système favorise l'épargne disciplinée et l'entraide financière au sein des communautés.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes.
+### Notre mission
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Naat vise à préserver l'esprit communautaire des tontines traditionnelles tout en offrant les avantages de la technologie moderne : sécurité, transparence, accessibilité et facilité d'utilisation.
 
-Follow these steps:
+## Fonctionnalités principales
+
+### Gestion de groupes
+- Création et gestion de multiples groupes de tontine
+- Invitation de membres par email ou partage de lien
+- Définition des règles de contribution et des calendriers de paiement
+
+### Suivi financier
+- Tableau de bord intuitif pour visualiser l'état des contributions
+- Historique détaillé des transactions
+- Notifications pour les paiements à venir et les échéances
+
+### Cycles de tontine
+- Gestion des cycles de rotation pour les versements
+- Options flexibles : rotation fixe, sélection aléatoire ou système d'enchères
+- Calendrier interactif des paiements
+
+### Sécurité et transparence
+- Authentification sécurisée
+- Historique complet des activités
+- Rapports et statistiques détaillés
+
+### Multi-langues et multi-devises
+- Interface disponible en français, anglais, espagnol, arabe et swahili
+- Support de différentes devises pour les groupes internationaux
+
+## Captures d'écran
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Tableau de bord" width="45%" />
+  <img src="docs/screenshots/groups.png" alt="Gestion des groupes" width="45%" />
+</p>
+
+## Installation et démarrage
+
+### Prérequis
+- Node.js (v16 ou supérieur)
+- npm ou yarn
+
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Cloner le dépôt
+git clone https://github.com/aMorDineroX/modern-tontine-app-93.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Accéder au répertoire du projet
+cd modern-tontine-app-93
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Installer les dépendances
+npm install
+# ou
+yarn install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Démarrer le serveur de développement
 npm run dev
+# ou
+yarn dev
 ```
 
-**Edit a file directly in GitHub**
+L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre port si le 8080 est déjà utilisé).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Technologies utilisées
 
-**Use GitHub Codespaces**
+Naat est construit avec des technologies modernes pour offrir une expérience utilisateur fluide et réactive :
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Frontend** : React, TypeScript, Tailwind CSS
+- **UI Components** : shadcn-ui
+- **Build Tool** : Vite
+- **Backend** : Supabase (Authentication, Database)
+- **State Management** : React Context API
+- **Routing** : React Router
+- **Animations** : Framer Motion
+- **Internationalisation** : Custom i18n solution
 
-## What technologies are used for this project?
+## Déploiement
 
-This project is built with:
+L'application peut être déployée sur diverses plateformes :
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Vercel
+- Netlify
+- GitHub Pages
+- AWS Amplify
+- Firebase Hosting
 
-## How can I deploy this project?
+## Contribution
 
-You can deploy this project using services like Netlify, Vercel, or GitHub Pages.
+Les contributions sont les bienvenues ! Si vous souhaitez contribuer à Naat :
 
-## Using a custom domain
+1. Forkez le dépôt
+2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
+3. Committez vos changements (`git commit -m 'Add some amazing feature'`)
+4. Poussez vers la branche (`git push origin feature/amazing-feature`)
+5. Ouvrez une Pull Request
 
-You can configure a custom domain when deploying with services like Netlify or Vercel.
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## Contact
+
+Pour toute question ou suggestion, n'hésitez pas à nous contacter à support@naat-app.com
+
+---
+
+<p align="center">
+  Naat - Moderniser l'épargne communautaire, préserver les traditions
+</p>

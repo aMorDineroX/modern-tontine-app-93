@@ -13,11 +13,14 @@ import LandingPage from "./pages/LandingPage";
 import Groups from "./pages/Groups";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
+import TontineCycles from "./pages/TontineCycles";
+import Statistics from "./pages/Statistics";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
+import Transactions from "./pages/Transactions";
 
 const queryClient = new QueryClient({
   defaultOptions: {

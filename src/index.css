@@ -1,10 +1,10 @@
 
 @layer base {
   :root {
-    --primary: 122 47% 50%; // Teinte de vert
+    --primary: 122 47% 50%; /* Teinte de vert */
     --primary-foreground: 0 0% 100%;
     
-    // Ajustement des couleurs de base
+    /* Ajustement des couleurs de base */
     --background: 140 50% 98%;
     --foreground: 140 20% 20%;
   }
@@ -18,7 +18,7 @@
   }
 }
 
-// Styles de composants verts
+/* Styles de composants verts */
 @layer components {
   .green-card {
     @apply bg-tontine-green-50 border border-tontine-green-200 shadow-md hover:shadow-lg transition-all duration-300;

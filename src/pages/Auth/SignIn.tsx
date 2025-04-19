@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
@@ -62,10 +61,14 @@ export default function SignIn() {
     navigate("/premium");
   };
 
+  const handleDevLogin = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <Helmet>
-        <title>{t("signIn")} | Tontine</title>
+        <title>{t("signIn")} | Naat</title>
       </Helmet>
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -184,7 +187,6 @@ export default function SignIn() {
               </div>
             </div>
 
-            {/* Bouton "Passé à Premium" */}
             <div className="mt-8">
               <Button
                 type="button"
@@ -195,6 +197,18 @@ export default function SignIn() {
                 Passé à Premium
               </Button>
             </div>
+
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  onClick={handleDevLogin}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                >
+                  Mode Développement - Accès Rapide
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

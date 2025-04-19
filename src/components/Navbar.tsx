@@ -1,5 +1,4 @@
-
-import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem } from "lucide-react";
+import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
@@ -61,6 +60,43 @@ export default function Navbar() {
               <Home size={18} />
               {t('dashboard')}
             </Link>
+            
+            <Link 
+              to="/tontine-cycles" 
+              className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+                isActive('/tontine-cycles') 
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+              }`}
+            >
+              <CalendarDays size={18} />
+              Cycles
+            </Link>
+            
+            <Link 
+              to="/transactions" 
+              className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+                isActive('/transactions') 
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+              }`}
+            >
+              <Receipt size={18} />
+              Transactions
+            </Link>
+            
+            <Link 
+              to="/statistics" 
+              className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+                isActive('/statistics') 
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+              }`}
+            >
+              <BarChart3 size={18} />
+              Statistiques
+            </Link>
+
             <Link 
               to="/groups" 
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${

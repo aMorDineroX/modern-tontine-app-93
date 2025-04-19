@@ -14,7 +14,7 @@ export default function ProfileEnhanced() {
   const { user } = useAuth();
   const { t, formatAmount } = useApp();
   const [activeTab, setActiveTab] = useState("activity");
-  
+
   // Pour la démo, nous utilisons des données fictives
   const userStats = {
     totalContributions: formatAmount(1250),
@@ -22,15 +22,15 @@ export default function ProfileEnhanced() {
     upcomingPayments: 2,
     joinDate: new Date(2023, 5, 15)
   };
-  
+
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString(undefined, { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
-  
+
   const upcomingPayments = [
     {
       id: 1,
@@ -45,7 +45,7 @@ export default function ProfileEnhanced() {
       date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10) // Dans 10 jours
     }
   ];
-  
+
   const savedGroups = [
     {
       id: 1,
@@ -66,32 +66,32 @@ export default function ProfileEnhanced() {
       nextPayout: formatDate(new Date(Date.now() + 1000 * 60 * 60 * 24 * 20))
     }
   ];
-  
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 animate-fade-in">
       <div className="relative">
         {/* Background Banner */}
         <div className="h-40 rounded-t-lg bg-gradient-to-r from-tontine-purple to-tontine-light-purple" />
-        
+
         {/* Profile Info */}
         <div className="flex flex-col md:flex-row items-center md:items-end md:justify-between px-6 -mt-16 pb-4">
           <div className="flex flex-col items-center md:items-start md:flex-row md:space-x-4">
             <div className="relative">
               <Avatar className="h-24 w-24 border-4 border-white dark:border-gray-800">
                 <AvatarImage src={user?.user_metadata?.avatar_url} />
-                <AvatarFallback className="bg-tontine-soft-blue text-tontine-purple text-xl">
+                <AvatarFallback className="bg-tontine-soft-green text-primary text-xl">
                   {user?.email?.substring(0, 2).toUpperCase() || <User />}
                 </AvatarFallback>
               </Avatar>
-              <Button 
-                size="icon" 
+              <Button
+                size="icon"
                 variant="secondary"
                 className="absolute bottom-0 right-0 h-8 w-8 rounded-full"
               >
                 <Camera className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <div className="text-center md:text-left mt-4 md:mt-0">
               <h1 className="text-2xl font-bold">
                 {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
@@ -102,57 +102,57 @@ export default function ProfileEnhanced() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex flex-row space-x-2 mt-4 md:mt-0">
             <Button variant="outline" size="sm" className="gap-2">
               <EditIcon className="h-4 w-4" />
               <span>{t('editProfile')}</span>
             </Button>
-            <SocialShare 
-              title={`${t('checkOut')} ${user?.user_metadata?.full_name || user?.email?.split('@')[0]} ${t('profile')}`} 
+            <SocialShare
+              title={`${t('checkOut')} ${user?.user_metadata?.full_name || user?.email?.split('@')[0]} ${t('profile')}`}
               description={t('joinTontine')}
             />
           </div>
         </div>
       </div>
-      
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('totalContributions')}</h3>
-            <DollarSign className="h-5 w-5 text-tontine-purple opacity-70" />
+            <DollarSign className="h-5 w-5 text-primary opacity-70" />
           </div>
           <p className="text-2xl font-bold mt-1">{userStats.totalContributions}</p>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('groupsJoined')}</h3>
-            <User className="h-5 w-5 text-tontine-purple opacity-70" />
+            <User className="h-5 w-5 text-primary opacity-70" />
           </div>
           <p className="text-2xl font-bold mt-1">{userStats.groupsJoined}</p>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('upcomingPayments')}</h3>
-            <Calendar className="h-5 w-5 text-tontine-purple opacity-70" />
+            <Calendar className="h-5 w-5 text-primary opacity-70" />
           </div>
           <p className="text-2xl font-bold mt-1">{userStats.upcomingPayments}</p>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('actions')}</h3>
-            <Bell className="h-5 w-5 text-tontine-purple opacity-70" />
+            <Bell className="h-5 w-5 text-primary opacity-70" />
           </div>
           <div className="mt-2">
             <InviteFriends />
           </div>
         </div>
       </div>
-      
+
       {/* Tabs Content */}
       <div className="mt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -174,12 +174,12 @@ export default function ProfileEnhanced() {
               {t('messages')}
             </TabsTrigger>
           </TabsList>
-          
+
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg mt-4 border border-gray-100 dark:border-gray-700">
             <TabsContent value="activity">
               <ActivityFeed limit={10} />
             </TabsContent>
-            
+
             <TabsContent value="upcoming">
               <h3 className="font-semibold text-lg mb-4">{t('upcomingPayments')}</h3>
               {upcomingPayments.length > 0 ? (
@@ -193,7 +193,7 @@ export default function ProfileEnhanced() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-tontine-dark-purple">{payment.amount}</p>
+                        <p className="font-bold text-tontine-dark-green">{payment.amount}</p>
                       </div>
                     </div>
                   ))}
@@ -204,7 +204,7 @@ export default function ProfileEnhanced() {
                 </div>
               )}
             </TabsContent>
-            
+
             <TabsContent value="saved">
               <h3 className="font-semibold text-lg mb-4">{t('savedGroups')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -224,7 +224,7 @@ export default function ProfileEnhanced() {
                 ))}
               </div>
             </TabsContent>
-            
+
             <TabsContent value="messages">
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />

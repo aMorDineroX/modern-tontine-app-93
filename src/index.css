@@ -5,35 +5,148 @@
 
 @layer base {
   :root {
-    --primary: 122 47% 50%; /* Teinte de vert */
-    --primary-foreground: 0 0% 100%;
-    
-    /* Ajustement des couleurs de base */
-    --background: 140 50% 98%;
-    --foreground: 122 47% 30%; /* Changed to a green shade */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 142 70% 45%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 142 70% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 263 70% 50%;
+
+    --radius: 0.5rem;
   }
 
   .dark {
-    --primary: 122 47% 50%;
-    --primary-foreground: 140 20% 20%;
-    
-    --background: 140 20% 10%;
-    --foreground: 122 47% 70%; /* Brighter green for dark mode */
-  }
-  
-  /* Make all text green by default */
-  body {
-    @apply text-tontine-green-600 dark:text-tontine-green-400;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 142 70% 50%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 142 70% 16%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 263 70% 60%;
   }
 }
 
-/* Styles de composants verts */
-@layer components {
-  .green-card {
-    @apply bg-tontine-green-50 border border-tontine-green-200 shadow-md hover:shadow-lg transition-all duration-300;
+@layer base {
+  * {
+    @apply border-border;
   }
-  
-  .green-button {
-    @apply bg-gradient-to-r from-tontine-green-400 to-tontine-green-500 text-white hover:from-tontine-green-500 hover:to-tontine-green-600 transition-all;
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Styles de composants personnalisés */
+@layer components {
+  /* Styles de cartes */
+  .tontine-card {
+    @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 p-4;
+  }
+
+  /* Styles de boutons */
+  .tontine-button {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+  }
+
+  .tontine-button-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
+  }
+
+  .tontine-button-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2;
+  }
+
+  .tontine-button-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+  }
+
+  /* Styles de texte */
+  .tontine-text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400;
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    @apply animate-in fade-in duration-500;
+  }
+
+  .animate-slide-up {
+    @apply animate-in slide-in-from-bottom-4 duration-500;
+  }
+
+  .animate-slide-down {
+    @apply animate-in slide-in-from-top-4 duration-300;
+  }
+
+  /* Couleurs de fond spécifiques */
+  .tontine-soft-green {
+    @apply bg-green-100 dark:bg-green-900/30;
+  }
+
+  .tontine-soft-blue {
+    @apply bg-blue-100 dark:bg-blue-900/30;
+  }
+
+  .tontine-soft-emerald {
+    @apply bg-emerald-100 dark:bg-emerald-900/30;
+  }
+
+  /* Couleurs de texte */
+  .tontine-green {
+    @apply text-green-600;
+  }
+
+  .tontine-light-green {
+    @apply text-green-400;
+  }
+
+  .tontine-dark-green {
+    @apply text-green-800;
+  }
+
+  /* Input styles */
+  .tontine-input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

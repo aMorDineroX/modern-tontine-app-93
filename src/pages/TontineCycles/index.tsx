@@ -12,7 +12,7 @@ export default function TontineCycles() {
       </Helmet>
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">Gestion des Cycles de Tontine</h1>
+        <h1 className="text-3xl font-bold">Gestion des Cycles de Naat</h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
           Gérez vos cycles de tontine et suivez leur progression
         </p>
@@ -51,14 +51,14 @@ export default function TontineCycles() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Cycles de Tontine</CardTitle>
+            <CardTitle>Cycles de Naat</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <Button className="w-full sm:w-auto">
                 Créer un Nouveau Cycle
               </Button>
-              
+
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                 <p className="text-center text-gray-600 dark:text-gray-400">
                   Aucun cycle actif. Créez un nouveau cycle pour commencer.

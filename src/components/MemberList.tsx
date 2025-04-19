@@ -27,35 +27,35 @@ export default function MemberList({ members, title }: MemberListProps) {
   };
 
   return (
-    <div className="tontine-card dark:bg-gray-800 dark:border-gray-700 h-full animate-slide-up">
+    <div className="tontine-card h-full animate-slide-up">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold dark:text-white">{title}</h3>
-        <span className="text-xs px-2 py-1 bg-tontine-soft-blue dark:bg-blue-900/50 rounded-full text-tontine-dark-purple dark:text-tontine-light-purple">
+        <h3 className="font-semibold text-foreground">{title}</h3>
+        <span className="text-xs px-2 py-1 bg-secondary rounded-full text-primary">
           {members.length} {t('members')}
         </span>
       </div>
-      
+
       <div className="space-y-3">
         {members.map((member) => (
-          <div key={member.id} className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+          <div key={member.id} className="flex items-center justify-between p-2 hover:bg-secondary/50 rounded-lg transition-colors">
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-3 overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center mr-3 overflow-hidden">
                 {member.image ? (
                   <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
                 ) : (
-                  <User size={16} className="text-gray-500 dark:text-gray-400" />
+                  <User size={16} className="text-muted-foreground" />
                 )}
               </div>
-              <span className="font-medium text-sm dark:text-white">{member.name}</span>
+              <span className="font-medium text-sm text-foreground">{member.name}</span>
             </div>
-            
+
             <div>
               <span className={`text-xs px-2 py-1 rounded-full ${
-                member.status === "active" 
-                  ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400" 
-                  : member.status === "pending" 
-                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400"
-                  : "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400"
+                member.status === "active"
+                  ? "bg-green-100 text-green-800"
+                  : member.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-primary/10 text-primary"
               }`}>
                 {getStatusText(member.status)}
               </span>
@@ -65,7 +65,7 @@ export default function MemberList({ members, title }: MemberListProps) {
       </div>
 
       <div className="mt-4 flex justify-end">
-        <WhatsAppShare 
+        <WhatsAppShare
           text={`Rejoins notre groupe "${title}" sur Tontine !`}
         />
       </div>

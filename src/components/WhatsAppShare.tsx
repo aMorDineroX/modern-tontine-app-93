@@ -18,11 +18,11 @@ export default function WhatsAppShare({ text, url }: WhatsAppShareProps) {
     <Button
       variant="outline"
       size="sm"
-      className="text-green-600 border-green-600 hover:bg-green-50 dark:text-green-400 dark:border-green-600 dark:hover:bg-green-900/20"
+      className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700 font-medium"
       onClick={handleShare}
     >
-      <img 
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
         alt="WhatsApp"
         className="h-4 w-4 mr-2"
       />

@@ -20,6 +20,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 import Transactions from "./pages/Transactions";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,26 +48,26 @@ const AuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(true);
-  
+
   useEffect(() => {
     const processAuth = async () => {
       console.log("Processing OAuth callback...");
       console.log("Location:", location);
-      
+
       const { hash, search } = location;
-      
+
       if (hash && hash.includes("access_token")) {
         console.log("Access token found in hash, processing...");
-        
+
         try {
           const { data, error } = await supabase.auth.getSession();
-          
+
           if (error) {
             console.error("Error processing session:", error);
             navigate('/signin', { replace: true });
           } else {
             console.log("Session after hash processing:", data.session);
-            
+
             if (data.session) {
               console.log("Authentication successful, redirecting to dashboard");
               navigate('/dashboard', { replace: true });
@@ -78,7 +79,7 @@ const AuthCallback = () => {
           navigate('/signin', { replace: true });
         }
       }
-      
+
       if (search && search.includes("code=")) {
         console.log("Authorization code found in search params, processing...");
         const { data } = await supabase.auth.getSession();
@@ -88,21 +89,21 @@ const AuthCallback = () => {
           return;
         }
       }
-      
+
       setIsProcessing(false);
-      
+
       if (window.location.pathname === "/auth/callback") {
         navigate('/signin', { replace: true });
       }
     };
-    
+
     processAuth();
   }, [location, navigate]);
-  
+
   if (isProcessing) {
     return <LoadingScreen message="Authentification en cours..." />;
   }
-  
+
   return null;
 };
 
@@ -110,21 +111,21 @@ const RootComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
-  
+
   useEffect(() => {
     const { hash } = location;
     if (hash && hash.includes('access_token')) {
       console.log('Detected access_token in URL hash, processing...');
       setIsProcessingAuth(true);
-      
+
       (async () => {
         try {
           const hashParams = new URLSearchParams(hash.substring(1));
           const accessToken = hashParams.get('access_token');
           console.log("Extracted access token from hash:", accessToken ? "Present (first chars: " + accessToken.substring(0, 10) + "...)" : "Not found");
-          
+
           const { data, error } = await supabase.auth.getSession();
-          
+
           if (error) {
             console.error("Error processing token from URL:", error);
             navigate('/signin', { replace: true });
@@ -142,32 +143,35 @@ const RootComponent = () => {
           setIsProcessingAuth(false);
         }
       })();
-      
+
       return;
     }
   }, [location, navigate]);
-  
+
   if (isProcessingAuth) {
     return <LoadingScreen message="Traitement de l'authentification..." />;
   }
-  
+
   return (
     <Routes>
+      {/* Public routes without navbar */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
-      <Route path="/premium" element={<Premium />} />
-      
-      <Route path="/dashboard" element={<Index />} />
-      <Route path="/groups" element={<Groups />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/tontine-cycles" element={<TontineCycles />} />
-      <Route path="/transactions" element={<Transactions />} />
-      <Route path="/statistics" element={<Statistics />} />
-      
-      <Route path="*" element={<NotFound />} />
+
+      {/* Protected routes with navbar */}
+      <Route path="/premium" element={<Layout><Premium /></Layout>} />
+      <Route path="/dashboard" element={<Layout><Index /></Layout>} />
+      <Route path="/groups" element={<Layout><Groups /></Layout>} />
+      <Route path="/profile" element={<Layout><Profile /></Layout>} />
+      <Route path="/tontine-cycles" element={<Layout><TontineCycles /></Layout>} />
+      <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
+      <Route path="/statistics" element={<Layout><Statistics /></Layout>} />
+
+      {/* Not found page */}
+      <Route path="*" element={<Layout><NotFound /></Layout>} />
     </Routes>
   );
 };

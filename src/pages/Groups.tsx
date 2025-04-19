@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Plus, Search, Filter, SlidersHorizontal, Users, Info, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "@/components/Navbar";
 import TontineGroup from "@/components/TontineGroup";
 import CreateGroupModal from "@/components/CreateGroupModal";
 import MemberList from "@/components/MemberList";
@@ -34,7 +33,7 @@ const Groups = () => {
   const [sortBy, setSortBy] = useState<"name" | "date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  
+
   const { t, formatAmount } = useApp();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -46,29 +45,29 @@ const Groups = () => {
       try {
         setIsLoading(true);
         console.log("Fetching groups, user:", user);
-        
+
         if (!user) {
           setGroups([]);
           setIsLoading(false);
           return;
         }
-        
+
         // Use the fetchUserGroups utility function
         const { data: groupsData, error } = await fetchUserGroups(user.id);
-        
+
         if (error) {
           console.error("Error fetching groups:", error);
           throw error;
         }
-        
+
         console.log("Groups data:", groupsData);
-        
+
         if (!groupsData || groupsData.length === 0) {
           setGroups([]);
           setIsLoading(false);
           return;
         }
-        
+
         // Get member counts for each group
         const groupsWithMemberCount = await Promise.all(
           groupsData.map(async (group) => {
@@ -76,16 +75,16 @@ const Groups = () => {
               .from('group_members')
               .select('*', { count: 'exact', head: true })
               .eq('group_id', group.id);
-            
+
             if (error) {
               console.error("Error counting members:", error);
             }
-            
+
             // Calculate next due date based on frequency and start date
             const startDate = new Date(group.start_date);
             let nextDue = new Date(startDate);
             const today = new Date();
-            
+
             while (nextDue < today) {
               if (group.frequency === 'weekly') {
                 nextDue.setDate(nextDue.getDate() + 7);
@@ -95,14 +94,14 @@ const Groups = () => {
                 nextDue.setMonth(nextDue.getMonth() + 1);
               }
             }
-            
+
             // Calculate progress (mock implementation)
             const progress = Math.min(
-              Math.round((today.getTime() - startDate.getTime()) / 
+              Math.round((today.getTime() - startDate.getTime()) /
               (nextDue.getTime() - startDate.getTime()) * 100),
               100
             );
-            
+
             // Fetch the status of the current user in this group
             const { data: membershipData, error: membershipError } = await supabase
               .from('group_members')
@@ -110,9 +109,9 @@ const Groups = () => {
               .eq('group_id', group.id)
               .eq('user_id', user.id)
               .single();
-            
+
             const status = membershipData ? membershipData.status : "active";
-            
+
             return {
               id: group.id,
               name: group.name,
@@ -125,7 +124,7 @@ const Groups = () => {
             };
           })
         );
-        
+
         console.log("Processed groups:", groupsWithMemberCount);
         setGroups(groupsWithMemberCount);
       } catch (error) {
@@ -139,7 +138,7 @@ const Groups = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchGroups();
   }, [user, toast]);
 
@@ -150,56 +149,56 @@ const Groups = () => {
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
     if (sortBy === 'name') {
-      return sortOrder === 'asc' 
-        ? a.name.localeCompare(b.name) 
+      return sortOrder === 'asc'
+        ? a.name.localeCompare(b.name)
         : b.name.localeCompare(a.name);
     } else if (sortBy === 'amount') {
-      return sortOrder === 'asc' 
-        ? a.contribution - b.contribution 
+      return sortOrder === 'asc'
+        ? a.contribution - b.contribution
         : b.contribution - a.contribution;
     } else {
       // Default to sorting by date (using id as proxy)
-      return sortOrder === 'asc' 
-        ? String(a.id).localeCompare(String(b.id)) 
+      return sortOrder === 'asc'
+        ? String(a.id).localeCompare(String(b.id))
         : String(b.id).localeCompare(String(a.id));
     }
   });
 
   const handleCreateGroup = async (data: { name: string; contribution: string; frequency: string; members: string }) => {
     console.log("Group created with data:", data);
-    
+
     // After group creation, refresh the groups list
     if (user) {
       setIsLoading(true);
-      
+
       try {
         // Fetch all groups the user has access to (based on RLS policies)
         const { data: groupsData, error: groupsError } = await supabase
           .from('tontine_groups')
           .select('*');
-        
+
         if (groupsError) {
           console.error("Error fetching groups after creation:", groupsError);
           throw groupsError;
         }
-        
+
         console.log("Groups data after creation:", groupsData);
-        
+
         if (groupsData && groupsData.length > 0) {
           // Transform the group data
           const newGroups = await Promise.all(groupsData.map(async (group) => {
             const startDate = new Date(group.start_date);
-            
+
             // Get member count
             const { count } = await supabase
               .from('group_members')
               .select('*', { count: 'exact', head: true })
               .eq('group_id', group.id);
-            
+
             // Calculate next due date
             let nextDue = new Date(startDate);
             const today = new Date();
-            
+
             while (nextDue < today) {
               if (group.frequency === 'weekly') {
                 nextDue.setDate(nextDue.getDate() + 7);
@@ -209,7 +208,7 @@ const Groups = () => {
                 nextDue.setMonth(nextDue.getMonth() + 1);
               }
             }
-            
+
             return {
               id: group.id,
               name: group.name,
@@ -221,7 +220,7 @@ const Groups = () => {
               progress: 0
             };
           }));
-          
+
           setGroups(newGroups);
         }
       } catch (error) {
@@ -264,18 +263,16 @@ const Groups = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Navbar />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <motion.h1 
+          <motion.h1
             className="text-3xl font-bold text-gray-900 dark:text-white flex items-center"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {t('yourGroups')}
-            <button 
+            <button
               onClick={() => setIsInfoOpen(!isInfoOpen)}
               className="ml-2 p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               aria-label="Information"
@@ -283,7 +280,7 @@ const Groups = () => {
               <Info size={18} />
             </button>
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="mt-2 text-sm text-gray-600 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -291,7 +288,7 @@ const Groups = () => {
           >
             {t('manageGroups')}
           </motion.p>
-          
+
           <AnimatePresence>
             {isInfoOpen && (
               <motion.div
@@ -309,7 +306,7 @@ const Groups = () => {
           </AnimatePresence>
         </div>
 
-        <motion.div 
+        <motion.div
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -329,7 +326,7 @@ const Groups = () => {
                 className="tontine-input pl-10 w-full"
               />
             </div>
-            <button 
+            <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className="ml-2 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
@@ -365,7 +362,7 @@ const Groups = () => {
                 </svg>
               </button>
             </div>
-            <button 
+            <button
               className="tontine-button tontine-button-primary flex items-center"
               onClick={() => setIsModalOpen(true)}
             >
@@ -378,7 +375,7 @@ const Groups = () => {
         {/* Filter Dropdown */}
         <AnimatePresence>
           {isFilterOpen && (
-            <motion.div 
+            <motion.div
               className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
@@ -392,25 +389,25 @@ const Groups = () => {
                     {t('filterByStatus')}:
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <button 
+                    <button
                       onClick={() => setFilterStatus(null)}
                       className={`px-3 py-1 text-sm rounded-full ${!filterStatus ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
                       {t('all')}
                     </button>
-                    <button 
+                    <button
                       onClick={() => setFilterStatus('active')}
                       className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'active' ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
                       {t('active')}
                     </button>
-                    <button 
+                    <button
                       onClick={() => setFilterStatus('pending')}
                       className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
                       {t('pending')}
                     </button>
-                    <button 
+                    <button
                       onClick={() => setFilterStatus('completed')}
                       className={`px-3 py-1 text-sm rounded-full ${filterStatus === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
@@ -418,14 +415,14 @@ const Groups = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div>
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                     <ArrowUpDown size={16} className="mr-1" />
                     {t('sortBy')}:
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <button 
+                    <button
                       onClick={() => toggleSort('name')}
                       className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'name' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
@@ -436,7 +433,7 @@ const Groups = () => {
                         </span>
                       )}
                     </button>
-                    <button 
+                    <button
                       onClick={() => toggleSort('date')}
                       className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'date' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
@@ -447,7 +444,7 @@ const Groups = () => {
                         </span>
                       )}
                     </button>
-                    <button 
+                    <button
                       onClick={() => toggleSort('amount')}
                       className={`px-3 py-1 text-sm rounded-full flex items-center ${sortBy === 'amount' ? 'bg-tontine-purple text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
@@ -474,7 +471,7 @@ const Groups = () => {
 
         {/* Empty State */}
         {!isLoading && filteredGroups.length === 0 && (
-          <motion.div 
+          <motion.div
             className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -483,7 +480,7 @@ const Groups = () => {
             <Users size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">{t('noGroupsFound')}</h3>
             <p className="text-gray-500 dark:text-gray-400 mb-4">{searchTerm || filterStatus ? t('noMatchingGroups') : t('createFirstGroup')}</p>
-            <button 
+            <button
               className="tontine-button tontine-button-primary inline-flex items-center"
               onClick={() => setIsModalOpen(true)}
             >
@@ -496,7 +493,7 @@ const Groups = () => {
         {/* Groups Display (Grid or List) */}
         {!isLoading && filteredGroups.length > 0 && (
           <div className="flex flex-col lg:flex-row gap-6">
-            <motion.div 
+            <motion.div
               className={`${view === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"} flex-1`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -522,13 +519,13 @@ const Groups = () => {
                 </motion.div>
               ))}
             </motion.div>
-            
+
             {/* Recent Members Sidebar (only shown on larger screens) */}
             <div className="hidden lg:block w-80">
               <div className="sticky top-24">
-                <MemberList 
-                  members={sampleMembers} 
-                  title={t('recentMembers')} 
+                <MemberList
+                  members={sampleMembers}
+                  title={t('recentMembers')}
                 />
               </div>
             </div>
@@ -537,7 +534,7 @@ const Groups = () => {
 
         {/* Group Stats */}
         {!isLoading && filteredGroups.length > 0 && (
-          <motion.div 
+          <motion.div
             className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -574,10 +571,10 @@ const Groups = () => {
         )}
       </main>
 
-      <CreateGroupModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSubmit={handleCreateGroup} 
+      <CreateGroupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateGroup}
       />
     </div>
   );

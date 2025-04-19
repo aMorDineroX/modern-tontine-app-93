@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { ChartLine, Coins, PiggyBank, UserPlus, Users } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import TontineGroup from "@/components/TontineGroup";
 import ContributionCard from "@/components/ContributionCard";
 import MemberList from "@/components/MemberList";
@@ -41,8 +40,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 animate-fade-in">
-      <Navbar />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
@@ -52,7 +49,7 @@ const Index = () => {
             </p>
           </div>
           <div className="mt-4 lg:mt-0 flex flex-wrap gap-2">
-            <button 
+            <button
               className="tontine-button tontine-button-secondary inline-flex items-center"
               onClick={() => setNotificationCount(0)}
             >
@@ -66,7 +63,7 @@ const Index = () => {
               </div>
               {t('payments')}
             </button>
-            <button 
+            <button
               className="tontine-button tontine-button-primary inline-flex items-center"
               onClick={() => setIsModalOpen(true)}
             >
@@ -78,21 +75,21 @@ const Index = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <ContributionCard 
+          <ContributionCard
             title={t('totalContributions')}
             amount={formatAmount(1250)}
             trend={`Up 8% from last month`}
-            icon="contribution" 
+            icon="contribution"
           />
-          <ContributionCard 
+          <ContributionCard
             title={t('availableBalance')}
             amount={formatAmount(450)}
-            icon="balance" 
+            icon="balance"
           />
           <div className="tontine-card dark:bg-gray-800 dark:border-gray-700 animate-slide-up">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-tontine-light-purple/50 flex items-center justify-center mr-4">
-                <Users size={20} className="text-tontine-dark-purple" />
+              <div className="w-10 h-10 rounded-full bg-tontine-light-green/50 flex items-center justify-center mr-4">
+                <Users size={20} className="text-tontine-dark-green" />
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('activeGroups')}</h3>
@@ -103,7 +100,7 @@ const Index = () => {
           <div className="tontine-card dark:bg-gray-800 dark:border-gray-700 animate-slide-up">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-tontine-soft-blue/50 flex items-center justify-center mr-4">
-                <ChartLine size={20} className="text-tontine-dark-purple" />
+                <ChartLine size={20} className="text-tontine-dark-green" />
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('nextPayout')}</h3>
@@ -119,11 +116,11 @@ const Index = () => {
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold dark:text-white">{t('yourGroups')}</h2>
-              <button className="text-tontine-purple hover:text-tontine-dark-purple dark:text-tontine-light-purple dark:hover:text-tontine-purple text-sm font-medium">
+              <button className="text-primary hover:text-tontine-dark-green dark:text-tontine-light-green dark:hover:text-primary text-sm font-medium">
                 {t('viewAll')}
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {mockGroups.map((group) => (
                 <TontineGroup
@@ -153,19 +150,19 @@ const Index = () => {
                     const day = i - 3; // Start from previous month's last days
                     const isCurrentMonth = day > 0 && day <= 30;
                     const hasPayment = [10, 15, 22].includes(day);
-                    
+
                     return (
-                      <div 
-                        key={i} 
+                      <div
+                        key={i}
                         className={`
                           h-10 flex items-center justify-center rounded-md text-sm
-                          ${isCurrentMonth ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600'} 
-                          ${hasPayment ? 'bg-tontine-light-purple/20 dark:bg-tontine-purple/30' : ''}
+                          ${isCurrentMonth ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600'}
+                          ${hasPayment ? 'bg-tontine-light-green/20 dark:bg-primary/30' : ''}
                         `}
                       >
                         {day > 0 ? day : 31 + day}
                         {hasPayment && (
-                          <span className="w-1 h-1 bg-tontine-purple absolute bottom-1 rounded-full"></span>
+                          <span className="w-1 h-1 bg-primary absolute bottom-1 rounded-full"></span>
                         )}
                       </div>
                     );
@@ -178,32 +175,32 @@ const Index = () => {
           {/* Right Column - Profile & Members */}
           <div className="space-y-8">
             <div className="tontine-card dark:bg-gray-800 dark:border-gray-700">
-              <UserProfile 
-                name="Olivia Nkosi" 
-                contribution="Premium Member" 
+              <UserProfile
+                name="Olivia Nkosi"
+                contribution="Premium Member"
               />
-              
+
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex items-center justify-center mb-2">
-                    <Coins size={18} className="text-tontine-dark-purple mr-1" />
+                    <Coins size={18} className="text-tontine-dark-green mr-1" />
                     <span className="text-sm font-medium dark:text-white">{t('active')}</span>
                   </div>
                   <p className="font-semibold dark:text-white">3 {t('members')}</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex items-center justify-center mb-2">
-                    <PiggyBank size={18} className="text-tontine-dark-purple mr-1" />
+                    <PiggyBank size={18} className="text-tontine-dark-green mr-1" />
                     <span className="text-sm font-medium dark:text-white">Saved</span>
                   </div>
                   <p className="font-semibold dark:text-white">{formatAmount(3200)}</p>
                 </div>
               </div>
             </div>
-            
-            <MemberList 
+
+            <MemberList
               title={t('recentMembers')}
-              members={mockMembers} 
+              members={mockMembers}
             />
 
             {/* Activity Feed */}
@@ -243,10 +240,10 @@ const Index = () => {
         </div>
       </main>
 
-      <CreateGroupModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSubmit={handleCreateGroup} 
+      <CreateGroupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateGroup}
       />
     </div>
   );

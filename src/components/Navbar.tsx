@@ -39,57 +39,57 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="relative z-20 bg-white dark:bg-gray-900 shadow-sm">
+    <nav className="relative z-20 bg-background border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold tontine-text-gradient">Tontine</span>
+              <span className="text-2xl font-bold tontine-text-gradient">Naat</span>
             </Link>
           </div>
-          
+
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <Link 
-              to="/dashboard" 
+            <Link
+              to="/dashboard"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/dashboard') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/dashboard')
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <Home size={18} />
               {t('dashboard')}
             </Link>
-            
-            <Link 
-              to="/tontine-cycles" 
+
+            <Link
+              to="/tontine-cycles"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/tontine-cycles') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                isActive('/tontine-cycles')
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
                   : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
               }`}
             >
               <CalendarDays size={18} />
               Cycles
             </Link>
-            
-            <Link 
-              to="/transactions" 
+
+            <Link
+              to="/transactions"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/transactions') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                isActive('/transactions')
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
                   : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
               }`}
             >
               <Receipt size={18} />
               Transactions
             </Link>
-            
-            <Link 
-              to="/statistics" 
+
+            <Link
+              to="/statistics"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/statistics') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
+                isActive('/statistics')
+                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
                   : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
               }`}
             >
@@ -97,67 +97,68 @@ export default function Navbar() {
               Statistiques
             </Link>
 
-            <Link 
-              to="/groups" 
+            <Link
+              to="/groups"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/groups') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/groups')
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <Users size={18} />
               {t('myGroups')}
             </Link>
-            <Link 
-              to="/profile" 
+            <Link
+              to="/profile"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                isActive('/profile') 
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-b-2 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/profile')
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <User size={18} />
               {t('profile')}
             </Link>
-            
+
             <Button
               variant="outline"
               size="sm"
-              className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              className="bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600 font-medium"
               onClick={handlePremiumClick}
             >
-              <Gem size={16} className="mr-1" />
+              <Gem size={16} />
               {t('premium')}
             </Button>
-            
+
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
               aria-label="Search"
             >
-              <Search size={20} className="text-gray-700 dark:text-gray-300" />
+              <Search size={20} className="text-secondary-foreground" />
             </button>
-            
+
             <button
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative"
+              className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors relative"
               aria-label="Notifications"
+              onClick={() => setNotificationCount(0)}
             >
-              <Bell size={20} className="text-gray-700 dark:text-gray-300" />
+              <Bell size={20} className="text-secondary-foreground" />
               {notificationCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-xs">
+                <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-destructive text-destructive-foreground text-xs">
                   {notificationCount}
                 </Badge>
               )}
             </button>
-            
+
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
             >
-              <Settings size={20} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+              <Settings size={20} className="text-primary" />
             </button>
             <ThemeToggle />
-            <button 
+            <button
               className="tontine-button tontine-button-primary"
               onClick={() => setIsPaymentModalOpen(true)}
             >
@@ -165,33 +166,33 @@ export default function Navbar() {
             </button>
             <button
               onClick={handleSignOut}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-gray-700 dark:text-gray-300"
+              className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
               title="Sign out"
             >
-              <LogOut size={20} />
+              <LogOut size={20} className="text-destructive" />
             </button>
           </div>
-          
+
           <div className="flex items-center sm:hidden">
             <Button
               variant="outline"
               size="sm"
-              className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600"
+              className="mr-2 bg-gradient-to-r from-amber-300 to-amber-500 text-white border-amber-500 hover:from-amber-400 hover:to-amber-600 font-medium"
               onClick={handlePremiumClick}
             >
               <Gem size={16} />
             </Button>
-            
+
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors mr-2"
+              className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors mr-2"
             >
-              <Settings size={20} className="text-tontine-dark-purple dark:text-tontine-light-purple" />
+              <Settings size={20} className="text-primary" />
             </button>
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-tontine-purple"
+              className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
@@ -201,19 +202,19 @@ export default function Navbar() {
       </div>
 
       {searchOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg p-4 animate-slide-down border-t border-gray-200 dark:border-gray-700">
+        <div className="absolute top-16 left-0 right-0 bg-background shadow-lg p-4 animate-slide-down border-t border-border">
           <div className="max-w-3xl mx-auto">
             <div className="relative">
               <input
                 type="search"
                 placeholder={searchPlaceholderText}
-                className="w-full p-3 pl-10 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="tontine-input pl-10"
                 autoFocus
               />
-              <Search className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
-              <button 
+              <Search className="absolute left-3 top-3 text-muted-foreground" size={20} />
+              <button
                 onClick={() => setSearchOpen(false)}
-                className="absolute right-3 top-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
               >
                 <X size={20} />
               </button>
@@ -223,14 +224,14 @@ export default function Navbar() {
       )}
 
       {isOpen && (
-        <div className="sm:hidden absolute w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 animate-slide-down">
+        <div className="sm:hidden absolute w-full bg-background border-b border-border animate-slide-down">
           <div className="pt-2 pb-3 space-y-1">
             <Link
               to="/dashboard"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
-                isActive('/dashboard') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/dashboard')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -240,9 +241,9 @@ export default function Navbar() {
             <Link
               to="/groups"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
-                isActive('/groups') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/groups')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -252,18 +253,18 @@ export default function Navbar() {
             <Link
               to="/profile"
               className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
-                isActive('/profile') 
-                  ? 'bg-tontine-soft-purple text-tontine-purple dark:bg-gray-800 dark:text-tontine-light-purple border-l-4 border-tontine-purple dark:border-tontine-light-purple' 
-                  : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-tontine-purple dark:hover:text-tontine-light-purple hover:border-l-4 hover:border-tontine-purple dark:hover:border-tontine-light-purple'
+                isActive('/profile')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
               }`}
               onClick={() => setIsOpen(false)}
             >
               <User size={18} />
               {t('profile')}
             </Link>
-            
+
             <div className="px-3 py-2">
-              <button 
+              <button
                 onClick={() => {
                   navigate('/premium');
                   setIsOpen(false);
@@ -274,38 +275,41 @@ export default function Navbar() {
                 {t('premium')}
               </button>
             </div>
-            
+
             <div className="px-3 py-2">
-              <button 
+              <button
                 onClick={() => {
                   setSearchOpen(true);
                   setIsOpen(false);
                 }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-foreground hover:bg-accent/50 hover:text-primary"
               >
                 <Search size={18} />
                 {t('search')}
               </button>
             </div>
-            
+
             <div className="px-3 py-2">
-              <button className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 relative">
+              <button
+                onClick={() => setNotificationCount(0)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-base font-medium text-foreground hover:bg-accent/50 hover:text-primary relative"
+              >
                 <Bell size={18} />
                 {t('notifications')}
                 {notificationCount > 0 && (
-                  <Badge className="ml-auto bg-red-500 text-white">
+                  <Badge className="ml-auto bg-destructive text-destructive-foreground">
                     {notificationCount}
                   </Badge>
                 )}
               </button>
             </div>
-            
+
             <div className="px-3 py-2">
-              <button 
+              <button
                 onClick={() => {
                   setIsOpen(false);
                   setIsPaymentModalOpen(true);
-                }} 
+                }}
                 className="w-full tontine-button tontine-button-primary"
               >
                 {t('depositWithdraw')}
@@ -316,7 +320,7 @@ export default function Navbar() {
                 handleSignOut();
                 setIsOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+              className="w-full text-left px-3 py-2 text-base font-medium text-destructive hover:bg-accent/50 flex items-center gap-2"
             >
               <LogOut size={18} />
               {t('signOut')}
@@ -324,7 +328,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
-      
+
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
     </nav>

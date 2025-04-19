@@ -1,6 +1,6 @@
-
 import { User } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
+import WhatsAppShare from "./WhatsAppShare";
 
 type Member = {
   id: number;
@@ -62,6 +62,12 @@ export default function MemberList({ members, title }: MemberListProps) {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-4 flex justify-end">
+        <WhatsAppShare 
+          text={`Rejoins notre groupe "${title}" sur Tontine !`}
+        />
       </div>
     </div>
   );

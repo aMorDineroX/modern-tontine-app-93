@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CreditCard, Wallet, ArrowDownToLine, ArrowUpFromLine, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { processPayment } from "@/utils/supabase";
+import PayPalButton from "./PayPalButton";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -69,7 +69,6 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
     setIsProcessing(true);
     
     try {
-      // Traiter le paiement avec Supabase
       const { success, error } = await processPayment(
         user.id,
         Number(amount),
@@ -80,17 +79,14 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         throw error || new Error("Une erreur est survenue lors du traitement");
       }
       
-      // Afficher un message de réussite
       toast({
         title: type === "deposit" ? "Dépôt réussi" : "Retrait réussi",
         description: `${type === "deposit" ? "Dépôt de" : "Retrait de"} ${formatAmount(Number(amount))}`,
         variant: "default",
       });
       
-      // Afficher l'écran de succès
       setPaymentSuccess(true);
       
-      // Appeler le callback onSuccess si fourni
       if (onSuccess) {
         onSuccess(type, Number(amount));
       }
@@ -170,28 +166,44 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                         onClick={() => handleMethodSelect("creditcard")}
                       >
                         <CreditCard className="h-6 w-6" />
-                        <span className="text-center text-sm">Carte de crédit</span>
+                        <span className="text-center text-sm">Carte bancaire</span>
                       </Button>
                       <Button 
-                        variant={selectedMethod === "mobilemoney" ? "default" : "outline"} 
+                        variant={selectedMethod === "paypal" ? "default" : "outline"} 
                         className={`flex flex-col justify-center items-center gap-2 h-24 p-2 ${
-                          selectedMethod === "mobilemoney" ? "bg-tontine-purple text-white" : ""
+                          selectedMethod === "paypal" ? "bg-[#0070BA] text-white" : ""
                         }`}
-                        onClick={() => handleMethodSelect("mobilemoney")}
+                        onClick={() => handleMethodSelect("paypal")}
                       >
-                        <Wallet className="h-6 w-6" />
-                        <span className="text-center text-sm">Mobile Money</span>
+                        <img 
+                          src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png" 
+                          alt="PayPal"
+                          className="h-6"
+                        />
+                        <span className="text-center text-sm">PayPal</span>
                       </Button>
                     </div>
                   </div>
                   
-                  <Button 
-                    className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
-                    disabled={isProcessing || !amount || !selectedMethod}
-                    onClick={() => handlePayment("deposit")}
-                  >
-                    {isProcessing ? "Traitement en cours..." : "Déposer des fonds"}
-                  </Button>
+                  {selectedMethod === "paypal" ? (
+                    <PayPalButton 
+                      amount={Number(amount)}
+                      onSuccess={(details) => {
+                        setPaymentSuccess(true);
+                        if (onSuccess) {
+                          onSuccess("deposit", Number(amount));
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Button 
+                      className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
+                      disabled={isProcessing || !amount || !selectedMethod}
+                      onClick={() => handlePayment("deposit")}
+                    >
+                      {isProcessing ? "Traitement en cours..." : "Payer par carte"}
+                    </Button>
+                  )}
                 </div>
               </TabsContent>
               

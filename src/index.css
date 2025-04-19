@@ -10,7 +10,7 @@
     
     /* Ajustement des couleurs de base */
     --background: 140 50% 98%;
-    --foreground: 140 20% 20%;
+    --foreground: 122 47% 30%; /* Changed to a green shade */
   }
 
   .dark {
@@ -18,7 +18,12 @@
     --primary-foreground: 140 20% 20%;
     
     --background: 140 20% 10%;
-    --foreground: 140 50% 90%;
+    --foreground: 122 47% 70%; /* Brighter green for dark mode */
+  }
+  
+  /* Make all text green by default */
+  body {
+    @apply text-tontine-green-600 dark:text-tontine-green-400;
   }
 }
 

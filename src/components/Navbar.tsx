@@ -65,8 +65,8 @@ export default function Navbar() {
               to="/tontine-cycles"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/tontine-cycles')
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <CalendarDays size={18} />
@@ -77,8 +77,8 @@ export default function Navbar() {
               to="/transactions"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/transactions')
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <Receipt size={18} />
@@ -89,8 +89,8 @@ export default function Navbar() {
               to="/statistics"
               className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                 isActive('/statistics')
-                  ? 'text-tontine-purple dark:text-tontine-light-purple border-b-2 border-tontine-purple dark:border-tontine-light-purple'
-                  : 'text-gray-900 dark:text-gray-100 hover:text-tontine-purple dark:hover:text-tontine-light-purple'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
               }`}
             >
               <BarChart3 size={18} />
@@ -261,6 +261,45 @@ export default function Navbar() {
             >
               <User size={18} />
               {t('profile')}
+            </Link>
+
+            <Link
+              to="/tontine-cycles"
+              className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
+                isActive('/tontine-cycles')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <CalendarDays size={18} />
+              Cycles
+            </Link>
+
+            <Link
+              to="/transactions"
+              className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
+                isActive('/transactions')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Receipt size={18} />
+              Transactions
+            </Link>
+
+            <Link
+              to="/statistics"
+              className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
+                isActive('/statistics')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <BarChart3 size={18} />
+              Statistiques
             </Link>
 
             <div className="px-3 py-2">

@@ -25,9 +25,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const getEnvironmentInfo = () => {
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-  const isPreview = hostname.includes('lovable.app') || hostname.includes('preview');
+  const isPreview = hostname.includes('preview') || hostname.includes('staging');
   const isProduction = !isLocalhost && !isPreview;
-  
+
   return {
     isLocalhost,
     isPreview,
@@ -50,15 +50,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Vérifier d'abord le hash fragment dans l'URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get("access_token");
-        
+
         if (accessToken) {
           console.log("Found access token in URL hash on initial load, processing...");
           // Le token sera traité automatiquement par Supabase lors de getSession()
         }
-        
+
         // Obtenir la session initiale
         const { data, error } = await supabase.auth.getSession();
-        
+
         if (error) {
           console.error("Error getting initial session:", error);
         } else {
@@ -74,10 +74,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setLoading(false);
       }
     };
-    
+
     // Initialiser l'authentification
     initializeAuth();
-    
+
     // Écouter les changements d'état d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
       console.log("Auth state changed:", _event, newSession);
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(newSession?.user ?? null);
       setLoading(false);
     });
-    
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      
+
       if (error) {
         toast({
           title: "Erreur de connexion",
@@ -102,12 +102,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         return { error };
       }
-      
+
       toast({
         title: "Bienvenue !",
         description: "Vous êtes maintenant connecté.",
       });
-      
+
       return {};
     } catch (error) {
       console.error('Error signing in:', error);
@@ -120,8 +120,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({ 
-        email, 
+      const { error } = await supabase.auth.signUp({
+        email,
         password,
         options: {
           data: {
@@ -129,7 +129,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         }
       });
-      
+
       if (error) {
         toast({
           title: "Erreur d'inscription",
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         throw error;
       }
-      
+
       toast({
         title: "Bienvenue !",
         description: "Veuillez vérifier votre email pour confirmer votre compte.",
@@ -155,13 +155,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setLoading(true);
       console.log(`Attempting to sign in with ${provider}...`);
-      
+
       // Déterminer les informations sur l'environnement
       const env = getEnvironmentInfo();
       console.log("Environment info:", env);
-      
+
       let redirectUrl;
-      
+
       if (env.isLocalhost) {
         // Pour localhost, on utilise la racine et on traite le hash fragment
         redirectUrl = env.fullOrigin;
@@ -175,9 +175,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         redirectUrl = `${env.fullOrigin}/auth/callback`;
         console.log("Using production strategy with callback URL");
       }
-      
+
       console.log("Final redirect URL:", redirectUrl);
-      
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -189,9 +189,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         }
       });
-      
+
       console.log(`Sign in with ${provider} response:`, data);
-      
+
       if (error) {
         toast({
           title: `Erreur de connexion avec ${provider}`,
@@ -223,7 +223,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         }
       });
-      
+
       if (error) {
         toast({
           title: "Erreur de connexion avec Google",
@@ -232,7 +232,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         return { error };
       }
-      
+
       return {};
     } catch (error) {
       console.error('Error signing in with Google:', error);
@@ -268,7 +268,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
-      
+
       if (error) {
         toast({
           title: "Erreur de réinitialisation du mot de passe",
@@ -277,7 +277,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         throw error;
       }
-      
+
       toast({
         title: "Email de réinitialisation envoyé",
         description: "Veuillez vérifier votre email pour réinitialiser votre mot de passe.",

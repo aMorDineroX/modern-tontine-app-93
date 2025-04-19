@@ -526,6 +526,8 @@ const Groups = () => {
                 <MemberList
                   members={sampleMembers}
                   title={t('recentMembers')}
+                  maxDisplay={5}
+                  compact={true}
                 />
               </div>
             </div>

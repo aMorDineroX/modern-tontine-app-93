@@ -201,6 +201,9 @@ const Index = () => {
             <MemberList
               title={t('recentMembers')}
               members={mockMembers}
+              maxDisplay={3}
+              compact={true}
+              showShareButton={false}
             />
 
             {/* Activity Feed */}

@@ -17,9 +17,11 @@ import TontineCycles from "./pages/TontineCycles";
 import Statistics from "./pages/Statistics";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ChatProvider } from "./contexts/ChatContext";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 import Transactions from "./pages/Transactions";
+import PayPalTransactions from "./pages/Transactions/PayPalTransactions";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient({
@@ -168,6 +170,7 @@ const RootComponent = () => {
       <Route path="/profile" element={<Layout><Profile /></Layout>} />
       <Route path="/tontine-cycles" element={<Layout><TontineCycles /></Layout>} />
       <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
+      <Route path="/transactions/paypal" element={<Layout><PayPalTransactions /></Layout>} />
       <Route path="/statistics" element={<Layout><Statistics /></Layout>} />
 
       {/* Not found page */}
@@ -180,15 +183,17 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AppProvider>
       <AuthProvider>
-        <HelmetProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <RootComponent />
-            </BrowserRouter>
-          </TooltipProvider>
-        </HelmetProvider>
+        <ChatProvider>
+          <HelmetProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <RootComponent />
+              </BrowserRouter>
+            </TooltipProvider>
+          </HelmetProvider>
+        </ChatProvider>
       </AuthProvider>
     </AppProvider>
   </QueryClientProvider>

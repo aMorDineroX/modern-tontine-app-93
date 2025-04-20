@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { CreditCard, Wallet, ArrowDownToLine, ArrowUpFromLine, CheckCircle2 } from "lucide-react";
+import { CreditCard, Wallet, ArrowDownToLine, ArrowUpFromLine, CheckCircle2, RefreshCcw } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { processPayment } from "@/utils/supabase";
 import PayPalButton from "./PayPalButton";
+import { savePayPalTransaction } from "@/services/paypalService";
+import PayPalRecurringPayment from "./PayPalRecurringPayment";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -67,26 +69,26 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
     }
 
     setIsProcessing(true);
-    
+
     try {
       const { success, error } = await processPayment(
         user.id,
         Number(amount),
         type
       );
-      
+
       if (!success) {
         throw error || new Error("Une erreur est survenue lors du traitement");
       }
-      
+
       toast({
         title: type === "deposit" ? "Dépôt réussi" : "Retrait réussi",
         description: `${type === "deposit" ? "Dépôt de" : "Retrait de"} ${formatAmount(Number(amount))}`,
         variant: "default",
       });
-      
+
       setPaymentSuccess(true);
-      
+
       if (onSuccess) {
         onSuccess(type, Number(amount));
       }
@@ -121,9 +123,9 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                 Gérez votre solde Tontine facilement et en toute sécurité.
               </DialogDescription>
             </DialogHeader>
-            
+
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="deposit" className="flex items-center gap-2">
                   <ArrowDownToLine size={16} />
                   <span>Dépôt</span>
@@ -132,8 +134,12 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                   <ArrowUpFromLine size={16} />
                   <span>Retrait</span>
                 </TabsTrigger>
+                <TabsTrigger value="recurring" className="flex items-center gap-2">
+                  <RefreshCcw size={16} />
+                  <span>Récurrent</span>
+                </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="deposit" className="py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -154,29 +160,29 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Méthode de paiement</Label>
                     <div className="grid grid-cols-2 gap-2">
-                      <Button 
-                        variant={selectedMethod === "creditcard" ? "default" : "outline"} 
+                      <Button
+                        variant={selectedMethod === "creditcard" ? "default" : "outline"}
                         className={`flex flex-col justify-center items-center gap-2 h-24 p-2 ${
-                          selectedMethod === "creditcard" ? "bg-tontine-purple text-white" : ""
+                          selectedMethod === "creditcard" ? "bg-primary text-white" : ""
                         }`}
                         onClick={() => handleMethodSelect("creditcard")}
                       >
                         <CreditCard className="h-6 w-6" />
                         <span className="text-center text-sm">Carte bancaire</span>
                       </Button>
-                      <Button 
-                        variant={selectedMethod === "paypal" ? "default" : "outline"} 
+                      <Button
+                        variant={selectedMethod === "paypal" ? "default" : "outline"}
                         className={`flex flex-col justify-center items-center gap-2 h-24 p-2 ${
                           selectedMethod === "paypal" ? "bg-[#0070BA] text-white" : ""
                         }`}
                         onClick={() => handleMethodSelect("paypal")}
                       >
-                        <img 
-                          src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png" 
+                        <img
+                          src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png"
                           alt="PayPal"
                           className="h-6"
                         />
@@ -184,11 +190,34 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                       </Button>
                     </div>
                   </div>
-                  
+
                   {selectedMethod === "paypal" ? (
-                    <PayPalButton 
+                    <PayPalButton
                       amount={Number(amount)}
-                      onSuccess={(details) => {
+                      currency={currency}
+                      description="Dépôt sur votre compte Naat"
+                      onSuccess={async (details) => {
+                        if (user) {
+                          try {
+                            // Enregistrer la transaction PayPal
+                            const transaction = {
+                              user_id: user.id,
+                              transaction_id: details.paymentID,
+                              order_id: details.orderID,
+                              amount: Number(amount),
+                              currency: currency,
+                              status: 'completed' as const,
+                              type: 'payment' as const,
+                              description: "Dépôt sur votre compte Naat",
+                              metadata: { details }
+                            };
+
+                            await savePayPalTransaction(transaction);
+                          } catch (error) {
+                            console.error("Erreur lors de l'enregistrement de la transaction PayPal:", error);
+                          }
+                        }
+
                         setPaymentSuccess(true);
                         if (onSuccess) {
                           onSuccess("deposit", Number(amount));
@@ -196,8 +225,8 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                       }}
                     />
                   ) : (
-                    <Button 
-                      className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90"
                       disabled={isProcessing || !amount || !selectedMethod}
                       onClick={() => handlePayment("deposit")}
                     >
@@ -206,7 +235,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                   )}
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="withdraw" className="py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -227,24 +256,24 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Méthode de retrait</Label>
                     <div className="grid grid-cols-2 gap-2">
-                      <Button 
-                        variant={selectedMethod === "bankaccount" ? "default" : "outline"} 
+                      <Button
+                        variant={selectedMethod === "bankaccount" ? "default" : "outline"}
                         className={`flex flex-col justify-center items-center gap-2 h-24 p-2 ${
-                          selectedMethod === "bankaccount" ? "bg-tontine-purple text-white" : ""
+                          selectedMethod === "bankaccount" ? "bg-primary text-white" : ""
                         }`}
                         onClick={() => handleMethodSelect("bankaccount")}
                       >
                         <CreditCard className="h-6 w-6" />
                         <span className="text-center text-sm">Compte bancaire</span>
                       </Button>
-                      <Button 
-                        variant={selectedMethod === "mobilemoney" ? "default" : "outline"} 
+                      <Button
+                        variant={selectedMethod === "mobilemoney" ? "default" : "outline"}
                         className={`flex flex-col justify-center items-center gap-2 h-24 p-2 ${
-                          selectedMethod === "mobilemoney" ? "bg-tontine-purple text-white" : ""
+                          selectedMethod === "mobilemoney" ? "bg-primary text-white" : ""
                         }`}
                         onClick={() => handleMethodSelect("mobilemoney")}
                       >
@@ -253,15 +282,51 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                       </Button>
                     </div>
                   </div>
-                  
-                  <Button 
-                    className="w-full bg-tontine-purple hover:bg-tontine-dark-purple" 
-                    disabled={isProcessing || !amount || !selectedMethod}
-                    onClick={() => handlePayment("withdraw")}
-                  >
-                    {isProcessing ? "Traitement en cours..." : "Retirer des fonds"}
-                  </Button>
+
+                  {selectedMethod === "paypal" ? (
+                    <Button
+                      className="w-full bg-[#0070BA] hover:bg-[#003087] text-white"
+                      disabled={isProcessing || !amount}
+                      onClick={() => {
+                        toast({
+                          title: "PayPal",
+                          description: "Les retraits via PayPal seront traités dans un délai de 24 à 48 heures.",
+                        });
+                        setPaymentSuccess(true);
+                        if (onSuccess) {
+                          onSuccess("withdraw", Number(amount));
+                        }
+                      }}
+                    >
+                      <img
+                        src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png"
+                        alt="PayPal"
+                        className="h-4 mr-2"
+                      />
+                      Retirer vers PayPal
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90"
+                      disabled={isProcessing || !amount || !selectedMethod}
+                      onClick={() => handlePayment("withdraw")}
+                    >
+                      {isProcessing ? "Traitement en cours..." : "Retirer des fonds"}
+                    </Button>
+                  )}
                 </div>
+              </TabsContent>
+
+              <TabsContent value="recurring" className="py-4">
+                <PayPalRecurringPayment
+                  defaultAmount={10}
+                  onSuccess={(details) => {
+                    setPaymentSuccess(true);
+                    if (onSuccess) {
+                      onSuccess("deposit", details.amount);
+                    }
+                  }}
+                />
               </TabsContent>
             </Tabs>
           </>
@@ -270,19 +335,19 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
             <div className="rounded-full bg-green-100 p-3">
               <CheckCircle2 className="h-12 w-12 text-green-600" />
             </div>
-            
+
             <div className="text-center space-y-2">
               <h3 className="text-xl font-bold">
                 {activeTab === "deposit" ? "Dépôt réussi!" : "Retrait réussi!"}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                {activeTab === "deposit" 
+                {activeTab === "deposit"
                   ? `Votre compte a été crédité de ${formatAmount(Number(amount))}.`
                   : `Votre demande de retrait de ${formatAmount(Number(amount))} a été traitée avec succès.`
                 }
               </p>
             </div>
-            
+
             <div className="flex flex-col w-full space-y-2">
               <Button
                 onClick={() => {
@@ -295,10 +360,10 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
               >
                 {activeTab === "deposit" ? "Effectuer un autre dépôt" : "Effectuer un autre retrait"}
               </Button>
-              
+
               <Button
                 onClick={handleClose}
-                className="w-full bg-tontine-purple hover:bg-tontine-dark-purple"
+                className="w-full bg-primary hover:bg-primary/90"
               >
                 Terminer
               </Button>

@@ -5,12 +5,13 @@ import { AppProvider } from '@/contexts/AppContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import CreateGroupModal from '@/components/CreateGroupModal';
 import { createGroup, addGroupMember } from '@/utils/supabase';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock des fonctions Supabase
 vi.mock('@/utils/supabase', () => {
   const createGroupMock = vi.fn();
   const addGroupMemberMock = vi.fn();
-  
+
   return {
     supabase: {
       from: vi.fn().mockReturnThis(),
@@ -38,9 +39,10 @@ vi.mock('@/utils/supabase', () => {
 });
 
 // Mock des hooks et contextes
+const toastMock = vi.fn();
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
-    toast: vi.fn(),
+    toast: toastMock,
   }),
 }));
 
@@ -80,30 +82,30 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 /**
  * Test d'intégration pour le flux de création de groupe
- * 
+ *
  * Ce test vérifie l'intégration entre le composant CreateGroupModal,
  * les contextes AppContext et AuthContext, et les services Supabase.
  */
 describe('Create Group Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Configuration des mocks par défaut
     (createGroup as any).mockResolvedValue({
       data: { id: 'group-123', name: 'Test Group' },
       error: null,
     });
-    
+
     (addGroupMember as any).mockResolvedValue({
       data: { id: 'member-123' },
       error: null,
     });
   });
-  
+
   it('completes the full group creation flow successfully', async () => {
     const onCloseMock = vi.fn();
     const onSubmitMock = vi.fn();
-    
+
     render(
       <BrowserRouter>
         <AppProvider>
@@ -117,41 +119,53 @@ describe('Create Group Flow Integration', () => {
         </AppProvider>
       </BrowserRouter>
     );
-    
-    // Attendre que le modal soit chargé
+
+    // Attendre que le modal soit chargé en cherchant un élément spécifique
     await waitFor(() => {
-      expect(screen.getByText(/createGroup/i)).toBeInTheDocument();
+      // Utiliser une fonction de correspondance plus flexible pour trouver le titre
+      expect(screen.getByText((content, element) => {
+        return element.tagName.toLowerCase() === 'h2' &&
+               (content === 'Create Group' || content === 'createGroup');
+      })).toBeInTheDocument();
     });
-    
-    // Remplir le formulaire
-    fireEvent.change(screen.getByLabelText(/groupName/i), {
+
+    // Remplir le formulaire - utiliser des sélecteurs plus spécifiques
+    const nameInput = screen.getByLabelText(/Group Name|groupName/i);
+    fireEvent.change(nameInput, {
       target: { value: 'Family Tontine' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/contributionAmount/i), {
+
+    const contributionInput = screen.getByLabelText(/Contribution Amount|contributionAmount/i);
+    fireEvent.change(contributionInput, {
       target: { value: '100' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/contributionFrequency/i), {
+
+    const frequencySelect = screen.getByLabelText(/Contribution Frequency|contributionFrequency/i);
+    fireEvent.change(frequencySelect, {
       target: { value: 'monthly' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/startDate/i), {
+
+    const startDateInput = screen.getByLabelText(/Start Date|startDate/i);
+    fireEvent.change(startDateInput, {
       target: { value: '2023-01-01' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/payoutMethod/i), {
+
+    const payoutMethodSelect = screen.getByLabelText(/Payout Method|payoutMethod/i);
+    fireEvent.change(payoutMethodSelect, {
       target: { value: 'rotation' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/inviteMembers/i), {
+
+    const membersInput = screen.getByLabelText(/Invite Members|inviteMembers/i);
+    fireEvent.change(membersInput, {
       target: { value: 'friend1@example.com, friend2@example.com' },
     });
-    
-    // Soumettre le formulaire
-    const submitButton = screen.getByRole('button', { name: /createGroup/i });
+
+    // Soumettre le formulaire - utiliser une requête plus flexible
+    const submitButton = screen.getByRole('button', {
+      name: (content) => /create group/i.test(content) || /creategroup/i.test(content)
+    });
     fireEvent.click(submitButton);
-    
+
     // Vérifier que createGroup a été appelé avec les bonnes données
     await waitFor(() => {
       expect(createGroup).toHaveBeenCalledWith({
@@ -163,7 +177,7 @@ describe('Create Group Flow Integration', () => {
         created_by: 'user-123',
       });
     });
-    
+
     // Vérifier que addGroupMember a été appelé pour ajouter le créateur
     await waitFor(() => {
       expect(addGroupMember).toHaveBeenCalledWith({
@@ -173,7 +187,7 @@ describe('Create Group Flow Integration', () => {
         status: 'active',
       });
     });
-    
+
     // Vérifier que onSubmit a été appelé avec les bonnes données
     await waitFor(() => {
       expect(onSubmitMock).toHaveBeenCalledWith({
@@ -183,22 +197,23 @@ describe('Create Group Flow Integration', () => {
         members: 'friend1@example.com, friend2@example.com',
       });
     });
-    
+
     // Vérifier que onClose a été appelé
     await waitFor(() => {
       expect(onCloseMock).toHaveBeenCalled();
     });
   });
-  
+
   it('handles errors during group creation', async () => {
     // Configurer le mock pour simuler une erreur
     (createGroup as any).mockResolvedValue({
       data: null,
       error: { message: 'Error creating group' },
     });
-    
-    const { toast } = useToast();
-    
+
+    // Reset the toast mock before the test
+    toastMock.mockClear();
+
     render(
       <BrowserRouter>
         <AppProvider>
@@ -212,23 +227,27 @@ describe('Create Group Flow Integration', () => {
         </AppProvider>
       </BrowserRouter>
     );
-    
-    // Remplir le formulaire minimalement
-    fireEvent.change(screen.getByLabelText(/groupName/i), {
+
+    // Remplir le formulaire minimalement - utiliser des sélecteurs plus spécifiques
+    const nameInput = screen.getByLabelText(/Group Name|groupName/i);
+    fireEvent.change(nameInput, {
       target: { value: 'Test Group' },
     });
-    
-    fireEvent.change(screen.getByLabelText(/contributionAmount/i), {
+
+    const contributionInput = screen.getByLabelText(/Contribution Amount|contributionAmount/i);
+    fireEvent.change(contributionInput, {
       target: { value: '100' },
     });
-    
-    // Soumettre le formulaire
-    const submitButton = screen.getByRole('button', { name: /createGroup/i });
+
+    // Soumettre le formulaire - utiliser une requête plus flexible
+    const submitButton = screen.getByRole('button', {
+      name: (content) => /create group/i.test(content) || /creategroup/i.test(content)
+    });
     fireEvent.click(submitButton);
-    
+
     // Vérifier que toast a été appelé avec un message d'erreur
     await waitFor(() => {
-      expect(toast).toHaveBeenCalledWith(expect.objectContaining({
+      expect(toastMock).toHaveBeenCalledWith(expect.objectContaining({
         title: 'Error',
         variant: 'destructive',
       }));

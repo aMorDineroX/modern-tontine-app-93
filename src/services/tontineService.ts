@@ -8,7 +8,7 @@ export const createTontineGroup = async (group: Omit<TontineGroup, 'id' | 'creat
     .insert(group)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -21,7 +21,7 @@ export const getUserGroups = async (userId: string) => {
       group_members!inner(*)
     `)
     .eq('group_members.user_id', userId);
-  
+
   if (error) throw error;
   return data;
 };
@@ -32,7 +32,7 @@ export const getGroupDetails = async (groupId: string) => {
     .select('*')
     .eq('id', groupId)
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -44,7 +44,7 @@ export const addMemberToGroup = async (member: Omit<GroupMember, 'id' | 'joined_
     .insert(member)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -57,7 +57,7 @@ export const getGroupMembers = async (groupId: string) => {
       profiles:user_id(full_name, avatar_url)
     `)
     .eq('group_id', groupId);
-  
+
   if (error) throw error;
   return data;
 };
@@ -69,7 +69,7 @@ export const updateMemberStatus = async (memberId: string, status: GroupMember['
     .eq('id', memberId)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -81,7 +81,7 @@ export const recordContribution = async (contribution: Omit<Contribution, 'id' |
     .insert(contribution)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -91,13 +91,13 @@ export const getUserContributions = async (userId: string, groupId?: string) => 
     .from('contributions')
     .select('*')
     .eq('user_id', userId);
-  
+
   if (groupId) {
     query = query.eq('group_id', groupId);
   }
-  
+
   const { data, error } = await query;
-  
+
   if (error) throw error;
   return data;
 };
@@ -109,7 +109,7 @@ export const updateContributionStatus = async (contributionId: string, status: C
     .eq('id', contributionId)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -121,17 +121,23 @@ export const schedulePayout = async (payout: Omit<Payout, 'id' | 'created_at'>) 
     .insert(payout)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
 
-export const getUserPayouts = async (userId: string) => {
-  const { data, error } = await supabase
+export const getUserPayouts = async (userId: string, groupId?: string) => {
+  let query = supabase
     .from('payouts')
     .select('*')
     .eq('user_id', userId);
-  
+
+  if (groupId) {
+    query = query.eq('group_id', groupId);
+  }
+
+  const { data, error } = await query;
+
   if (error) throw error;
   return data;
 };
@@ -144,7 +150,7 @@ export const getGroupPayouts = async (groupId: string) => {
       profiles:user_id(full_name, avatar_url)
     `)
     .eq('group_id', groupId);
-  
+
   if (error) throw error;
   return data;
 };
@@ -156,7 +162,7 @@ export const updatePayoutStatus = async (payoutId: string, status: Payout['statu
     .eq('id', payoutId)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -169,7 +175,7 @@ export const updateUserProfile = async (userId: string, updates: { full_name?: s
     .eq('id', userId)
     .select()
     .single();
-  
+
   if (error) throw error;
   return data;
 };
@@ -180,7 +186,7 @@ export const getUserProfile = async (userId: string) => {
     .select('*')
     .eq('id', userId)
     .single();
-  
+
   if (error) throw error;
   return data;
 };

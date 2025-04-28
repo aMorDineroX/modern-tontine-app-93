@@ -19,7 +19,7 @@ interface ServiceBundlesProps {
 
 /**
  * Composant pour afficher les offres groupées de services
- * 
+ *
  * @component
  * @param {ServiceBundlesProps} props - Propriétés du composant
  * @returns {JSX.Element} Composant ServiceBundles
@@ -34,17 +34,17 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
   const { user } = useAuth();
   const { toast } = useToast();
   const { formatAmount } = useApp();
-  
+
   useEffect(() => {
     const loadBundles = async () => {
       setIsLoading(true);
       try {
         const { success, data, error } = await getServiceBundles();
-        
+
         if (!success) {
           throw error;
         }
-        
+
         // Limiter le nombre d'offres si nécessaire
         const limitedData = limit ? data?.slice(0, limit) : data;
         setBundles(limitedData || []);
@@ -59,10 +59,12 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
         setIsLoading(false);
       }
     };
-    
+
     loadBundles();
-  }, [limit, toast]);
-  
+    // Remove toast from dependencies to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit]);
+
   // Fonction pour obtenir l'icône du service
   const getServiceIcon = (iconName: string) => {
     switch (iconName) {
@@ -80,46 +82,46 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
         return <Package className="h-5 w-5 text-gray-500" aria-hidden="true" />;
     }
   };
-  
+
   // Fonction pour calculer le prix total sans remise
   const calculateTotalPrice = (bundle: any) => {
     let totalPrice = bundle.services.price;
-    
+
     bundle.bundle_items.forEach((item: any) => {
       totalPrice += item.services.price;
     });
-    
+
     return totalPrice;
   };
-  
+
   // Fonction pour calculer le prix avec remise
   const calculateDiscountedPrice = (bundle: any) => {
     const totalPrice = calculateTotalPrice(bundle);
     const discount = totalPrice * (bundle.discount_percentage / 100);
     return totalPrice - discount;
   };
-  
+
   // Animations
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.1,
         delayChildren: 0.2
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     }
   };
-  
+
   if (isLoading) {
     return (
       <div className={`space-y-4 ${className}`}>
@@ -149,26 +151,26 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
       </div>
     );
   }
-  
+
   if (bundles.length === 0) {
     return null;
   }
-  
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4">
         <Package className="h-5 w-5 text-primary" />
         <h2 className="text-lg font-semibold">Offres groupées</h2>
       </div>
-      
-      <motion.div 
+
+      <motion.div
         className="grid grid-cols-1 gap-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {bundles.map((bundle) => (
-          <motion.div 
+          <motion.div
             key={bundle.id}
             variants={itemVariants}
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
@@ -180,8 +182,8 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
                     {getServiceIcon(bundle.services.icon)}
                     <CardTitle className="text-base">{bundle.name}</CardTitle>
                   </div>
-                  <Badge 
-                    variant="outline" 
+                  <Badge
+                    variant="outline"
                     className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1"
                   >
                     <Percent className="h-3 w-3" />
@@ -234,7 +236,7 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
-                
+
                 <div className="mt-4 space-y-1">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Prix total</span>
@@ -251,8 +253,8 @@ const ServiceBundles: React.FC<ServiceBundlesProps> = ({
                 </div>
               </CardContent>
               <CardFooter className="p-4 pt-0">
-                <Button 
-                  variant="default" 
+                <Button
+                  variant="default"
                   className="w-full"
                   onClick={() => onBundleClick && onBundleClick(bundle.id)}
                 >

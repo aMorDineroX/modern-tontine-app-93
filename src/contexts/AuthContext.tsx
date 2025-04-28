@@ -6,6 +6,21 @@ import { useToast } from '@/hooks/use-toast';
 // Add Google Maps API key
 const GOOGLE_MAPS_API_KEY = "AIzaSyBkVNRDYcQLBkA2c5nTKrDHvUGqraW9cX8";
 
+/**
+ * Interface du contexte d'authentification
+ *
+ * @interface AuthContextType
+ * @property {Session | null} session - La session Supabase actuelle
+ * @property {User | null} user - L'utilisateur actuellement connecté
+ * @property {boolean} loading - Indique si une opération d'authentification est en cours
+ * @property {(email: string, password: string) => Promise<{ error?: Error }>} signIn - Fonction pour se connecter avec email/mot de passe
+ * @property {(email: string, password: string, fullName: string) => Promise<void>} signUp - Fonction pour créer un compte
+ * @property {() => Promise<void>} signOut - Fonction pour se déconnecter
+ * @property {(email: string) => Promise<void>} resetPassword - Fonction pour réinitialiser le mot de passe
+ * @property {(provider: Provider) => Promise<void>} signInWithProvider - Fonction pour se connecter avec un fournisseur OAuth
+ * @property {() => Promise<{ error?: Error }>} signInWithGoogle - Fonction pour se connecter avec Google
+ * @property {string} googleMapsApiKey - Clé API Google Maps
+ */
 type AuthContextType = {
   session: Session | null;
   user: User | null;
@@ -16,7 +31,7 @@ type AuthContextType = {
   resetPassword: (email: string) => Promise<void>;
   signInWithProvider: (provider: Provider) => Promise<void>;
   signInWithGoogle: () => Promise<{ error?: Error }>;
-  googleMapsApiKey: string; // Add Google Maps API key to the context
+  googleMapsApiKey: string; // Clé API Google Maps
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +52,22 @@ const getEnvironmentInfo = () => {
   };
 };
 
+/**
+ * Fournisseur du contexte d'authentification
+ *
+ * Ce composant fournit le contexte d'authentification à tous les composants enfants.
+ * Il gère l'état d'authentification, les sessions utilisateur et les opérations d'authentification.
+ *
+ * @component
+ * @param {Object} props - Les propriétés du composant
+ * @param {ReactNode} props.children - Les composants enfants
+ * @example
+ * return (
+ *   <AuthProvider>
+ *     <App />
+ *   </AuthProvider>
+ * )
+ */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);

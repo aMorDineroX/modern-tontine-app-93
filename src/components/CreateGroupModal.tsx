@@ -5,12 +5,38 @@ import { useToast } from "@/hooks/use-toast";
 import { createGroup, addGroupMember } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 
+/**
+ * Interface des propriétés du composant CreateGroupModal
+ *
+ * @interface CreateGroupModalProps
+ * @property {boolean} isOpen - Indique si le modal est ouvert ou fermé
+ * @property {() => void} onClose - Fonction appelée pour fermer le modal
+ * @property {(data: { name: string; contribution: string; frequency: string; members: string }) => void} onSubmit - Fonction appelée lors de la soumission du formulaire
+ */
 type CreateGroupModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: { name: string; contribution: string; frequency: string; members: string }) => void;
 };
 
+/**
+ * Composant CreateGroupModal - Modal pour créer un nouveau groupe de tontine
+ *
+ * Ce composant affiche un formulaire permettant à l'utilisateur de créer un nouveau groupe
+ * de tontine en spécifiant le nom, le montant de contribution, la fréquence, la date de début,
+ * la méthode de paiement et les membres à inviter.
+ *
+ * @component
+ * @param {CreateGroupModalProps} props - Les propriétés du composant
+ * @example
+ * return (
+ *   <CreateGroupModal
+ *     isOpen={true}
+ *     onClose={() => setIsOpen(false)}
+ *     onSubmit={(data) => console.log(data)}
+ *   />
+ * )
+ */
 export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGroupModalProps) {
   const { t, currency } = useApp();
   const { toast } = useToast();
@@ -39,7 +65,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user) {
       toast({
         title: "Error",
@@ -51,13 +77,13 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
 
     try {
       setIsSubmitting(true);
-      
+
       // Format the members email list
       const memberEmails = members
         .split(',')
         .map(email => email.trim())
         .filter(email => email && email.includes('@')); // Basic validation
-      
+
       console.log("Creating group with:", {
         name,
         contribution_amount: parseFloat(contribution),
@@ -66,7 +92,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         payout_method: payoutMethod,
         created_by: user.id
       });
-      
+
       // Create the group using the utility function
       const { data: groupData, error: groupError } = await createGroup({
         name,
@@ -76,7 +102,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         payout_method: payoutMethod as 'rotation' | 'random' | 'bidding',
         created_by: user.id
       });
-      
+
       if (groupError) {
         console.error("Group creation error:", groupError);
         toast({
@@ -86,9 +112,9 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
         });
         throw groupError;
       }
-      
+
       console.log("Group created successfully:", groupData);
-      
+
       // Add creator as admin member
       if (groupData) {
         const { error: memberError } = await addGroupMember({
@@ -97,7 +123,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
           role: 'admin',
           status: 'active'
         });
-        
+
         if (memberError) {
           console.error("Error adding creator as member:", memberError);
           toast({
@@ -106,17 +132,17 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
             variant: "destructive"
           });
         }
-        
+
         // If there are other members, send invitations
         if (memberEmails.length > 0) {
           console.log(`Inviting members: ${memberEmails.join(', ')} to group ${groupData.id}`);
           // In a real app, we'd send email invitations here
         }
       }
-      
+
       // Call the onSubmit callback
       onSubmit({ name, contribution, frequency, members });
-      
+
       // Reset form
       setName("");
       setContribution("");
@@ -124,13 +150,13 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
       setMembers("");
       setPayoutMethod("rotation");
       setStartDate("");
-      
+
       // Show success message
       toast({
         title: "Success",
         description: "Group created successfully",
       });
-      
+
       // Close modal
       onClose();
     } catch (error) {
@@ -149,7 +175,7 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold dark:text-white">{t('createGroup')}</h2>
-              <button 
+              <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
@@ -249,9 +275,9 @@ export default function CreateGroupModal({ isOpen, onClose, onSubmit }: CreateGr
               </div>
 
               <div className="pt-4">
-                <button 
-                  type="submit" 
-                  className="tontine-button tontine-button-primary w-full" 
+                <button
+                  type="submit"
+                  className="tontine-button tontine-button-primary w-full"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Creating..." : t('createGroup')}

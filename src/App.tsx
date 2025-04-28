@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
 import TontineCycles from "./pages/TontineCycles";
 import Statistics from "./pages/Statistics";
+import Services from "./pages/Services";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ChatProvider } from "./contexts/ChatContext";
@@ -23,6 +25,9 @@ import { supabase } from "./utils/supabase";
 import Transactions from "./pages/Transactions";
 import PayPalTransactions from "./pages/Transactions/PayPalTransactions";
 import Layout from "./components/Layout";
+import { lazy, Suspense } from 'react';
+// Utilisation du composant LoadingScreen importé
+import { LoadingScreen } from './components/LoadingScreen';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,15 +41,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-const LoadingScreen = ({ message = "Chargement..." }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-      <p className="text-gray-600 dark:text-gray-400">{message}</p>
-    </div>
-  </div>
-);
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -166,12 +162,29 @@ const RootComponent = () => {
       {/* Protected routes with navbar */}
       <Route path="/premium" element={<Layout><Premium /></Layout>} />
       <Route path="/dashboard" element={<Layout><Index /></Layout>} />
-      <Route path="/groups" element={<Layout><Groups /></Layout>} />
-      <Route path="/profile" element={<Layout><Profile /></Layout>} />
+      <Route path="/groups" element={
+        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+          <Layout><Groups /></Layout>
+        </Suspense>
+      } />
+      <Route path="/profile" element={
+        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+          <Layout><Profile /></Layout>
+        </Suspense>
+      } />
       <Route path="/tontine-cycles" element={<Layout><TontineCycles /></Layout>} />
       <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
       <Route path="/transactions/paypal" element={<Layout><PayPalTransactions /></Layout>} />
-      <Route path="/statistics" element={<Layout><Statistics /></Layout>} />
+      <Route path="/statistics" element={
+        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+          <Layout><Statistics /></Layout>
+        </Suspense>
+      } />
+      <Route path="/services" element={
+        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+          <Layout><Services /></Layout>
+        </Suspense>
+      } />
 
       {/* Not found page */}
       <Route path="*" element={<Layout><NotFound /></Layout>} />

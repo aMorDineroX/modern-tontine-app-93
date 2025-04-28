@@ -1,6 +1,9 @@
+
 import { User } from "lucide-react";
+import { useRef } from "react";
 import { useApp } from "@/contexts/AppContext";
 import WhatsAppShare from "./WhatsAppShare";
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 type Member = {
   id: number;
@@ -25,6 +28,13 @@ export default function MemberList({
   showShareButton = true
 }: MemberListProps) {
   const { t } = useApp();
+  const parentRef = useRef(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: members.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => compact ? 60 : 80,
+  });
 
   const getStatusText = (status: "active" | "pending" | "paid") => {
     switch(status) {
@@ -35,10 +45,6 @@ export default function MemberList({
     }
   };
 
-  // Determine which members to display based on maxDisplay
-  const displayMembers = maxDisplay ? members.slice(0, maxDisplay) : members;
-  const hasMoreMembers = maxDisplay && members.length > maxDisplay;
-
   return (
     <div className={`tontine-card animate-slide-up ${compact ? 'p-3' : ''}`}>
       <div className="flex justify-between items-center mb-3">
@@ -48,39 +54,56 @@ export default function MemberList({
         </span>
       </div>
 
-      <div className={`${compact ? 'space-y-2' : 'space-y-3'}`}>
-        {displayMembers.map((member) => (
-          <div key={member.id} className={`flex items-center justify-between ${compact ? 'p-1.5' : 'p-2'} hover:bg-secondary/50 rounded-lg transition-colors`}>
-            <div className="flex items-center">
-              <div className={`${compact ? 'w-7 h-7' : 'w-8 h-8'} rounded-full bg-secondary flex items-center justify-center mr-2 overflow-hidden`}>
-                {member.image ? (
-                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                ) : (
-                  <User size={compact ? 14 : 16} className="text-muted-foreground" />
-                )}
+      <div ref={parentRef} className="overflow-auto max-h-[400px]">
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const member = members[virtualRow.index];
+            return (
+              <div
+                key={virtualRow.index}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <div className={`flex items-center justify-between ${compact ? 'p-1.5' : 'p-2'} hover:bg-secondary/50 rounded-lg transition-colors`}>
+                  <div className="flex items-center">
+                    <div className={`${compact ? 'w-7 h-7' : 'w-8 h-8'} rounded-full bg-secondary flex items-center justify-center mr-2 overflow-hidden`}>
+                      {member.image ? (
+                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={compact ? 14 : 16} className="text-muted-foreground" />
+                      )}
+                    </div>
+                    <span className="font-medium text-sm text-foreground">{member.name}</span>
+                  </div>
+
+                  <div>
+                    <span className={`text-xs ${compact ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded-full ${
+                      member.status === "active"
+                        ? "bg-green-100 text-green-800"
+                        : member.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-primary/10 text-primary"
+                    }`}>
+                      {getStatusText(member.status)}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <span className="font-medium text-sm text-foreground">{member.name}</span>
-            </div>
-
-            <div>
-              <span className={`text-xs ${compact ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded-full ${
-                member.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : member.status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-primary/10 text-primary"
-              }`}>
-                {getStatusText(member.status)}
-              </span>
-            </div>
-          </div>
-        ))}
-
-        {hasMoreMembers && (
-          <div className="text-center text-sm text-muted-foreground py-1 hover:text-primary cursor-pointer">
-            + {members.length - maxDisplay} {t('more')}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
       {showShareButton && (

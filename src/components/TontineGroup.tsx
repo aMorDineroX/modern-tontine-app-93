@@ -1,139 +1,133 @@
-import { CalendarIcon, Coins, Users, ChevronRight, TrendingUp } from "lucide-react";
-import { useApp } from "@/contexts/AppContext";
-import { motion } from "framer-motion";
+import React from 'react';
+import { Users, Calendar, ArrowRight } from 'lucide-react';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
 
-type ActionItem = {
-  icon: React.ReactNode;
-  label: string;
-  onClick: (e: React.MouseEvent) => void;
-};
-
-type TontineGroupProps = {
+/**
+ * Interface des propriétés du composant TontineGroup
+ */
+interface TontineGroupProps {
+  /** Nom du groupe de tontine */
   name: string;
+  /** Nombre de membres dans le groupe */
   members: number;
+  /** Montant et fréquence de contribution (formaté) */
   contribution: string;
+  /** Date de la prochaine échéance */
   nextDue: string;
-  status?: "active" | "pending" | "completed";
+  /** Statut du groupe */
+  status?: 'active' | 'pending' | 'completed';
+  /** Progression du cycle actuel (0-100) */
   progress?: number;
-  onClick?: () => void;
-  actions?: ActionItem[];
-};
+  /** Fonction appelée lors du clic sur la carte */
+  onClick: () => void;
+  /** Actions supplémentaires */
+  actions?: Array<{
+    icon: React.ReactNode;
+    label: string;
+    onClick: (e: React.MouseEvent) => void;
+  }>;
+}
 
-export default function TontineGroup({
+/**
+ * Composant TontineGroup - Affiche un groupe de tontine sous forme de carte
+ * 
+ * @component
+ * @example
+ * <TontineGroup
+ *   name="Famille Épargne"
+ *   members={8}
+ *   contribution="50€ / mensuel"
+ *   nextDue="15 juin 2023"
+ *   status="active"
+ *   progress={75}
+ *   onClick={() => navigate(`/groups/${groupId}`)}
+ * />
+ */
+const TontineGroup = React.memo(function TontineGroup({
   name,
   members,
   contribution,
   nextDue,
-  status = "active",
+  status = 'active',
   progress = 0,
   onClick,
   actions = []
 }: TontineGroupProps) {
-  const { t } = useApp();
-
+  // Déterminer la couleur du badge en fonction du statut
   const getStatusColor = () => {
-    switch(status) {
-      case "active": return "bg-primary/10 text-primary";
-      case "pending": return "bg-muted text-muted-foreground";
-      case "completed": return "bg-accent text-accent-foreground";
+    switch (status) {
+      case 'active':
+        return 'bg-green-500 text-white';
+      case 'pending':
+        return 'bg-yellow-500 text-white';
+      case 'completed':
+        return 'bg-blue-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
   };
 
+  // Gérer le clic sur une action
+  const handleActionClick = (e: React.MouseEvent, action: typeof actions[0]) => {
+    e.stopPropagation();
+    action.onClick(e);
+  };
+
   return (
-    <motion.div
-      className={`tontine-card rounded-xl p-4 ${getStatusColor()}`}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+    <button
       onClick={onClick}
+      className="tontine-card w-full text-left transition-all hover:translate-y-[-2px] cursor-pointer"
+      aria-label={`Groupe ${name}`}
     >
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">{name}</h3>
-            <div className="flex items-center mt-1">
-              <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor()}`}>
-                {t(status)}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Users size={16} className="text-primary" />
-            <span className="text-sm text-muted-foreground">{members}</span>
-          </div>
+      <div className="flex justify-between items-start mb-3">
+        <h3 className="font-semibold text-lg truncate dark:text-white">{name}</h3>
+        <Badge className={getStatusColor()}>{status}</Badge>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <Users size={16} className="mr-2" />
+          <span>{members}</span>
+        </div>
+
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <Calendar size={16} className="mr-2" />
+          <span>{nextDue}</span>
+        </div>
+
+        <div className="flex items-center text-sm font-medium">
+          <span className="text-primary dark:text-primary">{contribution}</span>
         </div>
 
         {progress > 0 && (
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-muted-foreground">{t('progress')}</span>
-              <span className="text-xs font-medium text-foreground">{progress}%</span>
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+              <span>Progression</span>
+              <span>{progress}%</span>
             </div>
-            <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full ${
-                  progress < 30 ? "bg-yellow-500" :
-                  progress < 70 ? "bg-primary" :
-                  "bg-green-500"
-                }`}
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+            <Progress value={progress} className="h-1.5" />
           </div>
         )}
 
-        <div className="flex flex-col space-y-3">
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center mr-3">
-              <Coins size={16} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('contribution')}</p>
-              <p className="font-medium text-foreground">{contribution}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center mr-3">
-              <CalendarIcon size={16} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('nextDue')}</p>
-              <p className="font-medium text-foreground">{nextDue}</p>
-            </div>
-          </div>
-
-          {status === "active" && (
-            <div className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center mr-3">
-                <TrendingUp size={16} className="text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{t('payoutStatus')}</p>
-                <p className="font-medium text-foreground">{progress < 100 ? t('upcoming') : t('ready')}</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-4 flex justify-between items-center">
-          <div className="flex space-x-2">
+        {actions.length > 0 && (
+          <div className="flex justify-end space-x-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
             {actions.map((action, index) => (
               <button
                 key={index}
-                className="p-1.5 rounded-full hover:bg-secondary transition-colors"
-                onClick={action.onClick}
+                onClick={(e) => handleActionClick(e, action)}
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label={action.label}
                 title={action.label}
               >
                 {action.icon}
               </button>
             ))}
           </div>
-          <ChevronRight size={18} className="inline-block text-muted-foreground" />
-        </div>
+        )}
       </div>
-    </motion.div>
+    </button>
   );
-}
+});
+
+export default TontineGroup;

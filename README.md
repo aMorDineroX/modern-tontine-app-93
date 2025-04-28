@@ -7,6 +7,7 @@
 <img src="public/logo.svg" alt="Naat Logo" width="200" />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/aMorDineroX/modern-tontine-app-93/actions/workflows/test.yml/badge.svg)](https://github.com/aMorDineroX/modern-tontine-app-93/actions/workflows/test.yml)
 [![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-purple.svg)](https://vitejs.dev/)
@@ -166,6 +167,8 @@ L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre 
 | `npm run preview` | Prévisualise la version de production localement |
 | `npm run lint` | Vérifie le code avec ESLint |
 | `npm run test` | Lance les tests unitaires |
+| `npm run test:coverage` | Lance les tests avec rapport de couverture |
+| `npm run test:watch` | Lance les tests en mode watch |
 
 ## 🛠️ Technologies utilisées
 

@@ -1,4 +1,4 @@
-import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3 } from "lucide-react";
+import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3, Package } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
@@ -10,6 +10,21 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
+/**
+ * Composant Navbar - Barre de navigation principale de l'application
+ *
+ * Ce composant affiche la barre de navigation principale avec les liens vers les différentes
+ * sections de l'application, ainsi que des boutons pour les actions rapides comme la recherche,
+ * les notifications, les paramètres, le changement de thème, etc.
+ *
+ * Il s'adapte automatiquement aux écrans mobiles en affichant un menu hamburger.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Navbar />
+ * )
+ */
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -95,6 +110,18 @@ export default function Navbar() {
             >
               <BarChart3 size={18} />
               Statistiques
+            </Link>
+
+            <Link
+              to="/services"
+              className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+                isActive('/services')
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
+              }`}
+            >
+              <Package size={18} />
+              Services
             </Link>
 
             <Link
@@ -300,6 +327,19 @@ export default function Navbar() {
             >
               <BarChart3 size={18} />
               Statistiques
+            </Link>
+
+            <Link
+              to="/services"
+              className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
+                isActive('/services')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Package size={18} />
+              Services
             </Link>
 
             <div className="px-3 py-2">

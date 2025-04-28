@@ -1,5 +1,5 @@
 import { render, screen, act, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ChatProvider, useChat } from './ChatContext';
 import { useAuth } from './AuthContext';
 import { createMessage, createConversation, addMessageToConversation } from '@/services/chatService';
@@ -81,26 +81,28 @@ const TestComponent = () => {
 describe('ChatContext', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.useFakeTimers();
+    vi.useFakeTimers({ shouldAdvanceTime: false });
 
-    // Mock des fonctions de chatService
+    // Mock des fonctions de chatService avec des valeurs déterministes
+    let messageIdCounter = 0;
     (createMessage as any).mockImplementation((senderId, senderName, content, senderAvatar) => ({
-      id: 'message-id',
+      id: `message-id-${messageIdCounter++}`,
       sender: {
         id: senderId,
         name: senderName,
         avatar: senderAvatar,
       },
       content,
-      timestamp: new Date(),
+      timestamp: new Date(2023, 0, 1, 12, 0, 0), // Date fixe pour les tests
       isRead: false,
     }));
 
+    let conversationIdCounter = 0;
     (createConversation as any).mockImplementation((participants, isGroup, title) => ({
-      id: 'conversation-id',
+      id: `conversation-id-${conversationIdCounter++}`,
       participants,
       messages: [],
-      lastActivity: new Date(),
+      lastActivity: new Date(2023, 0, 1, 12, 0, 0), // Date fixe pour les tests
       isGroup,
       title: isGroup ? title : undefined,
     }));
@@ -111,7 +113,7 @@ describe('ChatContext', () => {
       lastActivity: message.timestamp,
     }));
 
-    // Mock de useAuth
+    // Mock de useAuth avec des valeurs déterministes
     (useAuth as any).mockReturnValue({
       user: {
         id: 'user-123',
@@ -124,36 +126,40 @@ describe('ChatContext', () => {
   });
 
   afterEach(() => {
+    vi.clearAllTimers();
     vi.useRealTimers();
   });
 
   it('should initialize with default values', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Vérifier les valeurs initiales
     expect(screen.getByTestId('isOpen').textContent).toBe('closed');
-    
+
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
       expect(screen.getByTestId('conversationsCount').textContent).toBe('1');
+      expect(screen.getByTestId('unreadCount').textContent).toBe('1');
+      expect(createConversation).toHaveBeenCalled();
+      expect(createMessage).toHaveBeenCalled();
+      expect(addMessageToConversation).toHaveBeenCalled();
     });
-    
-    expect(screen.getByTestId('unreadCount').textContent).toBe('1');
-    expect(createConversation).toHaveBeenCalled();
-    expect(createMessage).toHaveBeenCalled();
-    expect(addMessageToConversation).toHaveBeenCalled();
   });
 
   it('should toggle chat', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -164,7 +170,7 @@ describe('ChatContext', () => {
     expect(screen.getByTestId('isOpen').textContent).toBe('closed');
 
     // Ouvrir le chat
-    act(() => {
+    await act(async () => {
       screen.getByTestId('toggleChat').click();
     });
 
@@ -173,7 +179,7 @@ describe('ChatContext', () => {
     expect(screen.getByTestId('unreadCount').textContent).toBe('0');
 
     // Fermer le chat
-    act(() => {
+    await act(async () => {
       screen.getByTestId('toggleChat').click();
     });
 
@@ -182,11 +188,13 @@ describe('ChatContext', () => {
   });
 
   it('should open and close chat', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -194,7 +202,7 @@ describe('ChatContext', () => {
     });
 
     // Ouvrir le chat
-    act(() => {
+    await act(async () => {
       screen.getByTestId('openChat').click();
     });
 
@@ -203,7 +211,7 @@ describe('ChatContext', () => {
     expect(screen.getByTestId('unreadCount').textContent).toBe('0');
 
     // Fermer le chat
-    act(() => {
+    await act(async () => {
       screen.getByTestId('closeChat').click();
     });
 
@@ -212,11 +220,13 @@ describe('ChatContext', () => {
   });
 
   it('should send a message and receive an automatic response', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -227,7 +237,7 @@ describe('ChatContext', () => {
     vi.clearAllMocks();
 
     // Envoyer un message
-    act(() => {
+    await act(async () => {
       screen.getByTestId('sendMessage').click();
     });
 
@@ -243,12 +253,15 @@ describe('ChatContext', () => {
     expect(addMessageToConversation).toHaveBeenCalled();
 
     // Avancer le temps pour déclencher la réponse automatique
-    act(() => {
+    await act(async () => {
       vi.advanceTimersByTime(1000);
     });
 
     // Vérifier que createMessage a été appelé pour la réponse automatique
-    expect(createMessage).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(createMessage).toHaveBeenCalledTimes(2);
+    });
+
     expect(createMessage).toHaveBeenLastCalledWith(
       'support',
       'Support Naat',
@@ -261,11 +274,13 @@ describe('ChatContext', () => {
   });
 
   it('should create a new conversation', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -276,7 +291,7 @@ describe('ChatContext', () => {
     vi.clearAllMocks();
 
     // Créer une nouvelle conversation
-    act(() => {
+    await act(async () => {
       screen.getByTestId('createConversation').click();
     });
 
@@ -291,15 +306,19 @@ describe('ChatContext', () => {
     );
 
     // Vérifier que la nouvelle conversation a été ajoutée
-    expect(screen.getByTestId('conversationsCount').textContent).toBe('2');
+    await waitFor(() => {
+      expect(screen.getByTestId('conversationsCount').textContent).toBe('2');
+    });
   });
 
   it('should set active conversation', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -310,20 +329,24 @@ describe('ChatContext', () => {
     expect(screen.getByTestId('activeConversation').textContent).not.toBe('none');
 
     // Définir la conversation active
-    act(() => {
+    await act(async () => {
       screen.getByTestId('setActiveConversation').click();
     });
 
     // Vérifier que la conversation active a été définie
-    expect(screen.getByTestId('activeConversation').textContent).toBe('conversation-id');
+    await waitFor(() => {
+      expect(screen.getByTestId('activeConversation').textContent).toBe('conversation-id');
+    });
   });
 
   it('should increment unread count when receiving a message while chat is closed', async () => {
-    render(
-      <ChatProvider>
-        <TestComponent />
-      </ChatProvider>
-    );
+    await act(async () => {
+      render(
+        <ChatProvider>
+          <TestComponent />
+        </ChatProvider>
+      );
+    });
 
     // Attendre que la conversation par défaut soit créée
     await waitFor(() => {
@@ -331,25 +354,32 @@ describe('ChatContext', () => {
     });
 
     // Réinitialiser le compteur de messages non lus
-    act(() => {
+    await act(async () => {
       screen.getByTestId('openChat').click();
+    });
+
+    await act(async () => {
       screen.getByTestId('closeChat').click();
     });
 
-    expect(screen.getByTestId('unreadCount').textContent).toBe('0');
+    await waitFor(() => {
+      expect(screen.getByTestId('unreadCount').textContent).toBe('0');
+    });
 
     // Envoyer un message
-    act(() => {
+    await act(async () => {
       screen.getByTestId('sendMessage').click();
     });
 
     // Avancer le temps pour déclencher la réponse automatique
-    act(() => {
+    await act(async () => {
       vi.advanceTimersByTime(1000);
     });
 
     // Vérifier que le compteur de messages non lus a été incrémenté
-    expect(screen.getByTestId('unreadCount').textContent).toBe('1');
+    await waitFor(() => {
+      expect(screen.getByTestId('unreadCount').textContent).toBe('1');
+    });
   });
 
   it('should throw an error when useChat is used outside of ChatProvider', () => {

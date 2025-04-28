@@ -1,4 +1,5 @@
 import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3, Package } from "lucide-react";
+import ThemeSelector from "./ThemeSelector";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
@@ -184,7 +185,7 @@ export default function Navbar() {
             >
               <Settings size={20} className="text-primary" />
             </button>
-            <ThemeToggle />
+            <ThemeSelector />
             <button
               className="tontine-button tontine-button-primary"
               onClick={() => setIsPaymentModalOpen(true)}
@@ -216,7 +217,7 @@ export default function Navbar() {
             >
               <Settings size={20} className="text-primary" />
             </button>
-            <ThemeToggle />
+            <ThemeSelector />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring"

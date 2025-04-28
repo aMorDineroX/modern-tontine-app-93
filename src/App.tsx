@@ -20,6 +20,7 @@ import Services from "./pages/Services";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ChatProvider } from "./contexts/ChatContext";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 import Transactions from "./pages/Transactions";
@@ -194,21 +195,23 @@ const RootComponent = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AppProvider>
-      <AuthProvider>
-        <ChatProvider>
-          <HelmetProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <RootComponent />
-              </BrowserRouter>
-            </TooltipProvider>
-          </HelmetProvider>
-        </ChatProvider>
-      </AuthProvider>
-    </AppProvider>
+    <ThemeProvider defaultTheme="system" storageKey="naat-theme">
+      <AppProvider>
+        <AuthProvider>
+          <ChatProvider>
+            <HelmetProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <RootComponent />
+                </BrowserRouter>
+              </TooltipProvider>
+            </HelmetProvider>
+          </ChatProvider>
+        </AuthProvider>
+      </AppProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

@@ -1,0 +1,52 @@
+[
+  {
+    "service_id": 1,
+    "service_name": "Premium",
+    "service_description": "Accès à toutes les fonctionnalités premium de Naat",
+    "service_icon": "crown",
+    "subscription_status": null,
+    "subscription_start_date": null,
+    "subscription_end_date": null,
+    "is_active": true
+  },
+  {
+    "service_id": 2,
+    "service_name": "Assurance Tontine",
+    "service_description": "Protection contre les défauts de paiement des membres",
+    "service_icon": "shield",
+    "subscription_status": null,
+    "subscription_start_date": null,
+    "subscription_end_date": null,
+    "is_active": true
+  },
+  {
+    "service_id": 3,
+    "service_name": "Analyse Financière",
+    "service_description": "Rapports détaillés sur vos finances et économies",
+    "service_icon": "chart-bar",
+    "subscription_status": null,
+    "subscription_start_date": null,
+    "subscription_end_date": null,
+    "is_active": true
+  },
+  {
+    "service_id": 4,
+    "service_name": "Transfert International",
+    "service_description": "Envoi d'argent à l'international sans frais",
+    "service_icon": "globe",
+    "subscription_status": null,
+    "subscription_start_date": null,
+    "subscription_end_date": null,
+    "is_active": true
+  },
+  {
+    "service_id": 5,
+    "service_name": "Consultation Financière",
+    "service_description": "Session de 30 minutes avec un conseiller financier",
+    "service_icon": "user",
+    "subscription_status": null,
+    "subscription_start_date": null,
+    "subscription_end_date": null,
+    "is_active": true
+  }
+]

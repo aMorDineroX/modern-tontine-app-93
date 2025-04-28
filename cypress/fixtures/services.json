@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "name": "Premium",
+    "description": "Accès à toutes les fonctionnalités premium de Naat",
+    "icon": "crown",
+    "price": 9.99,
+    "currency": "EUR",
+    "is_recurring": true,
+    "recurring_interval": "month",
+    "is_active": true,
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2023-01-01T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "name": "Assurance Tontine",
+    "description": "Protection contre les défauts de paiement des membres",
+    "icon": "shield",
+    "price": 4.99,
+    "currency": "EUR",
+    "is_recurring": true,
+    "recurring_interval": "month",
+    "is_active": true,
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2023-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "name": "Analyse Financière",
+    "description": "Rapports détaillés sur vos finances et économies",
+    "icon": "chart-bar",
+    "price": 2.99,
+    "currency": "EUR",
+    "is_recurring": true,
+    "recurring_interval": "month",
+    "is_active": true,
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2023-01-01T00:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Transfert International",
+    "description": "Envoi d'argent à l'international sans frais",
+    "icon": "globe",
+    "price": 1.99,
+    "currency": "EUR",
+    "is_recurring": false,
+    "recurring_interval": null,
+    "is_active": true,
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2023-01-01T00:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Consultation Financière",
+    "description": "Session de 30 minutes avec un conseiller financier",
+    "icon": "user",
+    "price": 29.99,
+    "currency": "EUR",
+    "is_recurring": false,
+    "recurring_interval": null,
+    "is_active": true,
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2023-01-01T00:00:00Z"
+  }
+]

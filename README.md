@@ -12,10 +12,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-purple.svg)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC.svg)](https://tailwindcss.com/)
+[![React Query](https://img.shields.io/badge/React_Query-5.56-ff4154.svg)](https://tanstack.com/query/latest)
+[![Test Coverage](https://img.shields.io/badge/Coverage-80%25-success.svg)](https://github.com/aMorDineroX/modern-tontine-app-93/actions/workflows/test.yml)
 
 *Moderniser l'épargne communautaire, préserver les traditions*
 
 [Fonctionnalités](#fonctionnalités-principales) •
+[Services Premium](#services-premium) •
 [Captures d'écran](#captures-décran) •
 [Installation](#installation-et-démarrage) •
 [Technologies](#technologies-utilisées) •
@@ -109,6 +112,55 @@ Naat vise à préserver l'esprit communautaire des tontines traditionnelles tout
 - Création de groupes WhatsApp pour les membres
 - Notifications WhatsApp pour les rappels de paiement
 - Codes QR pour rejoindre facilement les conversations
+- Chat intégré avec support en temps réel
+
+## 💎 Services Premium
+
+Naat propose une gamme de services premium pour améliorer votre expérience et offrir des fonctionnalités avancées :
+
+<div align="center">
+<table>
+<tr>
+<td width="50%">
+
+### 🏆 Abonnements Premium
+- **Premium** : Accès à toutes les fonctionnalités avancées
+- **Assurance Tontine** : Protection contre les défauts de paiement
+- **Analyse Financière** : Rapports détaillés sur vos finances
+- **Transfert International** : Envoi d'argent sans frais
+- **Consultation Financière** : Sessions avec un conseiller
+
+### 🎁 Programme de fidélité
+- Système de points pour chaque action et paiement
+- Niveaux de fidélité : Bronze, Argent, Or et Platine
+- Récompenses exclusives selon votre niveau
+- Remises sur les abonnements et services
+
+</td>
+<td width="50%">
+
+### 📊 Recommandations personnalisées
+- Suggestions de services basées sur votre utilisation
+- Recommandations adaptées à votre profil financier
+- Offres spéciales basées sur les utilisateurs similaires
+- Alertes pour les opportunités d'économies
+
+### 🔄 Offres groupées avec remises
+- Packs de services avec tarifs préférentiels
+- Combinaisons optimisées pour différents besoins
+- Économies substantielles sur les abonnements multiples
+- Gestion simplifiée avec facturation unique
+
+</td>
+</tr>
+</table>
+</div>
+
+### 💳 Options de paiement flexibles
+- Paiement par carte bancaire (Visa, Mastercard)
+- Intégration PayPal pour des transactions sécurisées
+- Virements bancaires pour les montants importants
+- Paiements récurrents automatisés
 
 ## 📸 Captures d'écran
 
@@ -166,9 +218,15 @@ L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre 
 | `npm run build` | Compile l'application pour la production |
 | `npm run preview` | Prévisualise la version de production localement |
 | `npm run lint` | Vérifie le code avec ESLint |
-| `npm run test` | Lance les tests unitaires |
+| `npm run typecheck` | Vérifie les types TypeScript |
+| `npm run test` | Lance tous les tests |
+| `npm run test:unit` | Lance les tests unitaires |
+| `npm run test:integration` | Lance les tests d'intégration |
+| `npm run test:performance` | Lance les tests de performance |
+| `npm run test:e2e` | Lance les tests de bout en bout avec Cypress |
 | `npm run test:coverage` | Lance les tests avec rapport de couverture |
 | `npm run test:watch` | Lance les tests en mode watch |
+| `npm run start:ci` | Démarre l'application pour les tests CI |
 
 ## 🛠️ Technologies utilisées
 
@@ -186,6 +244,8 @@ Naat est construit avec des technologies modernes pour offrir une expérience ut
 - **UI Components** : [shadcn-ui](https://ui.shadcn.com/)
 - **Build Tool** : [Vite 5](https://vitejs.dev/)
 - **Routing** : [React Router 6](https://reactrouter.com/)
+- **Animations** : [Framer Motion](https://www.framer.com/motion/)
+- **Thèmes** : Système de thèmes clair/sombre personnalisé
 
 </td>
 <td width="50%">
@@ -194,9 +254,11 @@ Naat est construit avec des technologies modernes pour offrir une expérience ut
 - **Backend** : [Supabase](https://supabase.io/)
 - **Authentication** : Supabase Auth
 - **Database** : PostgreSQL (via Supabase)
-- **State Management** : React Context API
-- **Animations** : [Framer Motion](https://www.framer.com/motion/)
+- **State Management** : React Context API & React Query
+- **Data Fetching** : [TanStack Query](https://tanstack.com/query)
+- **Paiements** : PayPal, Stripe
 - **Internationalisation** : Solution i18n personnalisée
+- **Virtualisation** : Listes virtualisées pour les performances
 
 </td>
 </tr>
@@ -206,11 +268,23 @@ Naat est construit avec des technologies modernes pour offrir une expérience ut
 ### Architecture
 
 L'application suit une architecture modulaire avec séparation des préoccupations :
-- **Components** : Composants UI réutilisables
-- **Pages** : Vues principales de l'application
-- **Contexts** : Gestion de l'état global
+- **Components** : Composants UI réutilisables et accessibles
+- **Pages** : Vues principales de l'application avec transitions animées
+- **Contexts** : Gestion de l'état global et thèmes
+- **Hooks** : Hooks personnalisés pour la réutilisation de la logique
+- **Services** : Logique métier et appels API optimisés
 - **Utils** : Fonctions utilitaires et helpers
-- **Services** : Logique métier et appels API
+- **Migrations** : Scripts SQL pour la structure de la base de données
+
+### Tests et Qualité
+
+Naat maintient un haut niveau de qualité grâce à une suite de tests complète :
+- **Tests unitaires** : Tests des composants et services individuels
+- **Tests d'intégration** : Tests des interactions entre composants
+- **Tests de bout en bout** : Tests des parcours utilisateur complets avec Cypress
+- **Tests de performance** : Benchmarks pour les opérations critiques
+- **CI/CD** : Intégration continue avec GitHub Actions
+- **Couverture de code** : Maintenue à plus de 80%
 
 ## 🌐 Déploiement
 
@@ -273,6 +347,14 @@ Pour toute question ou suggestion, n'hésitez pas à nous contacter :
 - **Email** : [support@naat-app.com](mailto:support@naat-app.com)
 - **Site web** : [www.naat-app.com](https://www.naat-app.com)
 - **Twitter** : [@NaatApp](https://twitter.com/NaatApp)
+
+## 📚 Documentation
+
+Pour plus d'informations sur l'application, consultez les documents suivants :
+
+- [Guide des fonctionnalités](docs/FEATURES.md) - Documentation détaillée des fonctionnalités de Naat
+- [Guide technique](docs/TECH_GUIDE.md) - Documentation technique pour les développeurs
+- [Guide de contribution](docs/CONTRIBUTING.md) - Guide pour contribuer au projet
 
 ## 🙏 Remerciements
 

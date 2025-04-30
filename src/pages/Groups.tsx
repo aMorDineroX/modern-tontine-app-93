@@ -83,6 +83,7 @@ const Groups = () => {
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [showOfflineWarning, setShowOfflineWarning] = useState(false);
   const [offlineCache, setOfflineCache] = useState<Group[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [advancedFilters, setAdvancedFilters] = useState({
     tags: [] as string[],
     minMembers: null as number | null,
@@ -240,12 +241,15 @@ const Groups = () => {
 
   // Handle refresh
   const handleRefresh = useCallback(() => {
-    refetch();
-    toast({
-      title: "Refreshing",
-      description: "Refreshing groups data...",
+    setIsRefreshing(true);
+    refetch().finally(() => {
+      setIsRefreshing(false);
+      toast({
+        title: "Refreshing",
+        description: "Refreshing groups data...",
+      });
     });
-  }, [refetch, toast]);
+  }, [refetch, toast, setIsRefreshing]);
 
   // Fonctions pour gérer les favoris
   const toggleFavorite = useCallback((groupId: string | number) => {
@@ -404,15 +408,6 @@ const Groups = () => {
     setAdvancedFilters(filters);
   }, []);
 
-  // Fonction pour rafraîchir les groupes
-  const handleRefresh = () => {
-    refetch();
-    toast({
-      title: "Refreshing",
-      description: "Refreshing groups data...",
-    });
-  };
-
   const handleCreateGroup = async (formData: { name: string; contribution: string; frequency: string; members: string }) => {
     console.log("Group created with data:", formData);
 
@@ -505,25 +500,30 @@ const Groups = () => {
   // Fonction pour changer le statut d'un groupe (pour le glisser-déposer)
   const handleGroupStatusChange = useCallback(async (groupId: string | number, newStatus: "active" | "pending" | "completed") => {
     try {
-      // Mettre à jour l'état local immédiatement pour une UI réactive
-      setGroups(prevGroups =>
-        prevGroups.map(group =>
-          group.id === groupId
-            ? { ...group, status: newStatus }
-            : group
-        )
-      );
-
       // Dans une application réelle, vous mettriez à jour la base de données ici
       console.log(`Groupe ${groupId} mis à jour avec le statut: ${newStatus}`);
 
-      // Simuler une mise à jour avec React Query
-      setTimeout(() => {
-        toast({
-          title: "Statut mis à jour",
-          description: `Le groupe a été déplacé vers "${t(newStatus)}"`,
-        });
-      }, 500);
+      // Utiliser la mutation React Query pour mettre à jour le statut
+      updateGroupStatus({ groupId, data: { status: newStatus } }, {
+        onSuccess: () => {
+          toast({
+            title: "Statut mis à jour",
+            description: `Le groupe a été déplacé vers "${t(newStatus)}"`,
+          });
+          // Rafraîchir les données après la mise à jour
+          refetch();
+        },
+        onError: (error) => {
+          console.error('Erreur lors de la mise à jour du statut:', error);
+          toast({
+            title: "Erreur",
+            description: "Impossible de mettre à jour le statut du groupe",
+            variant: "destructive"
+          });
+          // Annuler le changement en cas d'erreur
+          refetch();
+        }
+      });
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du statut:', error);
@@ -536,7 +536,7 @@ const Groups = () => {
       // Annuler le changement en cas d'erreur
       refetch();
     }
-  }, [toast, t, refetch]);
+  }, [toast, t, refetch, updateGroupStatus]);
 
   // Sample members for the sidebar
   const sampleMembers = [

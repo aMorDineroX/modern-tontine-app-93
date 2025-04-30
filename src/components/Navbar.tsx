@@ -1,4 +1,4 @@
-import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3, Package } from "lucide-react";
+import { Menu, X, Settings, LogOut, Bell, User, Home, Users, Search, Gem, CalendarDays, Receipt, BarChart3, Package, Sparkles } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -123,6 +123,18 @@ export default function Navbar() {
             >
               <Package size={18} />
               Services
+            </Link>
+
+            <Link
+              to="/enhanced-features"
+              className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+                isActive('/enhanced-features')
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-foreground hover:text-primary hover:border-b-2 hover:border-primary/50'
+              }`}
+            >
+              <Sparkles size={18} />
+              Nouveautés
             </Link>
 
             <Link
@@ -341,6 +353,19 @@ export default function Navbar() {
             >
               <Package size={18} />
               Services
+            </Link>
+
+            <Link
+              to="/enhanced-features"
+              className={`flex items-center gap-2 px-3 py-2 text-base font-medium ${
+                isActive('/enhanced-features')
+                  ? 'bg-accent text-primary border-l-4 border-primary'
+                  : 'text-foreground hover:bg-accent/50 hover:text-primary hover:border-l-4 hover:border-primary/50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Sparkles size={18} />
+              Nouveautés
             </Link>
 
             <div className="px-3 py-2">

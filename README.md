@@ -114,6 +114,18 @@ Naat vise à préserver l'esprit communautaire des tontines traditionnelles tout
 - Codes QR pour rejoindre facilement les conversations
 - Chat intégré avec support en temps réel
 
+### 🎮 Système de gamification
+- Système de points et de niveaux pour encourager l'engagement
+- Réalisations à débloquer en utilisant l'application
+- Progression visuelle avec barres de progression
+- Récompenses pour les actions importantes
+
+### 🔔 Notifications avancées
+- Notifications en temps réel pour toutes les activités importantes
+- Filtrage par type (info, succès, avertissement, erreur)
+- Marquage individuel ou en masse comme lues
+- Actions rapides directement depuis les notifications
+
 ## 💎 Services Premium
 
 Naat propose une gamme de services premium pour améliorer votre expérience et offrir des fonctionnalités avancées :
@@ -156,11 +168,21 @@ Naat propose une gamme de services premium pour améliorer votre expérience et 
 </table>
 </div>
 
-### 💳 Options de paiement flexibles
+### 💳 Système de paiement avancé
 - Paiement par carte bancaire (Visa, Mastercard)
 - Intégration PayPal pour des transactions sécurisées
 - Virements bancaires pour les montants importants
 - Paiements récurrents automatisés
+- Interface de paiement intuitive et sécurisée
+- Gestion des abonnements et des factures
+- Historique complet des transactions
+
+### 📊 Analyses avancées
+- Visualisations interactives des données financières
+- Graphiques personnalisables (barres, lignes, camemberts, aires)
+- Filtrage par période (semaine, mois, trimestre, année)
+- Export des données et des graphiques
+- Tableaux de bord personnalisés
 
 ## 📸 Captures d'écran
 
@@ -227,6 +249,8 @@ L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre 
 | `npm run test:coverage` | Lance les tests avec rapport de couverture |
 | `npm run test:watch` | Lance les tests en mode watch |
 | `npm run start:ci` | Démarre l'application pour les tests CI |
+| `./scripts/run-tests.sh` | Script pour exécuter tous les tests avec couverture |
+| `./scripts/apply-migrations.sh` | Script pour appliquer les migrations Supabase |
 
 ## 🛠️ Technologies utilisées
 
@@ -259,6 +283,9 @@ Naat est construit avec des technologies modernes pour offrir une expérience ut
 - **Paiements** : PayPal, Stripe
 - **Internationalisation** : Solution i18n personnalisée
 - **Virtualisation** : Listes virtualisées pour les performances
+- **Graphiques** : [Recharts](https://recharts.org/) pour les visualisations de données
+- **Notifications** : Système de notifications en temps réel avec Supabase Realtime
+- **Chat** : Système de chat en temps réel avec Supabase Realtime
 
 </td>
 </tr>
@@ -353,6 +380,7 @@ Pour toute question ou suggestion, n'hésitez pas à nous contacter :
 Pour plus d'informations sur l'application, consultez les documents suivants :
 
 - [Guide des fonctionnalités](docs/FEATURES.md) - Documentation détaillée des fonctionnalités de Naat
+- [Fonctionnalités améliorées](docs/ENHANCED_FEATURES.md) - Documentation des nouvelles fonctionnalités avancées
 - [Guide technique](docs/TECH_GUIDE.md) - Documentation technique pour les développeurs
 - [Guide de contribution](docs/CONTRIBUTING.md) - Guide pour contribuer au projet
 

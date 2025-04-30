@@ -17,6 +17,7 @@ import Premium from "./pages/Premium";
 import TontineCycles from "./pages/TontineCycles";
 import Statistics from "./pages/Statistics";
 import Services from "./pages/Services";
+import EnhancedFeatures from "./pages/EnhancedFeatures";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ChatProvider } from "./contexts/ChatContext";
@@ -184,6 +185,11 @@ const RootComponent = () => {
       <Route path="/services" element={
         <Suspense fallback={<LoadingScreen message="Chargement..." />}>
           <Layout><Services /></Layout>
+        </Suspense>
+      } />
+      <Route path="/enhanced-features" element={
+        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+          <Layout><EnhancedFeatures /></Layout>
         </Suspense>
       } />
 

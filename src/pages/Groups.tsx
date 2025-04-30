@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, Suspense, lazy } from "react";
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from "react";
 import {
   Plus,
   Search,
@@ -13,6 +13,8 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Grid,
   List,
   LayoutGrid,
@@ -44,9 +46,10 @@ import ShareGroup from "@/components/ShareGroup";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import CalendarView from "@/components/CalendarView";
 import NotificationCenter from "@/components/NotificationCenter";
+import VirtualizedGroupList from "@/components/VirtualizedGroupList";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { supabase, fetchUserGroups } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -56,6 +59,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import PersistentChat from "@/components/PersistentChat";
 import { Group } from "@/types/group";
+import { useUserGroups, useInfiniteGroups, useCreateGroup, useUpdateGroup } from "@/hooks/useGroupsQuery";
 
 const Groups = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,14 +67,11 @@ const Groups = () => {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list" | "kanban" | "calendar">("grid");
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [sortBy, setSortBy] = useState<"name" | "date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<any>(null);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -82,6 +83,13 @@ const Groups = () => {
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [showOfflineWarning, setShowOfflineWarning] = useState(false);
   const [offlineCache, setOfflineCache] = useState<Group[]>([]);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    tags: [] as string[],
+    minMembers: null as number | null,
+    maxMembers: null as number | null,
+    minContribution: null as number | null,
+    maxContribution: null as number | null
+  });
 
   // Liste des tags disponibles (normalement récupérée depuis la base de données)
   const availableTags = [
@@ -95,133 +103,149 @@ const Groups = () => {
   const { user } = useAuth();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Fonction pour récupérer les groupes
-  const fetchGroups = useCallback(async (isRefresh = false) => {
-    try {
-      if (isRefresh) {
-        setIsRefreshing(true);
-      } else {
-        setIsLoading(true);
-      }
-
-      console.log("Fetching groups, user:", user);
-
-      if (!user) {
-        setGroups([]);
-        setIsLoading(false);
-        setIsRefreshing(false);
-        return;
-      }
-
-      // Use the fetchUserGroups utility function
-      const { data: groupsData, error } = await fetchUserGroups(user.id);
-
-      if (error) {
-        console.error("Error fetching groups:", error);
-        throw error;
-      }
-
-      console.log("Groups data:", groupsData);
-
-      if (!groupsData || groupsData.length === 0) {
-        setGroups([]);
-        setIsLoading(false);
-        setIsRefreshing(false);
-        return;
-      }
-
-      // Get member counts for each group
-      const groupsWithMemberCount = await Promise.all(
-        groupsData.map(async (group) => {
-          const { count, error } = await supabase
-            .from('group_members')
-            .select('*', { count: 'exact', head: true })
-            .eq('group_id', group.id);
-
-          if (error) {
-            console.error("Error counting members:", error);
-          }
-
-          // Calculate next due date based on frequency and start date
-          const startDate = new Date(group.start_date);
-          let nextDue = new Date(startDate);
-          const today = new Date();
-
-          while (nextDue < today) {
-            if (group.frequency === 'weekly') {
-              nextDue.setDate(nextDue.getDate() + 7);
-            } else if (group.frequency === 'biweekly') {
-              nextDue.setDate(nextDue.getDate() + 14);
-            } else {
-              nextDue.setMonth(nextDue.getMonth() + 1);
-            }
-          }
-
-          // Calculate progress (mock implementation)
-          const progress = Math.min(
-            Math.round((today.getTime() - startDate.getTime()) /
-            (nextDue.getTime() - startDate.getTime()) * 100),
-            100
-          );
-
-          // Fetch the status of the current user in this group
-          const { data: membershipData, error: membershipError } = await supabase
-            .from('group_members')
-            .select('status')
-            .eq('group_id', group.id)
-            .eq('user_id', user.id)
-            .single();
-
-          const status = membershipData ? membershipData.status : "active";
-
-          // Ajouter des tags aléatoires pour la démonstration
-          const randomTags = [];
-          if (Math.random() > 0.5) randomTags.push("Famille");
-          if (Math.random() > 0.7) randomTags.push("Épargne");
-          if (Math.random() > 0.8) randomTags.push("Priorité");
-          if (Math.random() > 0.6) randomTags.push("Mensuel");
-          if (Math.random() > 0.9) randomTags.push("Investissement");
-
-          return {
-            id: group.id,
-            name: group.name,
-            members: count || 1,  // Default to 1 if count is null
-            contribution: group.contribution_amount,
-            frequency: group.frequency,
-            nextDue: nextDue.toLocaleDateString(),
-            status: status as "active" | "pending" | "completed",
-            progress: progress || 0,
-            tags: randomTags
-          };
-        })
-      );
-
-      console.log("Processed groups:", groupsWithMemberCount);
-      setGroups(groupsWithMemberCount);
-
-      if (isRefresh) {
-        toast({
-          title: t('refreshed'),
-          description: t('groupsRefreshed'),
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching groups:', error);
+  // Use React Query to fetch groups
+  const {
+    data: groupsData,
+    isLoading,
+    isError,
+    refetch
+  } = useUserGroups(user?.id, {
+    enabled: !!user,
+    onSuccess: (data) => {
+      console.log("Groups data fetched successfully:", data);
+    },
+    onError: (error) => {
+      console.error("Error fetching groups:", error);
       toast({
         title: "Error",
         description: "Error fetching groups",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
     }
-  }, [user, toast, t]);
+  });
 
-  // Fetch groups on component mount
-  useEffect(() => {
-    fetchGroups();
-  }, [fetchGroups]);
+  // Use React Query for infinite loading
+  const {
+    data: infiniteGroupsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isLoadingInfinite
+  } = useInfiniteGroups(user?.id, 20, {
+    enabled: !!user && view !== "kanban" && view !== "calendar",
+  });
+
+  // Use React Query for creating groups
+  const { mutate: createGroupMutation, isLoading: isCreating } = useCreateGroup();
+
+  // Process groups data from React Query
+  const groups = useMemo(() => {
+    if (!groupsData?.data) return [];
+
+    return groupsData.data.map(group => {
+      // Calculate next due date based on frequency and start date
+      const startDate = new Date(group.start_date);
+      const nextDue = new Date(startDate);
+      const today = new Date();
+
+      while (nextDue < today) {
+        if (group.frequency === 'weekly') {
+          nextDue.setDate(nextDue.getDate() + 7);
+        } else if (group.frequency === 'biweekly') {
+          nextDue.setDate(nextDue.getDate() + 14);
+        } else {
+          nextDue.setMonth(nextDue.getMonth() + 1);
+        }
+      }
+
+      // Calculate progress (mock implementation)
+      const progress = Math.min(
+        Math.round((today.getTime() - startDate.getTime()) /
+        (nextDue.getTime() - startDate.getTime()) * 100),
+        100
+      );
+
+      // Ajouter des tags aléatoires pour la démonstration
+      const randomTags = [];
+      if (Math.random() > 0.5) randomTags.push("Famille");
+      if (Math.random() > 0.7) randomTags.push("Épargne");
+      if (Math.random() > 0.8) randomTags.push("Priorité");
+      if (Math.random() > 0.6) randomTags.push("Mensuel");
+      if (Math.random() > 0.9) randomTags.push("Investissement");
+
+      return {
+        id: group.id,
+        name: group.name,
+        members: group.member_count || 1,
+        contribution: group.contribution_amount,
+        frequency: group.frequency,
+        nextDue: nextDue.toLocaleDateString(),
+        status: group.status || "active" as "active" | "pending" | "completed",
+        progress: progress || 0,
+        tags: randomTags
+      };
+    });
+  }, [groupsData]);
+
+  // Process infinite query data for virtualized list
+  const allInfiniteGroups = useMemo(() => {
+    if (!infiniteGroupsData?.pages) return [];
+
+    return infiniteGroupsData.pages.flatMap(page =>
+      page.data.map(group => {
+        // Calculate next due date based on frequency and start date
+        const startDate = new Date(group.start_date);
+        const nextDue = new Date(startDate);
+        const today = new Date();
+
+        while (nextDue < today) {
+          if (group.frequency === 'weekly') {
+            nextDue.setDate(nextDue.getDate() + 7);
+          } else if (group.frequency === 'biweekly') {
+            nextDue.setDate(nextDue.getDate() + 14);
+          } else {
+            nextDue.setMonth(nextDue.getMonth() + 1);
+          }
+        }
+
+        // Calculate progress (mock implementation)
+        const progress = Math.min(
+          Math.round((today.getTime() - startDate.getTime()) /
+          (nextDue.getTime() - startDate.getTime()) * 100),
+          100
+        );
+
+        // Ajouter des tags aléatoires pour la démonstration
+        const randomTags = [];
+        if (Math.random() > 0.5) randomTags.push("Famille");
+        if (Math.random() > 0.7) randomTags.push("Épargne");
+        if (Math.random() > 0.8) randomTags.push("Priorité");
+        if (Math.random() > 0.6) randomTags.push("Mensuel");
+        if (Math.random() > 0.9) randomTags.push("Investissement");
+
+        return {
+          id: group.id,
+          name: group.name,
+          members: group.member_count || 1,
+          contribution: group.contribution_amount,
+          frequency: group.frequency,
+          nextDue: nextDue.toLocaleDateString(),
+          status: group.status || "active" as "active" | "pending" | "completed",
+          progress: progress || 0,
+          tags: randomTags
+        };
+      })
+    );
+  }, [infiniteGroupsData]);
+
+  // Handle refresh
+  const handleRefresh = useCallback(() => {
+    refetch();
+    toast({
+      title: "Refreshing",
+      description: "Refreshing groups data...",
+    });
+  }, [refetch, toast]);
 
   // Fonctions pour gérer les favoris
   const toggleFavorite = useCallback((groupId: string | number) => {
@@ -233,7 +257,7 @@ const Groups = () => {
         return [...prev, groupIdStr];
       }
     });
-    
+
     // Enregistrer les favoris dans le stockage local
     try {
       localStorage.setItem('favoriteGroups', JSON.stringify(favoriteGroups));
@@ -252,92 +276,6 @@ const Groups = () => {
     } catch (error) {
       console.error('Erreur lors du chargement des favoris:', error);
     }
-  }, []);
-
-  // Fonction pour gérer la pagination
-  const paginatedGroups = useMemo(() => {
-    const startIndex = (currentPage - 1) * groupsPerPage;
-    return filteredGroups.slice(startIndex, startIndex + groupsPerPage);
-  }, [filteredGroups, currentPage, groupsPerPage]);
-
-  // Calculer le nombre total de pages
-  const totalPages = Math.ceil(filteredGroups.length / groupsPerPage);
-
-  // Fonction pour changer de page
-  const changePage = (pageNumber: number) => {
-    setCurrentPage(Math.min(Math.max(1, pageNumber), totalPages));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Fonction pour générer et ouvrir le QR code d'un groupe
-  const handleShareViaQRCode = (group: any) => {
-    setSelectedGroup(group);
-    setIsQRModalOpen(true);
-  };
-
-  // Fonction pour activer/désactiver le mode hors ligne
-  const toggleOfflineMode = useCallback(() => {
-    if (showOfflineWarning) {
-      // Désactiver le mode hors ligne
-      setShowOfflineWarning(false);
-      setOfflineCache([]);
-    } else {
-      // Activer le mode hors ligne et mettre en cache les données actuelles
-      setShowOfflineWarning(true);
-      setOfflineCache(groups);
-      toast({
-        title: "Mode hors ligne activé",
-        description: "Les groupes sont maintenant disponibles même sans connexion",
-      });
-    }
-  }, [groups, showOfflineWarning, toast]);
-
-  // Surveillance de la connectivité réseau
-  useEffect(() => {
-    const handleOnline = () => {
-      if (showOfflineWarning) {
-        toast({
-          title: "Connexion internet rétablie",
-          description: "Synchronisation des données...",
-        });
-        fetchGroups(true);
-      }
-    };
-
-    const handleOffline = () => {
-      if (!showOfflineWarning && groups.length > 0) {
-        setShowOfflineWarning(true);
-        setOfflineCache(groups);
-        toast({
-          title: "Mode hors ligne activé automatiquement",
-          description: "Connexion internet perdue. Les données sont disponibles hors ligne.",
-          variant: "warning"
-        });
-      }
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, [showOfflineWarning, groups, fetchGroups, toast]);
-
-  // Fonction pour rafraîchir les groupes
-  const handleRefresh = () => {
-    fetchGroups(true);
-  };
-
-  // Fonction pour inviter des membres
-  const handleInviteMembers = () => {
-    setIsInviteModalOpen(true);
-  };
-
-  // Fonction pour gérer les changements de filtres avancés
-  const handleAdvancedFilterChange = useCallback((filters) => {
-    setAdvancedFilters(filters);
   }, []);
 
   // Filter and sort groups
@@ -386,75 +324,155 @@ const Groups = () => {
   // Déclarer filteredGroups avant son utilisation
   const filteredGroups = getFilteredGroups();
 
-  const handleCreateGroup = async (data: { name: string; contribution: string; frequency: string; members: string }) => {
-    console.log("Group created with data:", data);
+  // Fonction pour gérer la pagination
+  const paginatedGroups = useMemo(() => {
+    const startIndex = (currentPage - 1) * groupsPerPage;
+    return filteredGroups.slice(startIndex, startIndex + groupsPerPage);
+  }, [filteredGroups, currentPage, groupsPerPage]);
 
-    // After group creation, refresh the groups list
-    if (user) {
-      setIsLoading(true);
+  // Calculer le nombre total de pages
+  const totalPages = Math.ceil(filteredGroups.length / groupsPerPage);
 
-      try {
-        // Fetch all groups the user has access to (based on RLS policies)
-        const { data: groupsData, error: groupsError } = await supabase
-          .from('tontine_groups')
-          .select('*');
+  // Fonction pour changer de page
+  const changePage = (pageNumber: number) => {
+    setCurrentPage(Math.min(Math.max(1, pageNumber), totalPages));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-        if (groupsError) {
-          console.error("Error fetching groups after creation:", groupsError);
-          throw groupsError;
-        }
+  // Fonction pour générer et ouvrir le QR code d'un groupe
+  const handleShareViaQRCode = (group: Group) => {
+    setSelectedGroup(group);
+    setIsQRModalOpen(true);
+  };
 
-        console.log("Groups data after creation:", groupsData);
+  // Fonction pour activer/désactiver le mode hors ligne
+  const toggleOfflineMode = useCallback(() => {
+    if (showOfflineWarning) {
+      // Désactiver le mode hors ligne
+      setShowOfflineWarning(false);
+      setOfflineCache([]);
+    } else {
+      // Activer le mode hors ligne et mettre en cache les données actuelles
+      setShowOfflineWarning(true);
+      setOfflineCache(groups);
+      toast({
+        title: "Mode hors ligne activé",
+        description: "Les groupes sont maintenant disponibles même sans connexion",
+      });
+    }
+  }, [groups, showOfflineWarning, toast]);
 
-        if (groupsData && groupsData.length > 0) {
-          // Transform the group data
-          const newGroups = await Promise.all(groupsData.map(async (group) => {
-            const startDate = new Date(group.start_date);
-
-            // Get member count
-            const { count } = await supabase
-              .from('group_members')
-              .select('*', { count: 'exact', head: true })
-              .eq('group_id', group.id);
-
-            // Calculate next due date
-            let nextDue = new Date(startDate);
-            const today = new Date();
-
-            while (nextDue < today) {
-              if (group.frequency === 'weekly') {
-                nextDue.setDate(nextDue.getDate() + 7);
-              } else if (group.frequency === 'biweekly') {
-                nextDue.setDate(nextDue.getDate() + 14);
-              } else {
-                nextDue.setMonth(nextDue.getMonth() + 1);
-              }
-            }
-
-            return {
-              id: group.id,
-              name: group.name,
-              members: count || 1,
-              contribution: group.contribution_amount,
-              frequency: group.frequency,
-              nextDue: nextDue.toLocaleDateString(),
-              status: "active" as const,
-              progress: 0
-            };
-          }));
-
-          setGroups(newGroups);
-        }
-      } catch (error) {
-        console.error('Error refreshing groups:', error);
+  // Surveillance de la connectivité réseau
+  useEffect(() => {
+    const handleOnline = () => {
+      if (showOfflineWarning) {
         toast({
-          title: "Error",
-          description: "Error refreshing groups after creation",
-          variant: "destructive"
+          title: "Connexion internet rétablie",
+          description: "Synchronisation des données...",
         });
-      } finally {
-        setIsLoading(false);
+        refetch();
       }
+    };
+
+    const handleOffline = () => {
+      if (!showOfflineWarning && groups.length > 0) {
+        setShowOfflineWarning(true);
+        setOfflineCache(groups);
+        toast({
+          title: "Mode hors ligne activé automatiquement",
+          description: "Connexion internet perdue. Les données sont disponibles hors ligne.",
+        });
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [showOfflineWarning, groups, refetch, toast]);
+
+  // Fonction pour inviter des membres
+  const handleInviteMembers = () => {
+    setIsInviteModalOpen(true);
+  };
+
+  // Fonction pour gérer les changements de filtres avancés
+  const handleAdvancedFilterChange = useCallback((filters) => {
+    setAdvancedFilters(filters);
+  }, []);
+
+  // Fonction pour rafraîchir les groupes
+  const handleRefresh = () => {
+    refetch();
+    toast({
+      title: "Refreshing",
+      description: "Refreshing groups data...",
+    });
+  };
+
+  const handleCreateGroup = async (formData: { name: string; contribution: string; frequency: string; members: string }) => {
+    console.log("Group created with data:", formData);
+
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create a group",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Parse the contribution amount
+      const contributionAmount = parseFloat(formData.contribution);
+
+      // Create a start date (today)
+      const startDate = new Date().toISOString();
+
+      // Prepare the group data
+      const groupData = {
+        name: formData.name,
+        contribution_amount: contributionAmount,
+        frequency: formData.frequency as 'weekly' | 'biweekly' | 'monthly',
+        start_date: startDate,
+        payout_method: 'rotation' as 'rotation' | 'random' | 'bidding',
+        created_by: user.id
+      };
+
+      // Use React Query mutation to create the group
+      createGroupMutation(groupData, {
+        onSuccess: (data) => {
+          console.log("Group created successfully:", data);
+          toast({
+            title: "Success",
+            description: "Group created successfully",
+          });
+
+          // Close the modal
+          setIsModalOpen(false);
+
+          // Refresh the groups list
+          refetch();
+        },
+        onError: (error) => {
+          console.error("Error creating group:", error);
+          toast({
+            title: "Error",
+            description: "Error creating group",
+            variant: "destructive"
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error creating group:', error);
+      toast({
+        title: "Error",
+        description: "Error creating group",
+        variant: "destructive"
+      });
     }
   };
 
@@ -467,7 +485,7 @@ const Groups = () => {
     navigate(`/groups/${groupId}`);
   };
 
-  const openWhatsAppIntegration = (group: any) => {
+  const openWhatsAppIntegration = (group: Group) => {
     setSelectedGroup(group);
     setIsWhatsAppModalOpen(true);
   };
@@ -480,6 +498,9 @@ const Groups = () => {
       setSortOrder('asc');
     }
   };
+
+  // Use React Query for updating group status
+  const { mutate: updateGroupStatus } = useUpdateGroup();
 
   // Fonction pour changer le statut d'un groupe (pour le glisser-déposer)
   const handleGroupStatusChange = useCallback(async (groupId: string | number, newStatus: "active" | "pending" | "completed") => {
@@ -494,16 +515,15 @@ const Groups = () => {
       );
 
       // Dans une application réelle, vous mettriez à jour la base de données ici
-      // Par exemple:
-      // const { error } = await supabase
-      //   .from('group_members')
-      //   .update({ status: newStatus })
-      //   .eq('group_id', groupId)
-      //   .eq('user_id', user.id);
-
-      // if (error) throw error;
-
       console.log(`Groupe ${groupId} mis à jour avec le statut: ${newStatus}`);
+
+      // Simuler une mise à jour avec React Query
+      setTimeout(() => {
+        toast({
+          title: "Statut mis à jour",
+          description: `Le groupe a été déplacé vers "${t(newStatus)}"`,
+        });
+      }, 500);
 
     } catch (error) {
       console.error('Erreur lors de la mise à jour du statut:', error);
@@ -514,9 +534,9 @@ const Groups = () => {
       });
 
       // Annuler le changement en cas d'erreur
-      fetchGroups();
+      refetch();
     }
-  }, [toast, fetchGroups]);
+  }, [toast, t, refetch]);
 
   // Sample members for the sidebar
   const sampleMembers = [
@@ -647,7 +667,7 @@ const Groups = () => {
             <ReminderSystem groups={filteredGroups} />
 
             <button
-              onClick={refreshGroups}
+              onClick={handleRefresh}
               className={`p-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={isRefreshing}
               aria-label="Rafraîchir"
@@ -816,8 +836,8 @@ const Groups = () => {
               <Clock size={18} className="mr-2" />
               <span>Mode hors ligne actif - Les données affichées peuvent ne pas être à jour</span>
             </div>
-            <button 
-              onClick={toggleOfflineMode} 
+            <button
+              onClick={toggleOfflineMode}
               className="text-sm underline hover:text-amber-700 dark:hover:text-amber-300"
             >
               Se reconnecter
@@ -905,101 +925,72 @@ const Groups = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   {view === "calendar" ? (
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                      <h3 className="text-lg font-semibold mb-4">Calendrier des échéances</h3>
-                      <div className="h-[500px]">
-                        {/* Composant de calendrier (simulé) */}
-                        <div className="grid grid-cols-7 gap-1">
-                          {Array.from({ length: 31 }, (_, i) => (
-                            <div key={i} className={`border p-2 min-h-[80px] ${i % 7 === 0 || i % 7 === 6 ? 'bg-gray-50 dark:bg-gray-700/50' : ''}`}>
-                              <div className="font-medium">{i + 1}</div>
-                              {i === 4 && (
-                                <div className="mt-1 p-1 bg-green-100 dark:bg-green-900/30 text-xs rounded">
-                                  Groupe Famille: 200€
-                                </div>
-                              )}
-                              {i === 12 && (
-                                <div className="mt-1 p-1 bg-blue-100 dark:bg-blue-900/30 text-xs rounded">
-                                  Groupe Amis: 150€
-                                </div>
-                              )}
-                              {i === 19 && (
-                                <div className="mt-1 p-1 bg-purple-100 dark:bg-purple-900/30 text-xs rounded">
-                                  Collègues: 100€
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                    <CalendarView
+                      groups={filteredGroups}
+                      onGroupClick={openGroupDetails}
+                      formatContribution={formatContribution}
+                    />
                   ) : (
                     <>
                       {/* Vue grille/liste/kanban */}
                       <div className="flex flex-col lg:flex-row gap-6">
                         {view !== "kanban" ? (
-                          <motion.div
-                            className={`${view === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"} flex-1`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            {paginatedGroups.map((group, index) => (
+                          <div className="flex-1">
+                            {/* Use virtualized list for better performance */}
+                            {view === "grid" || view === "list" ? (
+                              <VirtualizedGroupList
+                                groups={filteredGroups}
+                                isLoading={isLoading}
+                                isFetchingNextPage={isFetchingNextPage}
+                                hasNextPage={hasNextPage}
+                                fetchNextPage={fetchNextPage}
+                                formatContribution={formatContribution}
+                                onGroupClick={openGroupDetails}
+                                onWhatsAppClick={openWhatsAppIntegration}
+                                onToggleFavorite={toggleFavorite}
+                                onShareViaQRCode={handleShareViaQRCode}
+                                favoriteGroups={favoriteGroups}
+                                view={view}
+                              />
+                            ) : (
                               <motion.div
-                                key={group.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: index * 0.1 }}
-                                whileHover={{ scale: view === "grid" ? 1.02 : 1 }}
+                                className={`${view === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"} flex-1`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
                               >
-                                <TontineGroup
-                                  name={group.name}
-                                  members={group.members}
-                                  contribution={formatContribution(group.contribution, group.frequency)}
-                                  nextDue={group.nextDue}
-                                  status={group.status}
-                                  progress={group.progress}
-                                  tags={group.tags}
-                                  onClick={() => openGroupDetails(group.id)}
-                                  isFavorite={favoriteGroups.includes(String(group.id))}
-                                  onToggleFavorite={(e) => {
-                                    e.stopPropagation();
-                                    toggleFavorite(group.id);
-                                  }}
-                                  actions={[
-                                    {
-                                      icon: <MessageSquare size={16} className="text-green-600" />,
-                                      label: "WhatsApp",
-                                      onClick: (e) => {
-                                        e.stopPropagation();
-                                        openWhatsAppIntegration(group);
-                                      }
-                                    },
-                                    {
-                                      icon: <QrCode size={16} className="text-blue-600" />,
-                                      label: "QR Code",
-                                      onClick: (e) => {
-                                        e.stopPropagation();
-                                        handleShareViaQRCode(group);
-                                      }
-                                    },
-                                    {
-                                      icon: favoriteGroups.includes(String(group.id)) 
-                                        ? <StarOff size={16} className="text-yellow-600" />
-                                        : <Star size={16} className="text-yellow-600" />,
-                                      label: favoriteGroups.includes(String(group.id)) ? "Retirer des favoris" : "Ajouter aux favoris",
-                                      onClick: (e) => {
-                                        e.stopPropagation();
-                                        toggleFavorite(group.id);
-                                      }
-                                    }
-                                  ]}
-                                />
+                                {paginatedGroups.map((group: Group, index: number) => (
+                                  <motion.div
+                                    key={group.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                  >
+                                    <TontineGroup
+                                      id={group.id}
+                                      name={group.name}
+                                      members={group.members}
+                                      contribution={formatContribution(group.contribution, group.frequency)}
+                                      nextDue={group.nextDue}
+                                      status={group.status}
+                                      progress={group.progress}
+                                      tags={group.tags}
+                                      onClick={() => openGroupDetails(group.id)}
+                                      isFavorite={favoriteGroups.includes(String(group.id))}
+                                      onToggleFavorite={() => toggleFavorite(group.id)}
+                                      onWhatsAppClick={() => openWhatsAppIntegration(group)}
+                                      onShareViaQRCode={() => handleShareViaQRCode(group)}
+                                      variant={view === "list" ? "minimal" : "modern"}
+                                      compact={view === "list"}
+                                      className={view === "list" ? "mb-2" : ""}
+                                    />
+                                  </motion.div>
+                                ))}
                               </motion.div>
-                            ))}
-                          </motion.div>
+                            )}
+                          </div>
                         ) : (
                           <KanbanView
                             groups={paginatedGroups}
@@ -1026,44 +1017,84 @@ const Groups = () => {
                         </div>
                       </div>
 
-                      {/* Pagination */}
+                      {/* Pagination améliorée */}
                       {filteredGroups.length > groupsPerPage && (
-                        <div className="flex justify-center mt-8">
-                          <nav className="inline-flex rounded-md shadow">
+                        <motion.div
+                          className="flex justify-center mt-8"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: 0.2 }}
+                        >
+                          <nav className="inline-flex rounded-lg shadow-sm overflow-hidden">
                             <button
                               onClick={() => changePage(currentPage - 1)}
                               disabled={currentPage === 1}
-                              className={`px-3 py-1 rounded-l-md border border-gray-300 text-sm font-medium 
-                                ${currentPage === 1 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-white hover:bg-gray-50 text-gray-700'}`}
+                              className={`px-4 py-2 border border-gray-200 dark:border-gray-700 text-sm font-medium transition-colors
+                                ${currentPage === 1
+                                  ? 'bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                  : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                              aria-label="Page précédente"
                             >
-                              Précédent
+                              <ChevronLeft size={16} />
                             </button>
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                              <button
-                                key={page}
-                                onClick={() => changePage(page)}
-                                className={`px-3 py-1 border-t border-b border-gray-300 text-sm font-medium 
-                                  ${currentPage === page 
-                                    ? 'bg-primary text-primary-foreground' 
-                                    : 'bg-white hover:bg-gray-50 text-gray-700'}`}
-                              >
-                                {page}
-                              </button>
-                            ))}
+
+                            {/* Afficher les numéros de page avec ellipsis pour les grandes paginations */}
+                            {Array.from({ length: totalPages }, (_, i) => i + 1)
+                              .filter(page => {
+                                // Toujours afficher la première et la dernière page
+                                if (page === 1 || page === totalPages) return true;
+                                // Afficher les pages autour de la page courante
+                                if (Math.abs(page - currentPage) <= 1) return true;
+                                // Sinon, ne pas afficher
+                                return false;
+                              })
+                              .map((page, index, array) => {
+                                // Ajouter des ellipsis si nécessaire
+                                const showEllipsisBefore = index > 0 && array[index - 1] !== page - 1;
+                                const showEllipsisAfter = index < array.length - 1 && array[index + 1] !== page + 1;
+
+                                return (
+                                  <React.Fragment key={page}>
+                                    {showEllipsisBefore && (
+                                      <span className="px-4 py-2 border-t border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                        ...
+                                      </span>
+                                    )}
+
+                                    <button
+                                      onClick={() => changePage(page)}
+                                      className={`px-4 py-2 border-t border-b border-gray-200 dark:border-gray-700 text-sm font-medium transition-colors
+                                        ${currentPage === page
+                                          ? 'bg-primary text-primary-foreground'
+                                          : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                                      aria-label={`Page ${page}`}
+                                      aria-current={currentPage === page ? 'page' : undefined}
+                                    >
+                                      {page}
+                                    </button>
+
+                                    {showEllipsisAfter && (
+                                      <span className="px-4 py-2 border-t border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                        ...
+                                      </span>
+                                    )}
+                                  </React.Fragment>
+                                );
+                              })}
+
                             <button
                               onClick={() => changePage(currentPage + 1)}
                               disabled={currentPage === totalPages}
-                              className={`px-3 py-1 rounded-r-md border border-gray-300 text-sm font-medium 
-                                ${currentPage === totalPages 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-white hover:bg-gray-50 text-gray-700'}`}
+                              className={`px-4 py-2 border border-gray-200 dark:border-gray-700 text-sm font-medium transition-colors
+                                ${currentPage === totalPages
+                                  ? 'bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                  : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                              aria-label="Page suivante"
                             >
-                              Suivant
+                              <ChevronRight size={16} />
                             </button>
                           </nav>
-                        </div>
+                        </motion.div>
                       )}
                     </>
                   )}
@@ -1082,7 +1113,7 @@ const Groups = () => {
             <TabsContent value="completed">
               {/* Contenu identique à "all" mais avec filtreStatus="completed" */}
             </TabsContent>
-            
+
             <TabsContent value="favorites">
               {favoriteGroups.length === 0 ? (
                 <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
@@ -1098,16 +1129,16 @@ const Groups = () => {
                   transition={{ duration: 0.3 }}
                 >
                   {filteredGroups
-                    .filter(group => favoriteGroups.includes(String(group.id)))
-                    .map((group, index) => (
+                    .filter((group: Group) => favoriteGroups.includes(String(group.id)))
+                    .map((group: Group, index: number) => (
                       <motion.div
                         key={group.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                       >
                         <TontineGroup
+                          id={group.id}
                           name={group.name}
                           members={group.members}
                           contribution={formatContribution(group.contribution, group.frequency)}
@@ -1117,36 +1148,11 @@ const Groups = () => {
                           tags={group.tags}
                           onClick={() => openGroupDetails(group.id)}
                           isFavorite={true}
-                          onToggleFavorite={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(group.id);
-                          }}
-                          actions={[
-                            {
-                              icon: <MessageSquare size={16} className="text-green-600" />,
-                              label: "WhatsApp",
-                              onClick: (e) => {
-                                e.stopPropagation();
-                                openWhatsAppIntegration(group);
-                              }
-                            },
-                            {
-                              icon: <QrCode size={16} className="text-blue-600" />,
-                              label: "QR Code",
-                              onClick: (e) => {
-                                e.stopPropagation();
-                                handleShareViaQRCode(group);
-                              }
-                            },
-                            {
-                              icon: <StarOff size={16} className="text-yellow-600" />,
-                              label: "Retirer des favoris",
-                              onClick: (e) => {
-                                e.stopPropagation();
-                                toggleFavorite(group.id);
-                              }
-                            }
-                          ]}
+                          onToggleFavorite={() => toggleFavorite(group.id)}
+                          onWhatsAppClick={() => openWhatsAppIntegration(group)}
+                          onShareViaQRCode={() => handleShareViaQRCode(group)}
+                          variant="modern"
+                          className="h-full"
                         />
                       </motion.div>
                     ))}

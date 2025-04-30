@@ -12,7 +12,7 @@ interface WhatsAppIntegrationProps {
   groupName?: string;
   groupDescription?: string;
   phoneNumber?: string;
-  groupId?: string;
+  groupId?: string | number;
   className?: string;
 }
 
@@ -25,7 +25,7 @@ export default function WhatsAppIntegration({
 }: WhatsAppIntegrationProps) {
   const { t } = useApp();
   const [activeTab, setActiveTab] = useState("share");
-  
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -50,7 +50,7 @@ export default function WhatsAppIntegration({
             <TabsTrigger value="qrcode">{t('qrCode')}</TabsTrigger>
             <TabsTrigger value="notifications">{t('notifications')}</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="share" className="space-y-4">
             <p className="text-sm text-gray-500">
               {t('shareGroupDescription')}
@@ -61,7 +61,7 @@ export default function WhatsAppIntegration({
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="chat" className="space-y-4">
             <p className="text-sm text-gray-500">
               {t('startChatDescription')}
@@ -83,7 +83,7 @@ export default function WhatsAppIntegration({
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="group" className="space-y-4">
             <p className="text-sm text-gray-500">
               {t('createGroupDescription')}
@@ -96,7 +96,7 @@ export default function WhatsAppIntegration({
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="qrcode" className="space-y-4">
             <p className="text-sm text-gray-500">
               {t('qrCodeDescription')}
@@ -109,7 +109,7 @@ export default function WhatsAppIntegration({
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="notifications" className="space-y-4">
             <p className="text-sm text-gray-500">
               {t('notificationsDescription')}

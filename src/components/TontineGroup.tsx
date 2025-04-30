@@ -1,9 +1,10 @@
 import React from 'react';
-import { Users, Calendar, Clock, Coins, Tag } from 'lucide-react';
+import { Users, Calendar, Clock, Coins, Tag, Star, StarOff, MessageSquare, QrCode, ArrowUpRight } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { motion } from 'framer-motion';
 import TagBadge from './TagBadge';
+import { cn } from '@/lib/utils';
 
 /**
  * Interface des propriétés du composant TontineGroup
@@ -33,6 +34,20 @@ interface TontineGroupProps {
   }>;
   /** Afficher en mode compact */
   compact?: boolean;
+  /** ID du groupe */
+  id?: string | number;
+  /** Indique si le groupe est en favori */
+  isFavorite?: boolean;
+  /** Fonction pour basculer l'état favori */
+  onToggleFavorite?: (e: React.MouseEvent) => void;
+  /** Fonction pour ouvrir WhatsApp */
+  onWhatsAppClick?: (e: React.MouseEvent) => void;
+  /** Fonction pour partager via QR code */
+  onShareViaQRCode?: (e: React.MouseEvent) => void;
+  /** Classe CSS personnalisée */
+  className?: string;
+  /** Style d'affichage */
+  variant?: 'default' | 'modern' | 'minimal';
 }
 
 /**
@@ -60,7 +75,14 @@ const TontineGroup = React.memo(function TontineGroup({
   tags = [],
   onClick,
   actions = [],
-  compact = false
+  compact = false,
+  id,
+  isFavorite = false,
+  onToggleFavorite,
+  onWhatsAppClick,
+  onShareViaQRCode,
+  className = '',
+  variant = 'default'
 }: TontineGroupProps) {
   // Déterminer la couleur du badge en fonction du statut
   const getStatusColor = () => {
@@ -96,20 +118,81 @@ const TontineGroup = React.memo(function TontineGroup({
     action.onClick(e);
   };
 
+  // Fonction pour générer les classes CSS en fonction du variant
+  const getCardClasses = () => {
+    switch (variant) {
+      case 'modern':
+        return 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 shadow-lg border-0';
+      case 'minimal':
+        return 'bg-transparent border border-gray-200 dark:border-gray-700 shadow-none hover:bg-gray-50 dark:hover:bg-gray-800';
+      default:
+        return '';
+    }
+  };
+
+  // Fonction pour gérer le clic sur le bouton favori
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onToggleFavorite) onToggleFavorite(e);
+  };
+
+  // Fonction pour gérer le clic sur le bouton WhatsApp
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onWhatsAppClick) onWhatsAppClick(e);
+  };
+
+  // Fonction pour gérer le clic sur le bouton QR Code
+  const handleQRCodeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onShareViaQRCode) onShareViaQRCode(e);
+  };
+
+  // Déterminer les animations en fonction du variant
+  const getAnimations = () => {
+    switch (variant) {
+      case 'modern':
+        return {
+          whileHover: { y: -6, scale: 1.02, transition: { duration: 0.2 } },
+          whileTap: { scale: 0.98 }
+        };
+      case 'minimal':
+        return {
+          whileHover: { backgroundColor: 'rgba(0, 0, 0, 0.02)', transition: { duration: 0.2 } },
+          whileTap: { scale: 0.98 }
+        };
+      default:
+        return {
+          whileHover: { y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)", transition: { duration: 0.2 } }
+        };
+    }
+  };
+
+  const animations = getAnimations();
+
   return (
     <motion.button
       onClick={onClick}
-      className={`tontine-card w-full text-left transition-all hover:shadow-md cursor-pointer ${
-        compact ? 'p-3' : 'p-4'
-      } h-full flex flex-col`}
+      className={cn(
+        `tontine-card w-full text-left transition-all hover:shadow-md cursor-pointer ${
+          compact ? 'p-3' : 'p-4'
+        } h-full flex flex-col`,
+        getCardClasses(),
+        className
+      )}
       aria-label={`Groupe ${name}`}
-      whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)", transition: { duration: 0.2 } }}
+      {...animations}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <div className="flex justify-between items-start mb-3">
-        <h3 className="font-semibold text-lg truncate dark:text-white">{name}</h3>
+        <div className="flex items-center space-x-2">
+          <h3 className="font-semibold text-lg truncate dark:text-white">{name}</h3>
+          {isFavorite && (
+            <Star size={16} className="text-yellow-500 fill-yellow-500" />
+          )}
+        </div>
         <Badge className={getStatusColor()}>{status}</Badge>
       </div>
 
@@ -162,8 +245,66 @@ const TontineGroup = React.memo(function TontineGroup({
 
         <div className="flex-grow"></div>
 
+        {/* Actions rapides */}
+        <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex space-x-1">
+            {onToggleFavorite && (
+              <motion.button
+                onClick={handleFavoriteClick}
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isFavorite ? (
+                  <StarOff size={18} className="text-yellow-500" />
+                ) : (
+                  <Star size={18} className="text-gray-400 hover:text-yellow-500" />
+                )}
+              </motion.button>
+            )}
+
+            {onWhatsAppClick && (
+              <motion.button
+                onClick={handleWhatsAppClick}
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="WhatsApp"
+                title="Ouvrir dans WhatsApp"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <MessageSquare size={18} className="text-green-600" />
+              </motion.button>
+            )}
+
+            {onShareViaQRCode && (
+              <motion.button
+                onClick={handleQRCodeClick}
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="QR Code"
+                title="Partager via QR Code"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <QrCode size={18} className="text-blue-600" />
+              </motion.button>
+            )}
+          </div>
+
+          <motion.button
+            className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Voir les détails"
+            title="Voir les détails"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ArrowUpRight size={18} className="text-primary" />
+          </motion.button>
+        </div>
+
         {actions.length > 0 && (
-          <div className="flex justify-end space-x-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex justify-end space-x-2 mt-2">
             {actions.map((action, index) => (
               <motion.button
                 key={index}

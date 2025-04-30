@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
-import { 
-  DndContext, 
-  DragEndEvent, 
-  DragOverEvent, 
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
+import React from 'react';
 import { motion } from 'framer-motion';
-import KanbanColumn from './KanbanColumn';
 import { Group } from '@/types/group';
-import { useToast } from '@/hooks/use-toast';
 import { useApp } from '@/contexts/AppContext';
+import TontineGroup from './TontineGroup';
 
 interface KanbanViewProps {
   groups: Group[];
@@ -21,6 +10,9 @@ interface KanbanViewProps {
   formatContribution: (amount: number, frequency: string) => string;
   onCardClick: (groupId: string | number) => void;
   onWhatsAppClick: (group: Group) => void;
+  favoriteGroups: string[];
+  onToggleFavorite: (groupId: string | number) => void;
+  onShareViaQRCode: (group: Group) => void;
 }
 
 export default function KanbanView({
@@ -28,132 +20,96 @@ export default function KanbanView({
   onGroupStatusChange,
   formatContribution,
   onCardClick,
-  onWhatsAppClick
+  onWhatsAppClick,
+  favoriteGroups,
+  onToggleFavorite,
+  onShareViaQRCode
 }: KanbanViewProps) {
   const { t } = useApp();
-  const { toast } = useToast();
-  const [activeId, setActiveId] = useState<string | number | null>(null);
-  
-  // Configurer les capteurs pour le glisser-déposer
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // Activer le glisser-déposer après un déplacement de 8px
-      },
-    })
-  );
-  
+
   // Filtrer les groupes par statut
   const activeGroups = groups.filter(group => group.status === 'active');
   const pendingGroups = groups.filter(group => group.status === 'pending');
   const completedGroups = groups.filter(group => group.status === 'completed');
-  
-  // Gérer le début du glisser-déposer
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    setActiveId(active.id);
-  };
-  
-  // Gérer la fin du glisser-déposer
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    
-    if (!over) {
-      setActiveId(null);
-      return;
-    }
-    
-    // Si l'élément est déposé sur une colonne
-    if (over.data.current?.status && active.id !== over.id) {
-      const newStatus = over.data.current.status as "active" | "pending" | "completed";
-      const groupId = active.id;
-      
-      // Appeler la fonction de changement de statut
-      onGroupStatusChange(groupId, newStatus);
-      
-      // Afficher une notification
-      toast({
-        title: t('statusUpdated'),
-        description: `${t('groupStatus')} ${t(newStatus)}`,
-      });
-    }
-    
-    setActiveId(null);
-  };
-  
-  // Gérer le survol pendant le glisser-déposer
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    
-    if (!over) return;
-    
-    // Si l'élément est déplacé dans la même colonne, réorganiser
-    if (active.id !== over.id && !over.data.current?.status) {
-      const activeIndex = groups.findIndex(g => g.id === active.id);
-      const overIndex = groups.findIndex(g => g.id === over.id);
-      
-      if (activeIndex !== -1 && overIndex !== -1) {
-        // Réorganiser les groupes (cette logique serait normalement gérée par le parent)
-        // Dans une implémentation réelle, vous appelleriez une fonction de mise à jour
-      }
-    }
-  };
-  
+
+  // Fonction pour rendre une colonne
+  const renderColumn = (title: string, items: Group[], bgColor: string, borderColor: string) => (
+    <div className="flex-1 min-w-[300px]">
+      <div className={`${bgColor} p-3 rounded-t-lg border-b-2 ${borderColor}`}>
+        <h3 className="font-medium flex items-center">
+          <span className={`w-3 h-3 rounded-full ${borderColor} mr-2`}></span>
+          {title} ({items.length})
+        </h3>
+      </div>
+      <div className="bg-white dark:bg-gray-800 rounded-b-lg shadow-sm p-3 space-y-3 min-h-[300px]">
+        {items.length === 0 ? (
+          <div className="flex items-center justify-center h-24 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
+            <p className="text-sm text-gray-400 dark:text-gray-500">{t('noItems')}</p>
+          </div>
+        ) : (
+          items.map(group => (
+            <motion.div
+              key={group.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              whileHover={{ y: -4, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+            >
+              <TontineGroup
+                id={group.id}
+                name={group.name}
+                members={group.members}
+                contribution={formatContribution(group.contribution, group.frequency)}
+                nextDue={group.nextDue}
+                status={group.status}
+                progress={group.progress}
+                tags={group.tags}
+                onClick={() => onCardClick(group.id)}
+                isFavorite={favoriteGroups.includes(String(group.id))}
+                onToggleFavorite={(e) => onToggleFavorite(group.id)}
+                onWhatsAppClick={(e) => onWhatsAppClick(group)}
+                onShareViaQRCode={(e) => onShareViaQRCode(group)}
+                variant="minimal"
+                compact={true}
+              />
+            </motion.div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
+    <motion.div
+      className="flex gap-4 min-w-full pb-4 overflow-x-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
     >
-      <motion.div 
-        className="flex gap-4 min-w-full pb-4 overflow-x-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* Colonne Active */}
-        <KanbanColumn
-          id="active"
-          title={t('active')}
-          items={activeGroups}
-          color="bg-green-500"
-          borderColor="border-green-500"
-          bgColor="bg-green-50 dark:bg-green-900/20"
-          textColor="text-green-700 dark:text-green-300"
-          formatContribution={formatContribution}
-          onCardClick={onCardClick}
-          onWhatsAppClick={onWhatsAppClick}
-        />
-        
-        {/* Colonne En attente */}
-        <KanbanColumn
-          id="pending"
-          title={t('pending')}
-          items={pendingGroups}
-          color="bg-yellow-500"
-          borderColor="border-yellow-500"
-          bgColor="bg-yellow-50 dark:bg-yellow-900/20"
-          textColor="text-yellow-700 dark:text-yellow-300"
-          formatContribution={formatContribution}
-          onCardClick={onCardClick}
-          onWhatsAppClick={onWhatsAppClick}
-        />
-        
-        {/* Colonne Terminé */}
-        <KanbanColumn
-          id="completed"
-          title={t('completed')}
-          items={completedGroups}
-          color="bg-blue-500"
-          borderColor="border-blue-500"
-          bgColor="bg-blue-50 dark:bg-blue-900/20"
-          textColor="text-blue-700 dark:text-blue-300"
-          formatContribution={formatContribution}
-          onCardClick={onCardClick}
-          onWhatsAppClick={onWhatsAppClick}
-        />
-      </motion.div>
-    </DndContext>
+      {/* Colonne Active */}
+      {renderColumn(
+        t('active'),
+        activeGroups,
+        'bg-green-50 dark:bg-green-900/20',
+        'border-green-500'
+      )}
+
+      {/* Colonne En attente */}
+      {renderColumn(
+        t('pending'),
+        pendingGroups,
+        'bg-yellow-50 dark:bg-yellow-900/20',
+        'border-yellow-500'
+      )}
+
+      {/* Colonne Terminé */}
+      {renderColumn(
+        t('completed'),
+        completedGroups,
+        'bg-blue-50 dark:bg-blue-900/20',
+        'border-blue-500'
+      )}
+    </motion.div>
   );
 }

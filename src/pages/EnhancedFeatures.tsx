@@ -12,14 +12,17 @@ import UserAchievements from "@/components/UserAchievements";
 import EnhancedPaymentSystem from "@/components/EnhancedPaymentSystem";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
 import EnhancedChatSystem from "@/components/EnhancedChatSystem";
-import { 
-  Bell, 
-  Trophy, 
-  CreditCard, 
-  BarChart3, 
+import FeedbackDialog from "@/components/FeedbackDialog";
+import FeedbackStats from "@/components/FeedbackStats";
+import {
+  Bell,
+  Trophy,
+  CreditCard,
+  BarChart3,
   MessageSquare,
   Smartphone,
-  ArrowRight
+  ArrowRight,
+  MessageCircle
 } from "lucide-react";
 
 export default function EnhancedFeatures() {
@@ -27,7 +30,7 @@ export default function EnhancedFeatures() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useApp();
-  
+
   // Données de démonstration pour les graphiques
   const analyticsData = [
     { name: 'Jan', value: 400 },
@@ -38,27 +41,27 @@ export default function EnhancedFeatures() {
     { name: 'Juin', value: 900 },
     { name: 'Juil', value: 1100 },
   ];
-  
+
   const pieData = [
     { name: 'Épargne', value: 400 },
     { name: 'Investissement', value: 300 },
     { name: 'Dépenses', value: 300 },
     { name: 'Revenus', value: 200 },
   ];
-  
+
   const handlePaymentComplete = (reference: string) => {
     toast({
       title: "Paiement réussi",
       description: `Référence de paiement: ${reference}`,
     });
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Helmet>
         <title>Fonctionnalités améliorées | Naat</title>
       </Helmet>
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -68,7 +71,7 @@ export default function EnhancedFeatures() {
             Découvrez les nouvelles fonctionnalités avancées de Naat
           </p>
         </div>
-        
+
         <Tabs defaultValue="mobile" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-6 mb-8">
             <TabsTrigger value="mobile" className="flex items-center">
@@ -96,7 +99,7 @@ export default function EnhancedFeatures() {
               <span className="hidden sm:inline">Chat</span>
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="mobile">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Card>
@@ -136,7 +139,7 @@ export default function EnhancedFeatures() {
                   </MobileOptimizedLayout>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle>Comment ça marche</CardTitle>
@@ -157,7 +160,7 @@ export default function EnhancedFeatures() {
 </MobileOptimizedLayout>`}
                     </pre>
                   </div>
-                  
+
                   <div className="mt-4">
                     <h4 className="text-sm font-medium mb-2">Avantages :</h4>
                     <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 list-disc pl-5">
@@ -171,7 +174,7 @@ export default function EnhancedFeatures() {
               </Card>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="notifications">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
@@ -193,10 +196,10 @@ export default function EnhancedFeatures() {
                         <li>Marquer comme lu individuellement ou en masse</li>
                         <li>Accéder rapidement aux actions associées</li>
                       </ul>
-                      
+
                       <div className="flex flex-wrap gap-2 mt-4">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             toast({
@@ -207,9 +210,9 @@ export default function EnhancedFeatures() {
                         >
                           Tester une notification
                         </Button>
-                        
-                        <Button 
-                          variant="outline" 
+
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             toast({
@@ -221,9 +224,9 @@ export default function EnhancedFeatures() {
                         >
                           Notification de succès
                         </Button>
-                        
-                        <Button 
-                          variant="outline" 
+
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             toast({
@@ -239,7 +242,7 @@ export default function EnhancedFeatures() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Implémentation</CardTitle>
@@ -253,12 +256,12 @@ export default function EnhancedFeatures() {
 {`// Abonnement aux notifications
 useEffect(() => {
   const subscription = subscribeToUserNotifications(
-    userId, 
+    userId,
     (notification) => {
       // Traiter la nouvelle notification
     }
   );
-  
+
   return () => subscription.unsubscribe();
 }, [userId]);
 
@@ -279,15 +282,15 @@ await createNotification({
                   </CardContent>
                 </Card>
               </div>
-              
+
               <EnhancedNotificationCenter />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="achievements">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <UserAchievements />
-              
+
               <div>
                 <Card className="mb-6">
                   <CardHeader>
@@ -307,9 +310,9 @@ await createNotification({
                         <li>Progresser à travers différents niveaux</li>
                         <li>Motiver les utilisateurs à utiliser l'application régulièrement</li>
                       </ul>
-                      
+
                       <div className="mt-4">
-                        <Button 
+                        <Button
                           variant="outline"
                           onClick={() => {
                             toast({
@@ -324,7 +327,7 @@ await createNotification({
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Implémentation</CardTitle>
@@ -337,22 +340,22 @@ await createNotification({
                       <pre className="text-xs overflow-auto">
 {`// Attribuer des points
 const { data } = await awardPoints(
-  userId, 
-  50, 
+  userId,
+  50,
   "Création d'un nouveau groupe"
 );
 
 // Vérifier les réalisations
-const { data: newAchievements } = 
+const { data: newAchievements } =
   await checkAndAwardAchievements(userId);
 
 // Obtenir le niveau de l'utilisateur
 const { data: userLevel } = await getUserLevel(userId);
 
 // Afficher la progression
-<Progress 
-  value={userLevel.progress_percentage} 
-  className="h-2" 
+<Progress
+  value={userLevel.progress_percentage}
+  className="h-2"
 />`}
                       </pre>
                     </div>
@@ -361,7 +364,7 @@ const { data: userLevel } = await getUserLevel(userId);
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="payment">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
@@ -384,7 +387,7 @@ const { data: userLevel } = await getUserLevel(userId);
                         <li>Gérer les abonnements récurrents</li>
                         <li>Sécuriser les transactions</li>
                       </ul>
-                      
+
                       <div className="mt-4">
                         <p className="text-sm text-gray-500 mb-2">
                           Pour une intégration complète, vous devrez configurer :
@@ -398,7 +401,7 @@ const { data: userLevel } = await getUserLevel(userId);
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Implémentation</CardTitle>
@@ -416,7 +419,7 @@ const { data: userLevel } = await getUserLevel(userId);
   onPaymentComplete={(reference) => {
     // Traiter le paiement réussi
     console.log("Paiement réussi:", reference);
-    
+
     // Mettre à jour l'abonnement de l'utilisateur
     updateUserSubscription(userId, {
       plan: "premium",
@@ -431,19 +434,19 @@ const { data: userLevel } = await getUserLevel(userId);
                   </CardContent>
                 </Card>
               </div>
-              
-              <EnhancedPaymentSystem 
-                amount={99.99} 
-                currency="EUR" 
+
+              <EnhancedPaymentSystem
+                amount={99.99}
+                currency="EUR"
                 description="Abonnement Premium - Accès à toutes les fonctionnalités"
                 onPaymentComplete={handlePaymentComplete}
               />
             </div>
           </TabsContent>
-          
+
           <TabsContent value="analytics">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <AdvancedAnalytics 
+              <AdvancedAnalytics
                 data={analyticsData}
                 title="Évolution des contributions"
                 description="Suivi mensuel des contributions des membres"
@@ -462,7 +465,7 @@ const { data: userLevel } = await getUserLevel(userId);
                   });
                 }}
               />
-              
+
               <div>
                 <Card className="mb-6">
                   <CardHeader>
@@ -482,9 +485,9 @@ const { data: userLevel } = await getUserLevel(userId);
                         <li>Exporter les données pour analyse externe</li>
                         <li>Suivre les tendances et les performances</li>
                       </ul>
-                      
+
                       <div className="mt-4">
-                        <Button 
+                        <Button
                           variant="outline"
                           onClick={() => {
                             setActiveTab("analytics");
@@ -496,8 +499,8 @@ const { data: userLevel } = await getUserLevel(userId);
                     </div>
                   </CardContent>
                 </Card>
-                
-                <AdvancedAnalytics 
+
+                <AdvancedAnalytics
                   data={pieData}
                   title="Répartition des fonds"
                   description="Distribution des fonds par catégorie"
@@ -507,16 +510,16 @@ const { data: userLevel } = await getUserLevel(userId);
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="chat">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="h-[600px]">
-                <EnhancedChatSystem 
+                <EnhancedChatSystem
                   receiverId={user?.id || "user-123"}
                   title="Démonstration du chat"
                 />
               </div>
-              
+
               <div>
                 <Card className="mb-6">
                   <CardHeader>
@@ -537,7 +540,7 @@ const { data: userLevel } = await getUserLevel(userId);
                         <li>Organiser les conversations par date</li>
                         <li>Communiquer en groupe ou en privé</li>
                       </ul>
-                      
+
                       <div className="mt-4">
                         <p className="text-sm text-gray-500 mb-2">
                           Fonctionnalités supplémentaires :
@@ -551,7 +554,7 @@ const { data: userLevel } = await getUserLevel(userId);
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Implémentation</CardTitle>
@@ -563,13 +566,13 @@ const { data: userLevel } = await getUserLevel(userId);
                     <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                       <pre className="text-xs overflow-auto">
 {`// Chat privé
-<EnhancedChatSystem 
+<EnhancedChatSystem
   receiverId="user-123"
   title="Chat avec John Doe"
 />
 
 // Chat de groupe
-<EnhancedChatSystem 
+<EnhancedChatSystem
   groupId="group-456"
   isGroupChat={true}
   title="Groupe Tontine Familiale"
@@ -592,7 +595,60 @@ const { data: userLevel } = await getUserLevel(userId);
             </div>
           </TabsContent>
         </Tabs>
-        
+
+        <div className="mt-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+            Votre avis sur ces nouvelles fonctionnalités
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+            <FeedbackStats
+              featureId="enhanced-features"
+              featureName="Fonctionnalités améliorées"
+            />
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Partagez votre expérience</CardTitle>
+                <CardDescription>
+                  Votre avis nous aide à améliorer continuellement l'application
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Nous sommes constamment à la recherche de moyens d'améliorer votre expérience avec Naat.
+                  Vos commentaires sont essentiels pour nous aider à identifier ce qui fonctionne bien et
+                  ce qui pourrait être amélioré.
+                </p>
+
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-medium">Évaluez les nouvelles fonctionnalités</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Trophy className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-medium">Suggérez des améliorations</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Bell className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-medium">Signalez des problèmes</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-center mt-4">
+                  <FeedbackDialog
+                    featureId="enhanced-features"
+                    featureName="Fonctionnalités améliorées"
+                    buttonVariant="default"
+                    buttonSize="lg"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <div className="mt-12 text-center">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Prêt à améliorer votre expérience Naat ?

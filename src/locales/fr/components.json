@@ -1,0 +1,205 @@
+{
+  "accessibleCombobox": {
+    "placeholder": "Sélectionner une option",
+    "searchPlaceholder": "Rechercher...",
+    "emptyText": "Aucun résultat trouvé.",
+    "selected": "Sélectionné",
+    "clearSelection": "Effacer la sélection",
+    "multipleSelected": "{{count}} sélectionnés",
+    "multipleSelected_one": "1 sélectionné",
+    "multipleSelected_other": "{{count}} sélectionnés",
+    "removeItem": "Supprimer {{item}}"
+  },
+  "accessibleDataTable": {
+    "loading": "Chargement des données...",
+    "noResults": "Aucune donnée disponible.",
+    "error": "Erreur lors du chargement des données",
+    "rowsPerPage": "Lignes par page :",
+    "of": "sur",
+    "showing": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
+    "page": "Page",
+    "nextPage": "Page suivante",
+    "previousPage": "Page précédente",
+    "firstPage": "Première page",
+    "lastPage": "Dernière page",
+    "search": "Rechercher...",
+    "clearSearch": "Effacer la recherche",
+    "selectAll": "Sélectionner toutes les lignes",
+    "deselectAll": "Désélectionner toutes les lignes",
+    "selectRow": "Sélectionner la ligne",
+    "deselectRow": "Désélectionner la ligne",
+    "sortAscending": "Tri croissant",
+    "sortDescending": "Tri décroissant",
+    "clearSort": "Effacer le tri"
+  },
+  "accessibleAccordion": {
+    "expand": "Développer",
+    "collapse": "Réduire",
+    "expandAll": "Tout développer",
+    "collapseAll": "Tout réduire",
+    "section": "Section"
+  },
+  "accessibleFileUpload": {
+    "dragAndDrop": "Glisser-déposer les fichiers ici",
+    "browse": "Parcourir les fichiers",
+    "uploading": "Téléchargement...",
+    "uploaded": "Téléchargé",
+    "failed": "Échec",
+    "remove": "Supprimer",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "clearAll": "Tout effacer",
+    "fileSelected": "Fichier sélectionné",
+    "filesSelected": "{{count}} fichiers sélectionnés",
+    "filesSelected_one": "1 fichier sélectionné",
+    "filesSelected_other": "{{count}} fichiers sélectionnés",
+    "maxSize": "Taille maximale de fichier : {{size}}",
+    "maxFiles": "Nombre maximum de fichiers : {{count}}",
+    "acceptedFormats": "Formats acceptés : {{formats}}",
+    "dropToUpload": "Déposer pour télécharger",
+    "clickToUpload": "Cliquer pour télécharger"
+  },
+  "accessibleTooltip": {
+    "show": "Afficher l'info-bulle",
+    "hide": "Masquer l'info-bulle"
+  },
+  "accessibleDialog": {
+    "close": "Fermer la boîte de dialogue",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "accessibilitySettings": {
+    "title": "Paramètres d'accessibilité",
+    "description": "Personnalisez votre expérience pour rendre l'application plus accessible.",
+    "save": "Enregistrer les paramètres",
+    "reset": "Réinitialiser aux valeurs par défaut",
+    "saved": "Paramètres enregistrés avec succès",
+    "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres d'accessibilité à leurs valeurs par défaut ?",
+    "tabs": {
+      "display": "Affichage",
+      "reading": "Lecture",
+      "interaction": "Interaction"
+    },
+    "display": {
+      "highContrast": {
+        "label": "Mode contraste élevé",
+        "description": "Augmente le contraste entre les éléments pour une meilleure visibilité"
+      },
+      "fontSize": {
+        "label": "Taille de police",
+        "description": "Ajuste la taille du texte dans toute l'application",
+        "options": {
+          "normal": "Normale",
+          "large": "Grande",
+          "x-large": "Très grande"
+        }
+      },
+      "reducedMotion": {
+        "label": "Animations réduites",
+        "description": "Minimise les animations et les transitions"
+      },
+      "enhancedFocus": {
+        "label": "Indicateurs de focus améliorés",
+        "description": "Rend les contours de focus plus visibles"
+      }
+    },
+    "reading": {
+      "enhancedTextSpacing": {
+        "label": "Espacement de texte amélioré",
+        "description": "Augmente l'espacement entre les lettres, les mots et les lignes"
+      },
+      "dyslexiaFriendly": {
+        "label": "Police adaptée à la dyslexie",
+        "description": "Utilise une police conçue pour être plus facile à lire pour les personnes dyslexiques"
+      },
+      "screenReaderHints": {
+        "label": "Indices pour lecteurs d'écran",
+        "description": "Affiche des informations supplémentaires pour les utilisateurs de lecteurs d'écran (pour les développeurs et testeurs)"
+      }
+    },
+    "interaction": {
+      "keyboardMode": {
+        "label": "Mode clavier",
+        "description": "Optimise l'interface pour la navigation au clavier",
+        "info": "Le mode clavier est automatiquement activé lorsque vous utilisez la touche Tab pour naviguer. Il améliore la visibilité des éléments focalisés pour faciliter la navigation au clavier."
+      },
+      "keyboardShortcuts": {
+        "label": "Raccourcis clavier",
+        "description": "Utilisez des raccourcis clavier pour naviguer rapidement",
+        "button": "Voir les raccourcis clavier"
+      }
+    }
+  },
+  "keyboardShortcuts": {
+    "title": "Raccourcis clavier",
+    "description": "Utilisez ces raccourcis pour naviguer rapidement dans l'application.",
+    "enable": "Activer les raccourcis clavier",
+    "categories": {
+      "global": "Global",
+      "navigation": "Navigation",
+      "accessibility": "Accessibilité",
+      "groups": "Groupes",
+      "actions": "Actions"
+    },
+    "shortcuts": {
+      "openShortcutsDialog": "Ouvrir la boîte de dialogue des raccourcis clavier",
+      "closeDialog": "Fermer la boîte de dialogue",
+      "goToHome": "Aller à la page d'accueil",
+      "goToDashboard": "Aller au tableau de bord",
+      "goToGroups": "Aller à la page des groupes",
+      "goToTransactions": "Aller à la page des transactions",
+      "goToStatistics": "Aller à la page des statistiques",
+      "goToSettings": "Aller à la page des paramètres",
+      "goToProfile": "Aller à la page de profil",
+      "toggleTheme": "Basculer entre les thèmes clair/sombre",
+      "toggleHighContrast": "Activer/désactiver le mode contraste élevé",
+      "increaseFontSize": "Augmenter la taille de la police",
+      "decreaseFontSize": "Diminuer la taille de la police",
+      "toggleReducedMotion": "Activer/désactiver les animations réduites",
+      "focusSearch": "Mettre le focus sur la recherche",
+      "createGroup": "Créer un nouveau groupe",
+      "saveChanges": "Enregistrer les modifications",
+      "cancelChanges": "Annuler les modifications",
+      "deleteItem": "Supprimer l'élément",
+      "editItem": "Modifier l'élément",
+      "refreshData": "Actualiser les données",
+      "toggleMenu": "Afficher/masquer le menu",
+      "toggleSidebar": "Afficher/masquer la barre latérale",
+      "toggleChat": "Afficher/masquer le chat",
+      "skipToContent": "Aller au contenu principal",
+      "skipToNavigation": "Aller à la navigation",
+      "skipToFooter": "Aller au pied de page"
+    }
+  },
+  "languageSelector": {
+    "label": "Langue",
+    "changeLanguage": "Changer de langue",
+    "currentLanguage": "Langue actuelle : {{language}}"
+  },
+  "skipLink": {
+    "mainContent": "Aller au contenu principal",
+    "navigation": "Aller à la navigation",
+    "footer": "Aller au pied de page"
+  },
+  "themeToggle": {
+    "light": "Thème clair",
+    "dark": "Thème sombre",
+    "system": "Thème système"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "first": "Premier",
+    "last": "Dernier",
+    "page": "Page {{page}}",
+    "of": "sur {{total}}",
+    "rowsPerPage": "Lignes par page"
+  },
+  "toast": {
+    "close": "Fermer la notification",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information"
+  }
+}

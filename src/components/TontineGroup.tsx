@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Users, Calendar, Clock, Coins, Tag, Star, StarOff, MessageSquare, QrCode, ArrowUpRight } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { motion } from 'framer-motion';
 import TagBadge from './TagBadge';
 import { cn } from '@/lib/utils';
+import { useAccessibility } from '@/contexts/AccessibilityContext';
 
 /**
  * Interface des propriétés du composant TontineGroup
@@ -84,6 +85,14 @@ const TontineGroup = React.memo(function TontineGroup({
   className = '',
   variant = 'default'
 }: TontineGroupProps) {
+  // Access accessibility context
+  const { announce, reducedMotion } = useAccessibility();
+
+  // Create a unique ID for this component
+  const uniqueId = React.useId();
+
+  // Reference to the main button element
+  const buttonRef = useRef<HTMLButtonElement>(null);
   // Déterminer la couleur du badge en fonction du statut
   const getStatusColor = () => {
     switch (status) {
@@ -148,8 +157,17 @@ const TontineGroup = React.memo(function TontineGroup({
     if (onShareViaQRCode) onShareViaQRCode(e);
   };
 
-  // Déterminer les animations en fonction du variant
+  // Déterminer les animations en fonction du variant et des préférences d'accessibilité
   const getAnimations = () => {
+    // If reduced motion is enabled, use minimal animations
+    if (reducedMotion) {
+      return {
+        whileHover: { backgroundColor: 'rgba(0, 0, 0, 0.02)', transition: { duration: 0.05 } },
+        whileTap: { scale: 0.99 }
+      };
+    }
+
+    // Otherwise, use the variant-specific animations
     switch (variant) {
       case 'modern':
         return {
@@ -170,9 +188,29 @@ const TontineGroup = React.memo(function TontineGroup({
 
   const animations = getAnimations();
 
+  // Announce group details to screen readers when focused
+  const handleFocus = () => {
+    const statusText = status === 'active' ? 'actif' : status === 'pending' ? 'en attente' : 'terminé';
+    announce(
+      `Groupe ${name}, ${members} membres, contribution: ${contribution}, prochaine échéance: ${nextDue}, statut: ${statusText}${progress > 0 ? `, progression: ${progress}%` : ''}`
+    );
+  };
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter or Space to activate the card
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <motion.button
+      ref={buttonRef}
       onClick={onClick}
+      onFocus={handleFocus}
+      onKeyDown={handleKeyDown}
       className={cn(
         `tontine-card w-full text-left transition-all hover:shadow-md cursor-pointer ${
           compact ? 'p-3' : 'p-4'
@@ -181,11 +219,19 @@ const TontineGroup = React.memo(function TontineGroup({
         className
       )}
       aria-label={`Groupe ${name}`}
+      aria-describedby={`${uniqueId}-description`}
+      aria-roledescription="Carte de groupe tontine"
+      role="article"
+      tabIndex={0}
       {...animations}
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: reducedMotion ? 0.1 : 0.3 }}
     >
+      {/* Hidden description for screen readers */}
+      <span id={`${uniqueId}-description`} className="sr-only">
+        {`Groupe ${name} avec ${members} membres, contribution: ${contribution}, prochaine échéance: ${nextDue}, statut: ${status}${progress > 0 ? `, progression: ${progress}%` : ''}`}
+      </span>
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center space-x-2">
           <h3 className="font-semibold text-lg truncate dark:text-white">{name}</h3>
@@ -223,10 +269,17 @@ const TontineGroup = React.memo(function TontineGroup({
         {progress > 0 && (
           <div className="space-y-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
             <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-              <span>Progression du cycle</span>
-              <span>{progress}%</span>
+              <span id={`${uniqueId}-progress-label`}>Progression du cycle</span>
+              <span aria-hidden="true">{progress}%</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress
+              value={progress}
+              className="h-2"
+              aria-labelledby={`${uniqueId}-progress-label`}
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            />
           </div>
         )}
 
@@ -246,21 +299,33 @@ const TontineGroup = React.memo(function TontineGroup({
         <div className="flex-grow"></div>
 
         {/* Actions rapides */}
-        <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+        <div
+          className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-700"
+          role="toolbar"
+          aria-label="Actions rapides"
+        >
           <div className="flex space-x-1">
             {onToggleFavorite && (
               <motion.button
                 onClick={handleFavoriteClick}
-                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                aria-pressed={isFavorite}
                 title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: reducedMotion ? 1 : 1.1 }}
+                whileTap={{ scale: reducedMotion ? 0.98 : 0.95 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleFavoriteClick(e as unknown as React.MouseEvent);
+                  }
+                }}
               >
                 {isFavorite ? (
-                  <StarOff size={18} className="text-yellow-500" />
+                  <StarOff size={18} className="text-yellow-500" aria-hidden="true" />
                 ) : (
-                  <Star size={18} className="text-gray-400 hover:text-yellow-500" />
+                  <Star size={18} className="text-gray-400 hover:text-yellow-500" aria-hidden="true" />
                 )}
               </motion.button>
             )}
@@ -268,54 +333,93 @@ const TontineGroup = React.memo(function TontineGroup({
             {onWhatsAppClick && (
               <motion.button
                 onClick={handleWhatsAppClick}
-                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                aria-label="WhatsApp"
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                aria-label="Ouvrir dans WhatsApp"
                 title="Ouvrir dans WhatsApp"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: reducedMotion ? 1 : 1.1 }}
+                whileTap={{ scale: reducedMotion ? 0.98 : 0.95 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleWhatsAppClick(e as unknown as React.MouseEvent);
+                  }
+                }}
               >
-                <MessageSquare size={18} className="text-green-600" />
+                <MessageSquare size={18} className="text-green-600" aria-hidden="true" />
               </motion.button>
             )}
 
             {onShareViaQRCode && (
               <motion.button
                 onClick={handleQRCodeClick}
-                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                aria-label="QR Code"
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                aria-label="Partager via QR Code"
                 title="Partager via QR Code"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: reducedMotion ? 1 : 1.1 }}
+                whileTap={{ scale: reducedMotion ? 0.98 : 0.95 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleQRCodeClick(e as unknown as React.MouseEvent);
+                  }
+                }}
               >
-                <QrCode size={18} className="text-blue-600" />
+                <QrCode size={18} className="text-blue-600" aria-hidden="true" />
               </motion.button>
             )}
           </div>
 
           <motion.button
-            className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label="Voir les détails"
             title="Voir les détails"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: reducedMotion ? 1 : 1.1 }}
+            whileTap={{ scale: reducedMotion ? 0.98 : 0.95 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                onClick();
+              }
+            }}
           >
-            <ArrowUpRight size={18} className="text-primary" />
+            <ArrowUpRight size={18} className="text-primary" aria-hidden="true" />
           </motion.button>
         </div>
 
         {actions.length > 0 && (
-          <div className="flex justify-end space-x-2 mt-2">
+          <div
+            className="flex justify-end space-x-2 mt-2"
+            role="toolbar"
+            aria-label="Actions supplémentaires"
+          >
             {actions.map((action, index) => (
               <motion.button
                 key={index}
                 onClick={(e) => handleActionClick(e, action)}
-                className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-label={action.label}
                 title={action.label}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: reducedMotion ? 1 : 1.1 }}
+                whileTap={{ scale: reducedMotion ? 0.98 : 0.95 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleActionClick(e as unknown as React.MouseEvent, action);
+                  }
+                }}
               >
-                {action.icon}
+                {React.isValidElement(action.icon)
+                  ? React.cloneElement(action.icon as React.ReactElement, { 'aria-hidden': 'true' })
+                  : action.icon
+                }
               </motion.button>
             ))}
           </div>

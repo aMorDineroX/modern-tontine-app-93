@@ -1,0 +1,370 @@
+{
+  "settings": {
+    "title": "Accessibility Settings",
+    "description": "Customize your experience to make the application more accessible.",
+    "save": "Save Settings",
+    "reset": "Reset to Defaults",
+    "saved": "Settings saved successfully",
+    "resetConfirm": "Are you sure you want to reset all accessibility settings to their default values?",
+    "tabs": {
+      "display": "Display",
+      "reading": "Reading",
+      "interaction": "Interaction"
+    }
+  },
+  "display": {
+    "highContrast": {
+      "label": "High Contrast Mode",
+      "description": "Increases contrast between elements for better visibility"
+    },
+    "fontSize": {
+      "label": "Font Size",
+      "description": "Adjust the size of text throughout the application",
+      "options": {
+        "normal": "Normal",
+        "large": "Large",
+        "x-large": "Extra Large"
+      }
+    },
+    "reducedMotion": {
+      "label": "Reduced Motion",
+      "description": "Minimizes animations and transitions"
+    },
+    "enhancedFocus": {
+      "label": "Enhanced Focus Indicators",
+      "description": "Makes focus outlines more visible"
+    },
+    "theme": {
+      "label": "Theme",
+      "description": "Choose between light and dark theme",
+      "options": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    }
+  },
+  "reading": {
+    "enhancedTextSpacing": {
+      "label": "Enhanced Text Spacing",
+      "description": "Increases spacing between letters, words, and lines"
+    },
+    "dyslexiaFriendly": {
+      "label": "Dyslexia-Friendly Font",
+      "description": "Uses a font designed to be easier to read for people with dyslexia"
+    },
+    "screenReaderHints": {
+      "label": "Screen Reader Hints",
+      "description": "Shows additional information for screen reader users (for developers and testers)"
+    },
+    "lineHeight": {
+      "label": "Line Height",
+      "description": "Adjust the spacing between lines of text",
+      "options": {
+        "normal": "Normal",
+        "relaxed": "Relaxed",
+        "loose": "Loose"
+      }
+    }
+  },
+  "interaction": {
+    "keyboardMode": {
+      "label": "Keyboard Mode",
+      "description": "Optimizes the interface for keyboard navigation",
+      "info": "Keyboard mode is automatically activated when you use the Tab key to navigate. It enhances the visibility of focused elements for easier keyboard navigation."
+    },
+    "keyboardShortcuts": {
+      "label": "Keyboard Shortcuts",
+      "description": "Use keyboard shortcuts to navigate quickly",
+      "button": "View Keyboard Shortcuts",
+      "dialog": {
+        "title": "Keyboard Shortcuts",
+        "description": "Use these shortcuts to navigate quickly through the application.",
+        "enable": "Enable Keyboard Shortcuts",
+        "categories": {
+          "global": "Global",
+          "navigation": "Navigation",
+          "accessibility": "Accessibility",
+          "groups": "Groups",
+          "actions": "Actions"
+        }
+      }
+    },
+    "touchTarget": {
+      "label": "Larger Touch Targets",
+      "description": "Increases the size of buttons and interactive elements"
+    },
+    "cursorSize": {
+      "label": "Cursor Size",
+      "description": "Adjust the size of the cursor",
+      "options": {
+        "normal": "Normal",
+        "large": "Large",
+        "x-large": "Extra Large"
+      }
+    }
+  },
+  "skipLink": {
+    "mainContent": "Skip to main content",
+    "navigation": "Skip to navigation",
+    "footer": "Skip to footer"
+  },
+  "aria": {
+    "loading": "Loading",
+    "required": "Required",
+    "optional": "Optional",
+    "selected": "Selected",
+    "expanded": "Expanded",
+    "collapsed": "Collapsed",
+    "current": "Current",
+    "sortAscending": "Sorted ascending",
+    "sortDescending": "Sorted descending",
+    "checked": "Checked",
+    "unchecked": "Unchecked",
+    "indeterminate": "Partially checked",
+    "busy": "Busy",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "announcement": "Announcement",
+    "alert": "Alert",
+    "dialog": "Dialog",
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "search": "Search",
+    "main": "Main content",
+    "complementary": "Complementary content",
+    "contentinfo": "Content information",
+    "form": "Form",
+    "region": "Region",
+    "tablist": "Tab list",
+    "tab": "Tab",
+    "tabpanel": "Tab panel",
+    "listbox": "List box",
+    "option": "Option",
+    "combobox": "Combo box",
+    "tooltip": "Tooltip",
+    "status": "Status",
+    "progressbar": "Progress bar",
+    "slider": "Slider",
+    "spinbutton": "Spin button",
+    "tree": "Tree",
+    "treeitem": "Tree item",
+    "group": "Group",
+    "separator": "Separator",
+    "rowgroup": "Row group",
+    "row": "Row",
+    "cell": "Cell",
+    "columnheader": "Column header",
+    "rowheader": "Row header",
+    "grid": "Grid",
+    "gridcell": "Grid cell",
+    "article": "Article",
+    "banner": "Banner",
+    "figure": "Figure",
+    "heading": "Heading",
+    "img": "Image",
+    "link": "Link",
+    "list": "List",
+    "listitem": "List item",
+    "math": "Math",
+    "note": "Note",
+    "presentation": "Presentation",
+    "table": "Table",
+    "term": "Term",
+    "toolbar": "Toolbar"
+  },
+  "announcements": {
+    "pageChanged": "Page changed to {{page}}",
+    "itemSelected": "{{item}} selected",
+    "itemDeselected": "{{item}} deselected",
+    "itemAdded": "{{item}} added",
+    "itemRemoved": "{{item}} removed",
+    "itemMoved": "{{item}} moved",
+    "itemUpdated": "{{item}} updated",
+    "itemDeleted": "{{item}} deleted",
+    "formSubmitted": "Form submitted successfully",
+    "formError": "Form submission failed",
+    "searchResults": "Found {{count}} results for \"{{query}}\"",
+    "searchResults_zero": "No results found for \"{{query}}\"",
+    "searchResults_one": "Found 1 result for \"{{query}}\"",
+    "searchCleared": "Search cleared",
+    "sortChanged": "Sorted by {{column}} {{direction}}",
+    "filterApplied": "Filter applied",
+    "filterRemoved": "Filter removed",
+    "filterCleared": "All filters cleared",
+    "pageLoading": "Page loading",
+    "pageLoaded": "Page loaded",
+    "modalOpened": "Dialog opened",
+    "modalClosed": "Dialog closed",
+    "menuOpened": "Menu opened",
+    "menuClosed": "Menu closed",
+    "tabChanged": "Tab changed to {{tab}}",
+    "accordionExpanded": "{{section}} expanded",
+    "accordionCollapsed": "{{section}} collapsed",
+    "fileUploading": "Uploading file {{filename}}",
+    "fileUploaded": "File {{filename}} uploaded successfully",
+    "fileUploadError": "Error uploading file {{filename}}",
+    "fileUploadProgress": "File {{filename}} is {{progress}}% uploaded",
+    "notificationReceived": "New notification: {{message}}",
+    "errorOccurred": "Error: {{message}}",
+    "successMessage": "Success: {{message}}",
+    "warningMessage": "Warning: {{message}}",
+    "infoMessage": "Info: {{message}}",
+    "sessionExpiring": "Your session will expire in {{time}} minutes",
+    "sessionExpired": "Your session has expired",
+    "loggedIn": "Logged in as {{user}}",
+    "loggedOut": "Logged out",
+    "themeChanged": "Theme changed to {{theme}}",
+    "languageChanged": "Language changed to {{language}}",
+    "settingsSaved": "Settings saved",
+    "settingsReset": "Settings reset to defaults"
+  },
+  "components": {
+    "accordion": {
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all"
+    },
+    "alert": {
+      "close": "Close alert",
+      "dismiss": "Dismiss"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "current": "Current page"
+    },
+    "button": {
+      "loading": "Loading...",
+      "disabled": "Disabled"
+    },
+    "calendar": {
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "selectMonth": "Select month",
+      "selectYear": "Select year",
+      "today": "Today",
+      "selectedDate": "Selected date"
+    },
+    "checkbox": {
+      "checked": "Checked",
+      "unchecked": "Unchecked",
+      "indeterminate": "Partially checked"
+    },
+    "combobox": {
+      "open": "Open dropdown",
+      "close": "Close dropdown",
+      "selected": "Selected",
+      "noResults": "No results found",
+      "typeToSearch": "Type to search",
+      "clearSelection": "Clear selection",
+      "multipleSelected": "{{count}} selected"
+    },
+    "datatable": {
+      "loading": "Loading data",
+      "noResults": "No results found",
+      "error": "Error loading data",
+      "rowsPerPage": "Rows per page",
+      "of": "of",
+      "page": "Page",
+      "nextPage": "Next page",
+      "previousPage": "Previous page",
+      "firstPage": "First page",
+      "lastPage": "Last page",
+      "sortAscending": "Sort ascending",
+      "sortDescending": "Sort descending",
+      "clearSort": "Clear sort",
+      "search": "Search",
+      "clearSearch": "Clear search",
+      "filter": "Filter",
+      "clearFilter": "Clear filter",
+      "selectAll": "Select all rows",
+      "deselectAll": "Deselect all rows",
+      "selectRow": "Select row",
+      "deselectRow": "Deselect row",
+      "showColumns": "Show columns",
+      "hideColumns": "Hide columns",
+      "export": "Export",
+      "print": "Print",
+      "rowSelected": "Row selected",
+      "rowDeselected": "Row deselected",
+      "allRowsSelected": "All rows selected",
+      "allRowsDeselected": "All rows deselected"
+    },
+    "dialog": {
+      "close": "Close dialog",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "fileUpload": {
+      "dragAndDrop": "Drag and drop files here",
+      "browse": "Browse files",
+      "uploading": "Uploading...",
+      "uploaded": "Uploaded",
+      "failed": "Failed",
+      "remove": "Remove",
+      "retry": "Retry",
+      "cancel": "Cancel",
+      "clearAll": "Clear all",
+      "fileSelected": "File selected",
+      "filesSelected": "{{count}} files selected",
+      "maxSize": "Maximum file size: {{size}}",
+      "maxFiles": "Maximum number of files: {{count}}",
+      "acceptedFormats": "Accepted formats: {{formats}}",
+      "dropToUpload": "Drop to upload",
+      "clickToUpload": "Click to upload"
+    },
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "first": "First",
+      "last": "Last",
+      "page": "Page {{page}}",
+      "of": "of {{total}}",
+      "rowsPerPage": "Rows per page"
+    },
+    "progressBar": {
+      "loading": "Loading",
+      "progress": "{{value}}% complete"
+    },
+    "radioGroup": {
+      "selected": "Selected"
+    },
+    "select": {
+      "open": "Open dropdown",
+      "close": "Close dropdown",
+      "placeholder": "Select an option",
+      "noResults": "No results found"
+    },
+    "slider": {
+      "min": "Minimum",
+      "max": "Maximum",
+      "value": "Value: {{value}}"
+    },
+    "switch": {
+      "on": "On",
+      "off": "Off"
+    },
+    "tabs": {
+      "tab": "Tab",
+      "tabPanel": "Tab panel"
+    },
+    "toast": {
+      "close": "Close notification",
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information"
+    },
+    "tooltip": {
+      "show": "Show tooltip",
+      "hide": "Hide tooltip"
+    }
+  }
+}

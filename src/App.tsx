@@ -21,6 +21,9 @@ import EnhancedFeatures from "./pages/EnhancedFeatures";
 import { AppProvider } from "./contexts/AppContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ChatProvider } from "./contexts/ChatContext";
+import { AccessibilityProvider } from "./contexts/AccessibilityContext";
+import { KeyboardShortcutsProvider } from "./contexts/KeyboardShortcutsContext";
+import { TranslationProvider } from "./contexts/TranslationContext";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
@@ -30,6 +33,9 @@ import Layout from "./components/Layout";
 import { lazy, Suspense } from 'react';
 // Utilisation du composant LoadingScreen importé
 import { LoadingScreen } from './components/LoadingScreen';
+import SkipToContent from "./components/accessibility/SkipToContent";
+import Announcer from "./components/accessibility/Announcer";
+import KeyboardShortcutsDialog from "./components/accessibility/KeyboardShortcutsDialog";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -153,70 +159,87 @@ const RootComponent = () => {
   }
 
   return (
-    <Routes>
-      {/* Public routes without navbar */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
+    <>
+      {/* Skip to content link for keyboard users */}
+      <SkipToContent contentId="main-content" />
 
-      {/* Protected routes with navbar */}
-      <Route path="/premium" element={<Layout><Premium /></Layout>} />
-      <Route path="/dashboard" element={<Layout><Index /></Layout>} />
-      <Route path="/groups" element={
-        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
-          <Layout><Groups /></Layout>
-        </Suspense>
-      } />
-      <Route path="/profile" element={
-        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
-          <Layout><Profile /></Layout>
-        </Suspense>
-      } />
-      <Route path="/tontine-cycles" element={<Layout><TontineCycles /></Layout>} />
-      <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
-      <Route path="/transactions/paypal" element={<Layout><PayPalTransactions /></Layout>} />
-      <Route path="/statistics" element={
-        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
-          <Layout><Statistics /></Layout>
-        </Suspense>
-      } />
-      <Route path="/services" element={
-        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
-          <Layout><Services /></Layout>
-        </Suspense>
-      } />
-      <Route path="/enhanced-features" element={
-        <Suspense fallback={<LoadingScreen message="Chargement..." />}>
-          <Layout><EnhancedFeatures /></Layout>
-        </Suspense>
-      } />
+      {/* Screen reader announcements */}
+      <Announcer />
 
-      {/* Not found page */}
-      <Route path="*" element={<Layout><NotFound /></Layout>} />
-    </Routes>
+      {/* Keyboard shortcuts dialog */}
+      <KeyboardShortcutsDialog />
+
+      <Routes>
+        {/* Public routes without navbar */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+
+        {/* Protected routes with navbar */}
+        <Route path="/premium" element={<Layout><Premium /></Layout>} />
+        <Route path="/dashboard" element={<Layout><Index /></Layout>} />
+        <Route path="/groups" element={
+          <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+            <Layout><Groups /></Layout>
+          </Suspense>
+        } />
+        <Route path="/profile" element={
+          <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+            <Layout><Profile /></Layout>
+          </Suspense>
+        } />
+        <Route path="/tontine-cycles" element={<Layout><TontineCycles /></Layout>} />
+        <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
+        <Route path="/transactions/paypal" element={<Layout><PayPalTransactions /></Layout>} />
+        <Route path="/statistics" element={
+          <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+            <Layout><Statistics /></Layout>
+          </Suspense>
+        } />
+        <Route path="/services" element={
+          <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+            <Layout><Services /></Layout>
+          </Suspense>
+        } />
+        <Route path="/enhanced-features" element={
+          <Suspense fallback={<LoadingScreen message="Chargement..." />}>
+            <Layout><EnhancedFeatures /></Layout>
+          </Suspense>
+        } />
+
+        {/* Not found page */}
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
+      </Routes>
+    </>
   );
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" storageKey="naat-theme">
-      <AppProvider>
-        <AuthProvider>
-          <ChatProvider>
-            <HelmetProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <RootComponent />
-                </BrowserRouter>
-              </TooltipProvider>
-            </HelmetProvider>
-          </ChatProvider>
-        </AuthProvider>
-      </AppProvider>
+      <TranslationProvider>
+        <AccessibilityProvider>
+          <AppProvider>
+            <AuthProvider>
+              <ChatProvider>
+                <HelmetProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <KeyboardShortcutsProvider>
+                        <RootComponent />
+                      </KeyboardShortcutsProvider>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </HelmetProvider>
+              </ChatProvider>
+            </AuthProvider>
+          </AppProvider>
+        </AccessibilityProvider>
+      </TranslationProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

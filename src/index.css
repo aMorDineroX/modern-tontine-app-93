@@ -14,19 +14,22 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 142 70% 45%;
-    --primary-foreground: 210 40% 98%;
+    /* Improved contrast for primary color */
+    --primary: 142 70% 35%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Improved contrast for muted text */
+    --muted-foreground: 215.4 16.3% 36.9%;
 
     --accent: 142 70% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* Improved contrast for destructive color */
+    --destructive: 0 84.2% 50.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
@@ -34,6 +37,10 @@
     --ring: 263 70% 50%;
 
     --radius: 0.5rem;
+
+    /* Focus styles */
+    --focus-ring: 3px solid hsl(var(--ring));
+    --focus-visible-ring-offset: 2px;
   }
 
   .dark {
@@ -46,24 +53,97 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 142 70% 50%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Improved contrast for primary color in dark mode */
+    --primary: 142 70% 55%;
+    --primary-foreground: 0 0% 0%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Improved contrast for muted text in dark mode */
+    --muted-foreground: 215 20.2% 75.1%;
 
     --accent: 142 70% 16%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    /* Improved contrast for destructive color in dark mode */
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 263 70% 60%;
+  }
+
+  /* High contrast mode - light theme */
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 95%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    /* Even higher contrast for primary color */
+    --primary: 142 100% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 0%;
+
+    --accent: 142 100% 90%;
+    --accent-foreground: 0 0% 0%;
+
+    /* Higher contrast for destructive color */
+    --destructive: 0 100% 35%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 0%;
+    --input: 0 0% 80%;
+    --ring: 142 100% 40%;
+
+    /* Enhanced focus styles for high contrast */
+    --focus-ring: 4px solid hsl(var(--ring));
+    --focus-visible-ring-offset: 3px;
+  }
+
+  /* High contrast mode - dark theme */
+  .dark.high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Higher contrast for primary color in dark high contrast mode */
+    --primary: 142 100% 60%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 100%;
+
+    --accent: 142 100% 30%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Higher contrast for destructive color in dark high contrast mode */
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 0%;
+
+    --border: 0 0% 100%;
+    --input: 0 0% 20%;
+    --ring: 142 100% 60%;
   }
 }
 
@@ -148,5 +228,123 @@
   /* Input styles */
   .tontine-input {
     @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Accessibility utilities */
+
+  /* Font size utilities */
+  .text-normal {
+    font-size: 1rem;
+  }
+
+  .text-large {
+    font-size: 1.25rem;
+  }
+
+  .text-x-large {
+    font-size: 1.5rem;
+  }
+
+  /* Reduced motion */
+  .reduce-motion * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Focus styles */
+  .high-contrast :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-visible-ring-offset);
+  }
+
+  /* Enhanced focus styles */
+  .enhanced-focus :focus-visible {
+    outline: 4px solid hsl(var(--primary)) !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 6px hsla(var(--primary), 0.3) !important;
+  }
+
+  /* Keyboard mode focus styles */
+  .keyboard-mode :focus {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  /* Enhanced text spacing */
+  .enhanced-text-spacing {
+    letter-spacing: 0.05em;
+    word-spacing: 0.1em;
+    line-height: 1.8;
+  }
+
+  .enhanced-text-spacing p,
+  .enhanced-text-spacing li,
+  .enhanced-text-spacing h1,
+  .enhanced-text-spacing h2,
+  .enhanced-text-spacing h3,
+  .enhanced-text-spacing h4,
+  .enhanced-text-spacing h5,
+  .enhanced-text-spacing h6 {
+    margin-bottom: 1.5em;
+  }
+
+  /* Dyslexia friendly font */
+  .dyslexia-friendly {
+    font-family: 'Open Sans', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 500;
+  }
+
+  .dyslexia-friendly p,
+  .dyslexia-friendly li,
+  .dyslexia-friendly label,
+  .dyslexia-friendly input,
+  .dyslexia-friendly textarea,
+  .dyslexia-friendly button {
+    font-size: 1.05em;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    word-spacing: 0.08em;
+  }
+
+  /* Screen reader hints */
+  .screen-reader-hints [aria-hidden="true"]::after {
+    content: " (hidden from screen readers)";
+    display: inline-block;
+    font-size: 0.75em;
+    color: hsl(var(--primary));
+    font-style: italic;
+    margin-left: 0.5em;
+  }
+
+  .screen-reader-hints [aria-label]::after {
+    content: " (label: " attr(aria-label) ")";
+    display: inline-block;
+    font-size: 0.75em;
+    color: hsl(var(--primary));
+    font-style: italic;
+    margin-left: 0.5em;
+  }
+
+  .screen-reader-hints .sr-only:not(:focus):not(:active) {
+    clip: auto;
+    clip-path: none;
+    height: auto;
+    width: auto;
+    margin: 0;
+    overflow: visible;
+    position: relative;
+    padding: 0.25em 0.5em;
+    background-color: hsla(var(--primary), 0.1);
+    color: hsl(var(--primary));
+    font-size: 0.75em;
+    border-radius: 0.25em;
+    white-space: nowrap;
+  }
+
+  /* Skip link styles */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:shadow-lg;
   }
 }

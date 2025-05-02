@@ -1,0 +1,370 @@
+{
+  "settings": {
+    "title": "Paramètres d'accessibilité",
+    "description": "Personnalisez votre expérience pour rendre l'application plus accessible.",
+    "save": "Enregistrer les paramètres",
+    "reset": "Réinitialiser aux valeurs par défaut",
+    "saved": "Paramètres enregistrés avec succès",
+    "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres d'accessibilité à leurs valeurs par défaut ?",
+    "tabs": {
+      "display": "Affichage",
+      "reading": "Lecture",
+      "interaction": "Interaction"
+    }
+  },
+  "display": {
+    "highContrast": {
+      "label": "Mode contraste élevé",
+      "description": "Augmente le contraste entre les éléments pour une meilleure visibilité"
+    },
+    "fontSize": {
+      "label": "Taille de police",
+      "description": "Ajuste la taille du texte dans toute l'application",
+      "options": {
+        "normal": "Normale",
+        "large": "Grande",
+        "x-large": "Très grande"
+      }
+    },
+    "reducedMotion": {
+      "label": "Animations réduites",
+      "description": "Minimise les animations et les transitions"
+    },
+    "enhancedFocus": {
+      "label": "Indicateurs de focus améliorés",
+      "description": "Rend les contours de focus plus visibles"
+    },
+    "theme": {
+      "label": "Thème",
+      "description": "Choisissez entre le thème clair et sombre",
+      "options": {
+        "light": "Clair",
+        "dark": "Sombre",
+        "system": "Système"
+      }
+    }
+  },
+  "reading": {
+    "enhancedTextSpacing": {
+      "label": "Espacement de texte amélioré",
+      "description": "Augmente l'espacement entre les lettres, les mots et les lignes"
+    },
+    "dyslexiaFriendly": {
+      "label": "Police adaptée à la dyslexie",
+      "description": "Utilise une police conçue pour être plus facile à lire pour les personnes dyslexiques"
+    },
+    "screenReaderHints": {
+      "label": "Indices pour lecteurs d'écran",
+      "description": "Affiche des informations supplémentaires pour les utilisateurs de lecteurs d'écran (pour les développeurs et testeurs)"
+    },
+    "lineHeight": {
+      "label": "Hauteur de ligne",
+      "description": "Ajuste l'espacement entre les lignes de texte",
+      "options": {
+        "normal": "Normale",
+        "relaxed": "Détendue",
+        "loose": "Large"
+      }
+    }
+  },
+  "interaction": {
+    "keyboardMode": {
+      "label": "Mode clavier",
+      "description": "Optimise l'interface pour la navigation au clavier",
+      "info": "Le mode clavier est automatiquement activé lorsque vous utilisez la touche Tab pour naviguer. Il améliore la visibilité des éléments focalisés pour faciliter la navigation au clavier."
+    },
+    "keyboardShortcuts": {
+      "label": "Raccourcis clavier",
+      "description": "Utilisez des raccourcis clavier pour naviguer rapidement",
+      "button": "Voir les raccourcis clavier",
+      "dialog": {
+        "title": "Raccourcis clavier",
+        "description": "Utilisez ces raccourcis pour naviguer rapidement dans l'application.",
+        "enable": "Activer les raccourcis clavier",
+        "categories": {
+          "global": "Global",
+          "navigation": "Navigation",
+          "accessibility": "Accessibilité",
+          "groups": "Groupes",
+          "actions": "Actions"
+        }
+      }
+    },
+    "touchTarget": {
+      "label": "Cibles tactiles plus grandes",
+      "description": "Augmente la taille des boutons et des éléments interactifs"
+    },
+    "cursorSize": {
+      "label": "Taille du curseur",
+      "description": "Ajuste la taille du curseur",
+      "options": {
+        "normal": "Normal",
+        "large": "Grand",
+        "x-large": "Très grand"
+      }
+    }
+  },
+  "skipLink": {
+    "mainContent": "Aller au contenu principal",
+    "navigation": "Aller à la navigation",
+    "footer": "Aller au pied de page"
+  },
+  "aria": {
+    "loading": "Chargement",
+    "required": "Obligatoire",
+    "optional": "Optionnel",
+    "selected": "Sélectionné",
+    "expanded": "Développé",
+    "collapsed": "Réduit",
+    "current": "Actuel",
+    "sortAscending": "Tri croissant",
+    "sortDescending": "Tri décroissant",
+    "checked": "Coché",
+    "unchecked": "Non coché",
+    "indeterminate": "Partiellement coché",
+    "busy": "Occupé",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "info": "Information",
+    "announcement": "Annonce",
+    "alert": "Alerte",
+    "dialog": "Dialogue",
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "search": "Recherche",
+    "main": "Contenu principal",
+    "complementary": "Contenu complémentaire",
+    "contentinfo": "Informations sur le contenu",
+    "form": "Formulaire",
+    "region": "Région",
+    "tablist": "Liste d'onglets",
+    "tab": "Onglet",
+    "tabpanel": "Panneau d'onglet",
+    "listbox": "Liste déroulante",
+    "option": "Option",
+    "combobox": "Liste combinée",
+    "tooltip": "Info-bulle",
+    "status": "Statut",
+    "progressbar": "Barre de progression",
+    "slider": "Curseur",
+    "spinbutton": "Bouton rotatif",
+    "tree": "Arborescence",
+    "treeitem": "Élément d'arborescence",
+    "group": "Groupe",
+    "separator": "Séparateur",
+    "rowgroup": "Groupe de lignes",
+    "row": "Ligne",
+    "cell": "Cellule",
+    "columnheader": "En-tête de colonne",
+    "rowheader": "En-tête de ligne",
+    "grid": "Grille",
+    "gridcell": "Cellule de grille",
+    "article": "Article",
+    "banner": "Bannière",
+    "figure": "Figure",
+    "heading": "Titre",
+    "img": "Image",
+    "link": "Lien",
+    "list": "Liste",
+    "listitem": "Élément de liste",
+    "math": "Mathématiques",
+    "note": "Note",
+    "presentation": "Présentation",
+    "table": "Tableau",
+    "term": "Terme",
+    "toolbar": "Barre d'outils"
+  },
+  "announcements": {
+    "pageChanged": "Page changée pour {{page}}",
+    "itemSelected": "{{item}} sélectionné",
+    "itemDeselected": "{{item}} désélectionné",
+    "itemAdded": "{{item}} ajouté",
+    "itemRemoved": "{{item}} supprimé",
+    "itemMoved": "{{item}} déplacé",
+    "itemUpdated": "{{item}} mis à jour",
+    "itemDeleted": "{{item}} supprimé",
+    "formSubmitted": "Formulaire soumis avec succès",
+    "formError": "Échec de la soumission du formulaire",
+    "searchResults": "{{count}} résultats trouvés pour \"{{query}}\"",
+    "searchResults_zero": "Aucun résultat trouvé pour \"{{query}}\"",
+    "searchResults_one": "1 résultat trouvé pour \"{{query}}\"",
+    "searchCleared": "Recherche effacée",
+    "sortChanged": "Trié par {{column}} {{direction}}",
+    "filterApplied": "Filtre appliqué",
+    "filterRemoved": "Filtre supprimé",
+    "filterCleared": "Tous les filtres effacés",
+    "pageLoading": "Chargement de la page",
+    "pageLoaded": "Page chargée",
+    "modalOpened": "Dialogue ouvert",
+    "modalClosed": "Dialogue fermé",
+    "menuOpened": "Menu ouvert",
+    "menuClosed": "Menu fermé",
+    "tabChanged": "Onglet changé pour {{tab}}",
+    "accordionExpanded": "{{section}} développé",
+    "accordionCollapsed": "{{section}} réduit",
+    "fileUploading": "Téléchargement du fichier {{filename}}",
+    "fileUploaded": "Fichier {{filename}} téléchargé avec succès",
+    "fileUploadError": "Erreur lors du téléchargement du fichier {{filename}}",
+    "fileUploadProgress": "Fichier {{filename}} téléchargé à {{progress}}%",
+    "notificationReceived": "Nouvelle notification : {{message}}",
+    "errorOccurred": "Erreur : {{message}}",
+    "successMessage": "Succès : {{message}}",
+    "warningMessage": "Avertissement : {{message}}",
+    "infoMessage": "Info : {{message}}",
+    "sessionExpiring": "Votre session expirera dans {{time}} minutes",
+    "sessionExpired": "Votre session a expiré",
+    "loggedIn": "Connecté en tant que {{user}}",
+    "loggedOut": "Déconnecté",
+    "themeChanged": "Thème changé pour {{theme}}",
+    "languageChanged": "Langue changée pour {{language}}",
+    "settingsSaved": "Paramètres enregistrés",
+    "settingsReset": "Paramètres réinitialisés aux valeurs par défaut"
+  },
+  "components": {
+    "accordion": {
+      "expand": "Développer",
+      "collapse": "Réduire",
+      "expandAll": "Tout développer",
+      "collapseAll": "Tout réduire"
+    },
+    "alert": {
+      "close": "Fermer l'alerte",
+      "dismiss": "Ignorer"
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "current": "Page actuelle"
+    },
+    "button": {
+      "loading": "Chargement...",
+      "disabled": "Désactivé"
+    },
+    "calendar": {
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "selectMonth": "Sélectionner le mois",
+      "selectYear": "Sélectionner l'année",
+      "today": "Aujourd'hui",
+      "selectedDate": "Date sélectionnée"
+    },
+    "checkbox": {
+      "checked": "Coché",
+      "unchecked": "Non coché",
+      "indeterminate": "Partiellement coché"
+    },
+    "combobox": {
+      "open": "Ouvrir la liste déroulante",
+      "close": "Fermer la liste déroulante",
+      "selected": "Sélectionné",
+      "noResults": "Aucun résultat trouvé",
+      "typeToSearch": "Tapez pour rechercher",
+      "clearSelection": "Effacer la sélection",
+      "multipleSelected": "{{count}} sélectionnés"
+    },
+    "datatable": {
+      "loading": "Chargement des données",
+      "noResults": "Aucun résultat trouvé",
+      "error": "Erreur lors du chargement des données",
+      "rowsPerPage": "Lignes par page",
+      "of": "sur",
+      "page": "Page",
+      "nextPage": "Page suivante",
+      "previousPage": "Page précédente",
+      "firstPage": "Première page",
+      "lastPage": "Dernière page",
+      "sortAscending": "Tri croissant",
+      "sortDescending": "Tri décroissant",
+      "clearSort": "Effacer le tri",
+      "search": "Rechercher",
+      "clearSearch": "Effacer la recherche",
+      "filter": "Filtrer",
+      "clearFilter": "Effacer le filtre",
+      "selectAll": "Sélectionner toutes les lignes",
+      "deselectAll": "Désélectionner toutes les lignes",
+      "selectRow": "Sélectionner la ligne",
+      "deselectRow": "Désélectionner la ligne",
+      "showColumns": "Afficher les colonnes",
+      "hideColumns": "Masquer les colonnes",
+      "export": "Exporter",
+      "print": "Imprimer",
+      "rowSelected": "Ligne sélectionnée",
+      "rowDeselected": "Ligne désélectionnée",
+      "allRowsSelected": "Toutes les lignes sélectionnées",
+      "allRowsDeselected": "Toutes les lignes désélectionnées"
+    },
+    "dialog": {
+      "close": "Fermer la boîte de dialogue",
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    },
+    "fileUpload": {
+      "dragAndDrop": "Glisser-déposer les fichiers ici",
+      "browse": "Parcourir les fichiers",
+      "uploading": "Téléchargement...",
+      "uploaded": "Téléchargé",
+      "failed": "Échec",
+      "remove": "Supprimer",
+      "retry": "Réessayer",
+      "cancel": "Annuler",
+      "clearAll": "Tout effacer",
+      "fileSelected": "Fichier sélectionné",
+      "filesSelected": "{{count}} fichiers sélectionnés",
+      "maxSize": "Taille maximale de fichier : {{size}}",
+      "maxFiles": "Nombre maximum de fichiers : {{count}}",
+      "acceptedFormats": "Formats acceptés : {{formats}}",
+      "dropToUpload": "Déposer pour télécharger",
+      "clickToUpload": "Cliquer pour télécharger"
+    },
+    "menu": {
+      "open": "Ouvrir le menu",
+      "close": "Fermer le menu"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "first": "Premier",
+      "last": "Dernier",
+      "page": "Page {{page}}",
+      "of": "sur {{total}}",
+      "rowsPerPage": "Lignes par page"
+    },
+    "progressBar": {
+      "loading": "Chargement",
+      "progress": "{{value}}% terminé"
+    },
+    "radioGroup": {
+      "selected": "Sélectionné"
+    },
+    "select": {
+      "open": "Ouvrir la liste déroulante",
+      "close": "Fermer la liste déroulante",
+      "placeholder": "Sélectionner une option",
+      "noResults": "Aucun résultat trouvé"
+    },
+    "slider": {
+      "min": "Minimum",
+      "max": "Maximum",
+      "value": "Valeur : {{value}}"
+    },
+    "switch": {
+      "on": "Activé",
+      "off": "Désactivé"
+    },
+    "tabs": {
+      "tab": "Onglet",
+      "tabPanel": "Panneau d'onglet"
+    },
+    "toast": {
+      "close": "Fermer la notification",
+      "success": "Succès",
+      "error": "Erreur",
+      "warning": "Avertissement",
+      "info": "Information"
+    },
+    "tooltip": {
+      "show": "Afficher l'info-bulle",
+      "hide": "Masquer l'info-bulle"
+    }
+  }
+}

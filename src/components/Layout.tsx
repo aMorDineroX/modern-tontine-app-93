@@ -2,8 +2,9 @@ import { ReactNode } from "react";
 import Navbar from "./Navbar";
 import FloatingChat from "./FloatingChat";
 import PageTransition from "./PageTransition";
-import SkipToContent from "./SkipToContent";
 import { useChat } from "@/contexts/ChatContext";
+import SkipToContent from "./accessibility/SkipToContent";
+import AccessibilitySettings from "./accessibility/AccessibilitySettings";
 
 interface LayoutProps {
   children: ReactNode;
@@ -21,6 +22,12 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </PageTransition>
       </main>
+
+      {/* Floating accessibility settings button */}
+      <div className="fixed bottom-24 right-4 z-40">
+        <AccessibilitySettings className="shadow-md" />
+      </div>
+
       <FloatingChat
         title="Support Naat"
         subtitle="Nous sommes là pour vous aider"

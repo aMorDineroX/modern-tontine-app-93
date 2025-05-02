@@ -1,0 +1,205 @@
+{
+  "accessibleCombobox": {
+    "placeholder": "Select an option",
+    "searchPlaceholder": "Search...",
+    "emptyText": "No results found.",
+    "selected": "Selected",
+    "clearSelection": "Clear selection",
+    "multipleSelected": "{{count}} selected",
+    "multipleSelected_one": "1 selected",
+    "multipleSelected_other": "{{count}} selected",
+    "removeItem": "Remove {{item}}"
+  },
+  "accessibleDataTable": {
+    "loading": "Loading data...",
+    "noResults": "No data available.",
+    "error": "Error loading data",
+    "rowsPerPage": "Rows per page:",
+    "of": "of",
+    "showing": "Showing {{start}} to {{end}} of {{total}} entries",
+    "page": "Page",
+    "nextPage": "Next page",
+    "previousPage": "Previous page",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "search": "Search...",
+    "clearSearch": "Clear search",
+    "selectAll": "Select all rows",
+    "deselectAll": "Deselect all rows",
+    "selectRow": "Select row",
+    "deselectRow": "Deselect row",
+    "sortAscending": "Sort ascending",
+    "sortDescending": "Sort descending",
+    "clearSort": "Clear sort"
+  },
+  "accessibleAccordion": {
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "section": "Section"
+  },
+  "accessibleFileUpload": {
+    "dragAndDrop": "Drag and drop files here",
+    "browse": "Browse files",
+    "uploading": "Uploading...",
+    "uploaded": "Uploaded",
+    "failed": "Failed",
+    "remove": "Remove",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "clearAll": "Clear all",
+    "fileSelected": "File selected",
+    "filesSelected": "{{count}} files selected",
+    "filesSelected_one": "1 file selected",
+    "filesSelected_other": "{{count}} files selected",
+    "maxSize": "Maximum file size: {{size}}",
+    "maxFiles": "Maximum number of files: {{count}}",
+    "acceptedFormats": "Accepted formats: {{formats}}",
+    "dropToUpload": "Drop to upload",
+    "clickToUpload": "Click to upload"
+  },
+  "accessibleTooltip": {
+    "show": "Show tooltip",
+    "hide": "Hide tooltip"
+  },
+  "accessibleDialog": {
+    "close": "Close dialog",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "accessibilitySettings": {
+    "title": "Accessibility Settings",
+    "description": "Customize your experience to make the application more accessible.",
+    "save": "Save Settings",
+    "reset": "Reset to Defaults",
+    "saved": "Settings saved successfully",
+    "resetConfirm": "Are you sure you want to reset all accessibility settings to their default values?",
+    "tabs": {
+      "display": "Display",
+      "reading": "Reading",
+      "interaction": "Interaction"
+    },
+    "display": {
+      "highContrast": {
+        "label": "High Contrast Mode",
+        "description": "Increases contrast between elements for better visibility"
+      },
+      "fontSize": {
+        "label": "Font Size",
+        "description": "Adjust the size of text throughout the application",
+        "options": {
+          "normal": "Normal",
+          "large": "Large",
+          "x-large": "Extra Large"
+        }
+      },
+      "reducedMotion": {
+        "label": "Reduced Motion",
+        "description": "Minimizes animations and transitions"
+      },
+      "enhancedFocus": {
+        "label": "Enhanced Focus Indicators",
+        "description": "Makes focus outlines more visible"
+      }
+    },
+    "reading": {
+      "enhancedTextSpacing": {
+        "label": "Enhanced Text Spacing",
+        "description": "Increases spacing between letters, words, and lines"
+      },
+      "dyslexiaFriendly": {
+        "label": "Dyslexia-Friendly Font",
+        "description": "Uses a font designed to be easier to read for people with dyslexia"
+      },
+      "screenReaderHints": {
+        "label": "Screen Reader Hints",
+        "description": "Shows additional information for screen reader users (for developers and testers)"
+      }
+    },
+    "interaction": {
+      "keyboardMode": {
+        "label": "Keyboard Mode",
+        "description": "Optimizes the interface for keyboard navigation",
+        "info": "Keyboard mode is automatically activated when you use the Tab key to navigate. It enhances the visibility of focused elements for easier keyboard navigation."
+      },
+      "keyboardShortcuts": {
+        "label": "Keyboard Shortcuts",
+        "description": "Use keyboard shortcuts to navigate quickly",
+        "button": "View Keyboard Shortcuts"
+      }
+    }
+  },
+  "keyboardShortcuts": {
+    "title": "Keyboard Shortcuts",
+    "description": "Use these shortcuts to navigate quickly through the application.",
+    "enable": "Enable Keyboard Shortcuts",
+    "categories": {
+      "global": "Global",
+      "navigation": "Navigation",
+      "accessibility": "Accessibility",
+      "groups": "Groups",
+      "actions": "Actions"
+    },
+    "shortcuts": {
+      "openShortcutsDialog": "Open keyboard shortcuts dialog",
+      "closeDialog": "Close dialog",
+      "goToHome": "Go to home page",
+      "goToDashboard": "Go to dashboard",
+      "goToGroups": "Go to groups page",
+      "goToTransactions": "Go to transactions page",
+      "goToStatistics": "Go to statistics page",
+      "goToSettings": "Go to settings page",
+      "goToProfile": "Go to profile page",
+      "toggleTheme": "Toggle light/dark theme",
+      "toggleHighContrast": "Toggle high contrast mode",
+      "increaseFontSize": "Increase font size",
+      "decreaseFontSize": "Decrease font size",
+      "toggleReducedMotion": "Toggle reduced motion",
+      "focusSearch": "Focus search",
+      "createGroup": "Create new group",
+      "saveChanges": "Save changes",
+      "cancelChanges": "Cancel changes",
+      "deleteItem": "Delete item",
+      "editItem": "Edit item",
+      "refreshData": "Refresh data",
+      "toggleMenu": "Toggle menu",
+      "toggleSidebar": "Toggle sidebar",
+      "toggleChat": "Toggle chat",
+      "skipToContent": "Skip to content",
+      "skipToNavigation": "Skip to navigation",
+      "skipToFooter": "Skip to footer"
+    }
+  },
+  "languageSelector": {
+    "label": "Language",
+    "changeLanguage": "Change language",
+    "currentLanguage": "Current language: {{language}}"
+  },
+  "skipLink": {
+    "mainContent": "Skip to main content",
+    "navigation": "Skip to navigation",
+    "footer": "Skip to footer"
+  },
+  "themeToggle": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "first": "First",
+    "last": "Last",
+    "page": "Page {{page}}",
+    "of": "of {{total}}",
+    "rowsPerPage": "Rows per page"
+  },
+  "toast": {
+    "close": "Close notification",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  }
+}

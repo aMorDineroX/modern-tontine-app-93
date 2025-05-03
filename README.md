@@ -278,6 +278,8 @@ Naat est construit avec des technologies modernes pour offrir une expérience ut
 - **Backend** : [Supabase](https://supabase.io/)
 - **Authentication** : Supabase Auth
 - **Database** : PostgreSQL (via Supabase)
+  - URL : `https://zctvkxwnrhxdiuzuptof.supabase.co`
+  - Tables : profiles, tontine_groups, contributions, payouts, services, etc.
 - **State Management** : React Context API & React Query
 - **Data Fetching** : [TanStack Query](https://tanstack.com/query)
 - **Paiements** : PayPal, Stripe

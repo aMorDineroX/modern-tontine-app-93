@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { User, Camera, EditIcon, Bookmark, Bell, Calendar, Eye, Clock, MessageSquare, DollarSign } from "lucide-react";
+import { User, Camera, EditIcon, Bookmark, Bell, Calendar, Eye, Clock, MessageSquare, DollarSign, KeyRound, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApp } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SocialShare from "./SocialShare";
 import InviteFriends from "./InviteFriends";
 import ActivityFeed from "./ActivityFeed";
+import { Link } from "react-router-dom";
 
 export default function ProfileEnhanced() {
   const { user } = useAuth();
@@ -108,6 +109,12 @@ export default function ProfileEnhanced() {
               <EditIcon className="h-4 w-4" />
               <span>{t('editProfile')}</span>
             </Button>
+            <Button variant="outline" size="sm" className="gap-2" asChild>
+              <Link to="/change-password">
+                <KeyRound className="h-4 w-4" />
+                <span>Changer mot de passe</span>
+              </Link>
+            </Button>
             <SocialShare
               title={`${t('checkOut')} ${user?.user_metadata?.full_name || user?.email?.split('@')[0]} ${t('profile')}`}
               description={t('joinTontine')}
@@ -173,6 +180,10 @@ export default function ProfileEnhanced() {
               <MessageSquare className="h-4 w-4" />
               {t('messages')}
             </TabsTrigger>
+            <TabsTrigger value="security" className="gap-2">
+              <Shield className="h-4 w-4" />
+              Sécurité
+            </TabsTrigger>
           </TabsList>
 
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg mt-4 border border-gray-100 dark:border-gray-700">
@@ -230,6 +241,58 @@ export default function ProfileEnhanced() {
                 <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <h3 className="font-medium text-lg mb-2">{t('noMessages')}</h3>
                 <p>{t('noMessagesDesc')}</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="security">
+              <h3 className="font-semibold text-lg mb-4">Sécurité du compte</h3>
+              <div className="space-y-6">
+                <div className="border border-gray-100 dark:border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Mot de passe</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Dernière modification: {formatDate(new Date(user?.updated_at || Date.now()))}
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/change-password" className="flex items-center gap-2">
+                        <KeyRound className="h-4 w-4" />
+                        Modifier
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="border border-gray-100 dark:border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Authentification à deux facteurs</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Ajoutez une couche de sécurité supplémentaire à votre compte
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Shield className="h-4 w-4" />
+                      Activer
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="border border-gray-100 dark:border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Sessions actives</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Gérez les appareils connectés à votre compte
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Eye className="h-4 w-4" />
+                      Voir
+                    </Button>
+                  </div>
+                </div>
               </div>
             </TabsContent>
           </div>

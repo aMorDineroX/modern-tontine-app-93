@@ -21,6 +21,7 @@
 [Services Premium](#services-premium) •
 [Captures d'écran](#captures-décran) •
 [Installation](#installation-et-démarrage) •
+[Base de Données](#base-de-données) •
 [Technologies](#technologies-utilisées) •
 [Contribution](#contribution) •
 [Contact](#contact)
@@ -232,6 +233,20 @@ yarn dev
 
 L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre port si le 8080 est déjà utilisé).
 
+### Configuration de la base de données
+
+Avant de démarrer l'application, vous devez configurer la base de données Supabase :
+
+```sh
+# Exécuter les migrations pour créer les tables et les fonctions
+./scripts/apply-migrations.sh
+
+# Tester la connexion à la base de données
+node scripts/test-app.js
+```
+
+Pour plus d'informations sur la configuration de la base de données, consultez le fichier [DATABASE_SETUP.md](DATABASE_SETUP.md).
+
 ### Scripts disponibles
 
 | Commande | Description |
@@ -251,6 +266,52 @@ L'application sera accessible à l'adresse `http://localhost:8080` (ou un autre 
 | `npm run start:ci` | Démarre l'application pour les tests CI |
 | `./scripts/run-tests.sh` | Script pour exécuter tous les tests avec couverture |
 | `./scripts/apply-migrations.sh` | Script pour appliquer les migrations Supabase |
+| `node scripts/test-app.js` | Teste la connexion à la base de données Supabase |
+| `node scripts/fix-database.js` | Corrige les problèmes de base de données |
+
+## 🗄️ Base de données
+
+Naat utilise Supabase comme backend pour stocker et gérer les données de l'application. La base de données est structurée pour prendre en charge toutes les fonctionnalités de l'application.
+
+### Structure de la base de données
+
+La base de données contient les tables suivantes :
+
+- `profiles` - Profils des utilisateurs
+- `tontine_groups` - Groupes de tontine
+- `group_members` - Membres des groupes
+- `contributions` - Contributions des membres
+- `payouts` - Paiements aux membres
+- `services` - Services disponibles
+- `user_services` - Abonnements des utilisateurs aux services
+- `messages` - Messages dans les groupes
+- `notifications` - Notifications des utilisateurs
+- `user_points` - Points de fidélité des utilisateurs
+- `achievements` - Réalisations disponibles
+- `user_achievements` - Réalisations débloquées par les utilisateurs
+- `promo_codes` - Codes promotionnels
+- `user_roles` - Rôles des utilisateurs
+
+### Fonctions de base de données
+
+La base de données contient plusieurs fonctions utiles :
+
+- `has_role(role TEXT)` - Vérifie si l'utilisateur actuel a un rôle spécifique
+- `is_admin()` - Vérifie si l'utilisateur actuel est un administrateur
+- `is_group_admin(group_id INTEGER)` - Vérifie si l'utilisateur actuel est administrateur d'un groupe
+- `get_app_stats()` - Récupère des statistiques sur l'application
+- `search_users(p_search_term TEXT)` - Recherche des utilisateurs par nom ou email
+
+### Scripts de gestion de la base de données
+
+Plusieurs scripts sont disponibles pour gérer la base de données :
+
+- `scripts/test-app.js` - Teste la connexion à la base de données et vérifie l'accès aux tables
+- `scripts/fix-database.js` - Corrige les problèmes courants de la base de données
+- `scripts/check-tables-exist.js` - Vérifie si les tables existent dans la base de données
+- `scripts/fix-rls-policies.js` - Corrige les politiques de sécurité RLS (Row Level Security)
+
+Pour plus d'informations, consultez le fichier [DATABASE_SETUP.md](DATABASE_SETUP.md).
 
 ## 🛠️ Technologies utilisées
 

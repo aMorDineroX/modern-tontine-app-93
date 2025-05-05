@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuthProvider, useAuth } from './AuthContext';
 import { supabase } from '@/utils/supabase';
@@ -27,14 +27,14 @@ vi.mock('@/hooks/use-toast', () => ({
 
 // Test component that uses the AuthContext
 const TestComponent = () => {
-  const { 
-    user, 
-    loading, 
-    signIn, 
-    signUp, 
-    signOut, 
-    resetPassword, 
-    signInWithProvider, 
+  const {
+    user,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+    signInWithProvider,
     signInWithGoogle,
     googleMapsApiKey
   } = useAuth();
@@ -44,10 +44,10 @@ const TestComponent = () => {
       <div data-testid="loading">{loading ? 'Loading' : 'Not Loading'}</div>
       <div data-testid="user">{user ? user.id : 'No User'}</div>
       <div data-testid="google-maps-api-key">{googleMapsApiKey}</div>
-      
+
       <button onClick={() => signIn('test@example.com', 'password')}>Sign In</button>
       <button onClick={() => signUp('test@example.com', 'password', 'Test User')}>Sign Up</button>
-      <button onClick={() => signOut()}>Sign Out</button>
+      <button onClick={() => signOut(() => {})}>Sign Out</button>
       <button onClick={() => resetPassword('test@example.com')}>Reset Password</button>
       <button onClick={() => signInWithProvider('google')}>Sign In with Provider</button>
       <button onClick={() => signInWithGoogle()}>Sign In with Google</button>
@@ -58,7 +58,7 @@ const TestComponent = () => {
 describe('AuthContext', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock window.location
     Object.defineProperty(window, 'location', {
       value: {
@@ -68,13 +68,13 @@ describe('AuthContext', () => {
       },
       writable: true,
     });
-    
+
     // Default mock implementations
     (supabase.auth.getSession as any).mockResolvedValue({
       data: { session: null },
       error: null,
     });
-    
+
     (supabase.auth.onAuthStateChange as any).mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
     });
@@ -89,7 +89,7 @@ describe('AuthContext', () => {
 
     // Initially loading should be true
     expect(screen.getByTestId('loading').textContent).toBe('Loading');
-    
+
     // After auth initialization, loading should be false and no user
     await waitFor(() => {
       expect(screen.getByTestId('loading').textContent).toBe('Not Loading');

@@ -5,12 +5,13 @@ import { AccessibilityProvider } from '@/contexts/AccessibilityContext';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AppProvider } from '@/contexts/AppContext';
 import { TranslationProvider } from '@/contexts/TranslationContext';
+import { vi } from 'vitest';
 
 // Add custom matchers
 expect.extend(toHaveNoViolations);
 
 // Mock framer-motion to avoid issues with animations in tests
-jest.mock('framer-motion', () => ({
+vi.mock('framer-motion', () => ({
   motion: {
     button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
@@ -156,7 +157,7 @@ export function testKeyboardNavigation(
  * @param expectedAnnouncements - Array of expected announcement strings
  */
 export function testScreenReaderAnnouncements(
-  announceFunction: jest.Mock,
+  announceFunction: ReturnType<typeof vi.fn>,
   actions: (() => void)[],
   expectedAnnouncements: string[]
 ): void {

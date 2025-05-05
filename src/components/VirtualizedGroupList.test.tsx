@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import VirtualizedGroupList from './VirtualizedGroupList';
 import { Group } from '@/types/group';
+import { renderWithProviders } from '@/test/accessibility-test-utils';
+import { AccessibilityProvider } from '@/contexts/AccessibilityContext';
 
 // Mock the useInView hook
 vi.mock('react-intersection-observer', () => ({
@@ -18,6 +20,17 @@ vi.mock('@tanstack/react-virtual', () => ({
     ],
     getTotalSize: () => 600,
   }),
+}));
+
+// Mock TontineGroup component to avoid context problems
+vi.mock('./TontineGroup', () => ({
+  default: ({ name, members, contribution, frequency }: any) => (
+    <div>
+      <h3>{name}</h3>
+      <p>{members} membres</p>
+      <p>{contribution} {frequency}</p>
+    </div>
+  )
 }));
 
 describe('VirtualizedGroupList', () => {
@@ -62,7 +75,7 @@ describe('VirtualizedGroupList', () => {
   };
 
   it('renders loading state correctly', () => {
-    render(
+    renderWithProviders(
       <VirtualizedGroupList
         {...mockProps}
         groups={[]}
@@ -74,14 +87,14 @@ describe('VirtualizedGroupList', () => {
   });
 
   it('renders groups correctly', () => {
-    render(<VirtualizedGroupList {...mockProps} />);
+    renderWithProviders(<VirtualizedGroupList {...mockProps} />);
     
     // Since we're mocking the virtualizer, we need to check for the container
     expect(screen.getByRole('list')).toBeInTheDocument();
   });
 
   it('handles empty groups array', () => {
-    render(
+    renderWithProviders(
       <VirtualizedGroupList
         {...mockProps}
         groups={[]}

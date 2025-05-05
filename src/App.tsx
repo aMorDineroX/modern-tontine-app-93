@@ -10,6 +10,8 @@ import NotFound from "./pages/NotFound";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
+import ChangePassword from "./pages/Auth/ChangePassword";
+import ResetPassword from "./pages/Auth/ResetPassword";
 import LandingPage from "./pages/LandingPage";
 import Groups from "./pages/Groups";
 import Profile from "./pages/Profile";
@@ -62,6 +64,37 @@ const AuthCallback = () => {
       console.log("Location:", location);
 
       const { hash, search } = location;
+      const searchParams = new URLSearchParams(search);
+
+      // Vérifier si c'est une réinitialisation de mot de passe
+      const isPasswordReset = searchParams.get('type') === 'recovery';
+
+      // Vérifier également dans le hash pour le type de réinitialisation
+      let isHashPasswordReset = false;
+      let hashParams = new URLSearchParams();
+
+      if (hash && hash.length > 1) {
+        hashParams = new URLSearchParams(hash.substring(1));
+        isHashPasswordReset = hashParams.get('type') === 'recovery';
+      }
+
+      // Log complet des paramètres pour le débogage
+      console.log("Auth callback parameters:", {
+        search,
+        hash,
+        isPasswordReset,
+        isHashPasswordReset,
+        searchParams: Object.fromEntries(searchParams.entries()),
+        hashParams: hash ? Object.fromEntries(hashParams.entries()) : {}
+      });
+
+      if (isPasswordReset || isHashPasswordReset) {
+        console.log("Password reset flow detected, redirecting to reset password page");
+        // Construire l'URL avec tous les paramètres nécessaires
+        // S'assurer que tous les paramètres sont préservés
+        navigate(`/reset-password${search}${hash}`, { replace: true });
+        return;
+      }
 
       if (hash && hash.includes("access_token")) {
         console.log("Access token found in hash, processing...");
@@ -76,8 +109,14 @@ const AuthCallback = () => {
             console.log("Session after hash processing:", data.session);
 
             if (data.session) {
-              console.log("Authentication successful, redirecting to dashboard");
-              navigate('/dashboard', { replace: true });
+              // Vérifier à nouveau si c'est une réinitialisation de mot de passe
+              if (isPasswordReset || (hash && hash.includes('type=recovery'))) {
+                console.log("Password reset with session, redirecting to reset password page");
+                navigate(`/reset-password${search}${hash}`, { replace: true });
+              } else {
+                console.log("Authentication successful, redirecting to dashboard");
+                navigate('/dashboard', { replace: true });
+              }
               return;
             }
           }
@@ -91,8 +130,14 @@ const AuthCallback = () => {
         console.log("Authorization code found in search params, processing...");
         const { data } = await supabase.auth.getSession();
         if (data.session) {
-          console.log("Session established with code, redirecting to dashboard");
-          navigate('/dashboard', { replace: true });
+          // Vérifier à nouveau si c'est une réinitialisation de mot de passe
+          if (isPasswordReset) {
+            console.log("Password reset with code, redirecting to reset password page");
+            navigate(`/reset-password${search}${hash}`, { replace: true });
+          } else {
+            console.log("Session established with code, redirecting to dashboard");
+            navigate('/dashboard', { replace: true });
+          }
           return;
         }
       }
@@ -120,14 +165,54 @@ const RootComponent = () => {
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
 
   useEffect(() => {
-    const { hash } = location;
+    const { hash, search } = location;
+    const searchParams = new URLSearchParams(search);
+
+    // Vérifier si c'est une réinitialisation de mot de passe
+    const isPasswordReset = searchParams.get('type') === 'recovery';
+
+    // Vérifier également dans le hash pour le type de réinitialisation
+    let isHashPasswordReset = false;
+    let hashParams = new URLSearchParams();
+
+    if (hash && hash.length > 1) {
+      hashParams = new URLSearchParams(hash.substring(1));
+      isHashPasswordReset = hashParams.get('type') === 'recovery';
+    }
+
+    // Log complet des paramètres pour le débogage
+    console.log("Root component parameters:", {
+      search,
+      hash,
+      isPasswordReset,
+      isHashPasswordReset,
+      searchParams: Object.fromEntries(searchParams.entries()),
+      hashParams: hash ? Object.fromEntries(hashParams.entries()) : {}
+    });
+
+    if (isPasswordReset || isHashPasswordReset) {
+      console.log("Password reset flow detected in root component, redirecting to reset password page");
+      // Construire l'URL avec tous les paramètres nécessaires
+      // S'assurer que tous les paramètres sont préservés
+      navigate(`/reset-password${search}${hash}`, { replace: true });
+      return;
+    }
+
+    // Traiter les autres cas d'authentification seulement si ce n'est pas une réinitialisation de mot de passe
     if (hash && hash.includes('access_token')) {
       console.log('Detected access_token in URL hash, processing...');
+
+      // Vérifier à nouveau si c'est une réinitialisation de mot de passe avec le hash
+      if (hashParams.get('type') === 'recovery') {
+        console.log("Password reset flow detected in hash, redirecting to reset password page");
+        navigate(`/reset-password${search}${hash}`, { replace: true });
+        return;
+      }
+
       setIsProcessingAuth(true);
 
       (async () => {
         try {
-          const hashParams = new URLSearchParams(hash.substring(1));
           const accessToken = hashParams.get('access_token');
           console.log("Extracted access token from hash:", accessToken ? "Present (first chars: " + accessToken.substring(0, 10) + "...)" : "Not found");
 
@@ -138,7 +223,13 @@ const RootComponent = () => {
             navigate('/signin', { replace: true });
           } else if (data.session) {
             console.log("Successfully processed auth token from URL hash");
-            navigate('/dashboard', { replace: true });
+
+            // Vérifier à nouveau si c'est une réinitialisation de mot de passe
+            if (isPasswordReset || hashParams.get('type') === 'recovery') {
+              navigate(`/reset-password${search}${hash}`, { replace: true });
+            } else {
+              navigate('/dashboard', { replace: true });
+            }
           } else {
             console.log("No session established from URL hash");
             navigate('/signin', { replace: true });
@@ -176,6 +267,8 @@ const RootComponent = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
 
         {/* Protected routes with navbar */}

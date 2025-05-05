@@ -42,7 +42,9 @@ export default function Navbar() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    await signOut(() => {
+      navigate('/');
+    });
   };
 
   const notificationCount = 3;

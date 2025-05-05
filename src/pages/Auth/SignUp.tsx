@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, UserRound, KeyRound, Mail, Facebook, Twitter, Github } from "lucide-react";
+import { Eye, EyeOff, UserRound, KeyRound, Mail, Facebook, Twitter, Github, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApp } from "@/contexts/AppContext";
+import { usePasswordStrength } from "@/hooks/usePasswordStrength";
+import PasswordStrengthMeter from "@/components/Auth/PasswordStrengthMeter";
+import { toast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -10,18 +15,44 @@ export default function SignUp() {
   const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const passwordStrength = usePasswordStrength(password, 8);
   const { signUp, signInWithProvider } = useAuth();
   const { t } = useApp();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Vérifier la force du mot de passe
+    if (!passwordStrength.isValid) {
+      toast({
+        title: "Mot de passe trop faible",
+        description: passwordStrength.validationErrors.join(". "),
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      await signUp(email, password, fullName);
-      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
-    } catch (error) {
+      await signUp(email, password, fullName, {
+        redirectTo: `${window.location.origin}/dashboard`
+      });
+
+      toast({
+        title: "Compte créé avec succès",
+        description: "Veuillez vérifier votre email pour confirmer votre compte.",
+      });
+
+      // Rediriger vers la page de connexion avec un message de succès
+      navigate("/signin");
+    } catch (error: any) {
       console.error("Sign up error:", error);
+      toast({
+        title: "Erreur d'inscription",
+        description: error.message || "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -29,18 +60,35 @@ export default function SignUp() {
 
   const handleSocialSignUp = async (provider: 'google' | 'facebook' | 'twitter' | 'github') => {
     try {
+      setIsSubmitting(true);
       await signInWithProvider(provider);
-      navigate("/dashboard"); // Modifier cette ligne pour rediriger vers /dashboard
-    } catch (error) {
+      navigate("/dashboard");
+    } catch (error: any) {
       console.error(`Sign up with ${provider} error:`, error);
+      toast({
+        title: `Erreur de connexion avec ${provider}`,
+        description: error.message || `Une erreur s'est produite lors de la connexion avec ${provider}. Veuillez réessayer.`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="w-full max-w-md">
+      <Helmet>
+        <title>{t("signUp")} | Naat</title>
+      </Helmet>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-md"
+      >
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold tontine-text-gradient mb-4">Tontine</h1>
+          <h1 className="text-4xl font-bold tontine-text-gradient mb-4">Naat</h1>
           <p className="text-gray-600 dark:text-gray-400">Créez votre compte pour commencer</p>
         </div>
 
@@ -62,6 +110,7 @@ export default function SignUp() {
                   className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="Jean Dupont"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -82,6 +131,7 @@ export default function SignUp() {
                   className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="vous@exemple.com"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -102,12 +152,14 @@ export default function SignUp() {
                   className="tontine-input pl-10 w-full text-gray-900 dark:text-gray-100"
                   placeholder="••••••••"
                   required
-                  minLength={6}
+                  minLength={8}
+                  disabled={isSubmitting}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
                 >
                   {showPassword ? (
                     <EyeOff size={18} className="text-gray-400" />
@@ -116,16 +168,88 @@ export default function SignUp() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">Le mot de passe doit contenir au moins 6 caractères</p>
+
+              {/* Indicateur de force du mot de passe */}
+              <div className="mt-2">
+                <PasswordStrengthMeter result={passwordStrength} />
+              </div>
+
+              {/* Critères de mot de passe */}
+              <div className="mt-3 space-y-1">
+                <div className="flex items-center text-xs">
+                  {password.length >= 8 ? (
+                    <CheckCircle2 size={14} className="text-green-500 mr-1" />
+                  ) : (
+                    <AlertCircle size={14} className="text-red-500 mr-1" />
+                  )}
+                  <span className={password.length >= 8 ? "text-green-500" : "text-red-500"}>
+                    Au moins 8 caractères
+                  </span>
+                </div>
+
+                <div className="flex items-center text-xs">
+                  {/[A-Z]/.test(password) ? (
+                    <CheckCircle2 size={14} className="text-green-500 mr-1" />
+                  ) : (
+                    <AlertCircle size={14} className="text-red-500 mr-1" />
+                  )}
+                  <span className={/[A-Z]/.test(password) ? "text-green-500" : "text-red-500"}>
+                    Au moins une lettre majuscule
+                  </span>
+                </div>
+
+                <div className="flex items-center text-xs">
+                  {/[a-z]/.test(password) ? (
+                    <CheckCircle2 size={14} className="text-green-500 mr-1" />
+                  ) : (
+                    <AlertCircle size={14} className="text-red-500 mr-1" />
+                  )}
+                  <span className={/[a-z]/.test(password) ? "text-green-500" : "text-red-500"}>
+                    Au moins une lettre minuscule
+                  </span>
+                </div>
+
+                <div className="flex items-center text-xs">
+                  {/[0-9]/.test(password) ? (
+                    <CheckCircle2 size={14} className="text-green-500 mr-1" />
+                  ) : (
+                    <AlertCircle size={14} className="text-red-500 mr-1" />
+                  )}
+                  <span className={/[0-9]/.test(password) ? "text-green-500" : "text-red-500"}>
+                    Au moins un chiffre
+                  </span>
+                </div>
+
+                <div className="flex items-center text-xs">
+                  {/[^A-Za-z0-9]/.test(password) ? (
+                    <CheckCircle2 size={14} className="text-green-500 mr-1" />
+                  ) : (
+                    <AlertCircle size={14} className="text-red-500 mr-1" />
+                  )}
+                  <span className={/[^A-Za-z0-9]/.test(password) ? "text-green-500" : "text-red-500"}>
+                    Au moins un caractère spécial
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <button
+            <motion.button
               type="submit"
               className="tontine-button tontine-button-primary w-full"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !passwordStrength.isValid}
+              whileHover={!isSubmitting && passwordStrength.isValid ? { scale: 1.02 } : {}}
+              whileTap={!isSubmitting && passwordStrength.isValid ? { scale: 0.98 } : {}}
             >
-              {isSubmitting ? "Création du compte..." : "Créer un compte"}
-            </button>
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Création du compte...
+                </>
+              ) : "Créer un compte"}
+            </motion.button>
           </form>
 
           <div className="mt-6">
@@ -141,10 +265,13 @@ export default function SignUp() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
+              <motion.button
                 type="button"
                 onClick={() => handleSocialSignUp("google")}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
               >
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
@@ -155,33 +282,42 @@ export default function SignUp() {
                   </g>
                 </svg>
                 Google
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 type="button"
                 onClick={() => handleSocialSignUp("facebook")}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
               >
                 <Facebook className="h-5 w-5 mr-2 text-blue-600" />
                 Facebook
-              </button>
+              </motion.button>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <button
+              <motion.button
                 type="button"
                 onClick={() => handleSocialSignUp("twitter")}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
               >
                 <Twitter className="h-5 w-5 mr-2 text-blue-400" />
                 Twitter
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 type="button"
                 onClick={() => handleSocialSignUp("github")}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
               >
                 <Github className="h-5 w-5 mr-2" />
                 GitHub
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -200,7 +336,7 @@ export default function SignUp() {
             ← Retour à la page d'accueil
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

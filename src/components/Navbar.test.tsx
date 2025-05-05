@@ -12,7 +12,10 @@ vi.mock('@/contexts/AppContext', () => ({
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
-    signOut: vi.fn(),
+    signOut: vi.fn((callback) => {
+      if (callback) callback();
+      return Promise.resolve();
+    }),
     user: { id: 'user-123' },
   }),
 }));
@@ -82,10 +85,10 @@ describe('Navbar', () => {
 
     // Trouver le bouton des paramètres et cliquer dessus
     const settingsButtons = screen.getAllByRole('button', { name: '' });
-    const settingsButton = settingsButtons.find(button => 
+    const settingsButton = settingsButtons.find(button =>
       button.innerHTML.includes('Settings')
     );
-    
+
     if (settingsButton) {
       fireEvent.click(settingsButton);
     } else {
@@ -147,26 +150,26 @@ describe('Navbar', () => {
 
     // Trouver le bouton de menu mobile
     const menuButton = screen.getByRole('button', { name: 'Open main menu' });
-    
+
     // Vérifier que le menu mobile est initialement fermé
     expect(screen.queryByText('signOut')).not.toBeInTheDocument();
-    
+
     // Ouvrir le menu mobile
     fireEvent.click(menuButton);
-    
+
     // Vérifier que le menu mobile est maintenant ouvert
     expect(screen.getByText('signOut')).toBeInTheDocument();
-    
+
     // Fermer le menu mobile
     fireEvent.click(menuButton);
-    
+
     // Vérifier que le menu mobile est à nouveau fermé
     expect(screen.queryByText('signOut')).not.toBeInTheDocument();
   });
 
   it('calls signOut when logout button is clicked', () => {
     const { signOut } = useAuth();
-    
+
     render(
       <BrowserRouter>
         <Navbar />
@@ -175,10 +178,10 @@ describe('Navbar', () => {
 
     // Trouver le bouton de déconnexion et cliquer dessus
     const logoutButtons = screen.getAllByRole('button', { name: '' });
-    const logoutButton = logoutButtons.find(button => 
+    const logoutButton = logoutButtons.find(button =>
       button.innerHTML.includes('LogOut')
     );
-    
+
     if (logoutButton) {
       fireEvent.click(logoutButton);
     } else {
